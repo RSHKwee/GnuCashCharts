@@ -43,6 +43,7 @@ public class MainMenu extends Application {
         inpfile = selectedFile.getAbsolutePath();
         l_file.setText(selectedFile.getAbsolutePath());
         m_param.set_InputFile(selectedFile.getAbsoluteFile());
+        m_param.set_Tag("");
         m_param.save();
 
         ReadHTMLTable htmltable = new ReadHTMLTable(selectedFile.getAbsolutePath());

@@ -13,16 +13,37 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.WritableImage;
+import kwee.library.TimeStamp;
 
 public class createPdf {
-  private static float xTitle = (float) 50.0;
-  private static float yTitle = (float) 520.0;
+  /*
+   * @formatter:off
+   * If you want to work with centimeters instead of points, 
+   * you can convert the centimeter values to points using the fact that there 
+   * are approximately 28.35 points in a centimeter. 
+   * Here's how you can calculate the coordinates of the top-right corner of
+   * an A4 paper in centimeters:
+   *
+   * X-coordinate: A4 width in centimeters = 21.0 cm,
+   *    converted to points = 21.0 * 28.35 = 595.35 points.
+   * Y-coordinate: A4 height in centimeters = 29.7 cm, 
+   *    converted to points = 29.7 * 28.35 = 841.245 points.
+   *    
+   * So, the top-right corner of an A4 paper in the PDF coordinate system 
+   * (assuming portrait orientation) would be approximately (595.35, 841.245) points.
+   * @formatter:on
+   */
+  private static float xTitle = 50;
+  private static float yTitle = 520;
 
-  private static float xPosition = (float) -25.0;
-  private static float yPosition = (float) 110.0;
+  private static float xFooter = 700; // X-coordinate for the footer text
+  private static float yFooter = 10; // Y-coordinate for the footer text (adjust as needed)
 
-  private static float xPositionForLegend = (float) 20.0;
-  private static float yPositionForLegend = (float) 10.0;
+  private static float xPosition = -25;
+  private static float yPosition = 110;
+
+  private static float xPositionForLegend = 20;
+  private static float yPositionForLegend = 10;
 
   static public void CreatePdfFromImage(WritableImage aChartImage, WritableImage aLegendImage, String aTitle,
       String pdfFile) throws IOException {
@@ -42,13 +63,7 @@ public class createPdf {
     // Create a content stream for the page
     PDPageContentStream contentStream = new PDPageContentStream(document, page);
 
-    // Add a title
-    contentStream.setFont(PDType1Font.HELVETICA_BOLD, 18); // Choose your font
-    // and size
-    contentStream.beginText();
-    contentStream.newLineAtOffset(xTitle, yTitle); // Adjust the coordinates
-    contentStream.showText(aTitle);
-    contentStream.endText();
+    addTitle(contentStream, aTitle);
 
     // Convert the JavaFX image to PDF image
     PDImageXObject pdfPieChartImage = LosslessFactory.createFromImage(document, ChartImage);
@@ -64,6 +79,8 @@ public class createPdf {
     contentStream.drawImage(pdfLegendImage, xPositionForLegend, yPositionForLegend, legendImageWidth,
         legendImageHeight);
 
+    addFooter(contentStream, TimeStamp.getTimeStampNow());
+
     // Close the content stream
     contentStream.close();
 
@@ -72,5 +89,23 @@ public class createPdf {
 
     // Close the PDF document
     document.close();
+  }
+
+  private static void addTitle(PDPageContentStream contentStream, String text) throws IOException {
+    contentStream.beginText();
+    contentStream.setFont(PDType1Font.HELVETICA_BOLD, 18); // Choose your font
+
+    contentStream.newLineAtOffset(xTitle, yTitle); // Adjust the coordinates
+    contentStream.showText(text);
+    contentStream.endText();
+  }
+
+  private static void addFooter(PDPageContentStream contentStream, String text) throws IOException {
+    contentStream.beginText();
+    contentStream.setFont(PDType1Font.HELVETICA, 10);
+
+    contentStream.newLineAtOffset(xFooter, yFooter);
+    contentStream.showText(text);
+    contentStream.endText();
   }
 }

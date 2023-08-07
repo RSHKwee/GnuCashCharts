@@ -14,7 +14,6 @@ import kwee.gnucashcharts.library.createPdf;
 import kwee.gnucashcharts.library.html.PieFromHtmlPage;
 
 public class PieChartWithLegend {
-
   int i = 0;
   double tot_amt = 0.0;
   String title = "";
@@ -68,5 +67,4 @@ public class PieChartWithLegend {
     // Show the stage (display the pie chart with the legend)
     piechartStage.show();
   }
-
 }
