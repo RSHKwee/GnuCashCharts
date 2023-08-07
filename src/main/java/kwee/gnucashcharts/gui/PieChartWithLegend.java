@@ -14,6 +14,7 @@ import kwee.gnucashcharts.library.createPdf;
 import kwee.gnucashcharts.library.html.PieFromHtmlPage;
 
 public class PieChartWithLegend {
+
   int i = 0;
   double tot_amt = 0.0;
   String title = "";
@@ -35,6 +36,11 @@ public class PieChartWithLegend {
     saveButton.setOnAction(e -> {
       FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.pdf)", "*.pdf");
       fileChooser.getExtensionFilters().add(extFilter);
+      if (!MainMenu.m_param.get_PdfFile().isBlank()) {
+        File intFile = new File(MainMenu.m_param.get_PdfFile());
+        String ldir = intFile.getParent();
+        fileChooser.setInitialDirectory(new File(ldir));
+      }
 
       // Show save file dialog
       File selectedFile = fileChooser.showSaveDialog(piechartStage);
@@ -42,6 +48,8 @@ public class PieChartWithLegend {
         try {
           createPdf.CreatePdfFromImage(pie.getPieChartImage(), pie.getLegendImage(), title,
               selectedFile.getAbsolutePath());
+          MainMenu.m_param.set_Pdf_file(selectedFile);
+          MainMenu.m_param.save();
         } catch (IOException e1) {
           // TODO Auto-generated catch block
           e1.printStackTrace();

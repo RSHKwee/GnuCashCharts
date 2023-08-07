@@ -9,6 +9,7 @@ public class MyLauncher {
     // PieChartWithLegend.main(args);
     // JavaFXInAWTExample.main(args);
     // FileChooserWithListViewApp.main(args);
-    FileChooserWithComboBoxApp.main(args);
+    // FileChooserWithComboBoxApp.main(args);
+    CombinedWindowExample.main(args);
   }
 }

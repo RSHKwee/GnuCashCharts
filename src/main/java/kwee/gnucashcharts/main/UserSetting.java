@@ -14,7 +14,7 @@ import java.util.prefs.Preferences;
  */
 public class UserSetting {
   private static final Logger LOGGER = Logger.getLogger(Class.class.getName());
-  public static String NodePrefName = "kwee.replaceTool";
+  public static String NodePrefName = "kwee.gnucashcharts";
 
   private String c_Level = "Level";
   private String c_LevelValue = "INFO";
@@ -25,8 +25,8 @@ public class UserSetting {
   private String c_LookAndFeel = "LookAndFeel";
   private String c_LookAndFeelVal = "Nimbus";
   private String c_InputFile = "InputFile";
-  private String c_OutputFile = "OutputFile";
-  private String c_Substitutes_file = "SubstitutesFile";
+  private String c_Pdf_File = "PdfFile";
+  private String c_Tag = "Tag";
 
   private String m_Level = c_LevelValue;
   private String m_LookAndFeel;
@@ -38,9 +38,9 @@ public class UserSetting {
   private boolean m_ConfirmOnExit = false;
   private boolean m_toDisk = false;
 
-  private String m_Substitutes_file = "";
+  private String m_Tag = "";
   private String m_InputFile = "";
-  private String m_OutputFile = "";
+  private String m_PdfFile = "";
 
   private Preferences pref;
   private Preferences userPrefs = Preferences.userRoot();
@@ -57,15 +57,15 @@ public class UserSetting {
     m_LookAndFeel = pref.get(c_LookAndFeel, c_LookAndFeelVal);
 
     m_InputFile = pref.get(c_InputFile, "");
-    m_OutputFile = pref.get(c_OutputFile, "");
-    m_Substitutes_file = pref.get(c_Substitutes_file, "");
+    m_Tag = pref.get(c_Tag, "");
+    m_PdfFile = pref.get(c_Pdf_File, "");
 
     m_Level = pref.get(c_Level, c_LevelValue);
     m_LogDir = pref.get(c_LogDir, "");
   }
 
   public String get_LogDir() {
-    return m_LogDir;
+    return this.m_LogDir;
   }
 
   public void set_LogDir(String m_LogDir) {
@@ -77,44 +77,49 @@ public class UserSetting {
   }
 
   public File[] get_CsvFiles() {
-    return m_CsvFiles;
+    return this.m_CsvFiles;
   }
 
   public Level get_Level() {
-    return Level.parse(m_Level);
+    return Level.parse(this.m_Level);
   }
 
   public String get_LookAndFeel() {
-    return m_LookAndFeel;
+    return this.m_LookAndFeel;
   }
 
-  public String get_Substitutes_file() {
-    return m_Substitutes_file;
+  public String get_PdfFile() {
+    return this.m_PdfFile;
+  }
+
+  public String get_Tag() {
+    return this.m_Tag;
   }
 
   public String get_InputFile() {
-    return m_InputFile;
-  }
-
-  public String get_OutputFile() {
-    return m_OutputFile;
+    return this.m_InputFile;
   }
 
   public boolean is_toDisk() {
-    return m_toDisk;
+    return this.m_toDisk;
   }
 
   public Preferences getPreferences() {
-    return pref;
+    return this.pref;
   }
 
   public boolean is_ConfirmOnExit() {
-    return m_ConfirmOnExit;
+    return this.m_ConfirmOnExit;
   }
 
-  public void set_Substitutes_file(File a_Substitutes_file) {
-    pref.put(c_Substitutes_file, a_Substitutes_file.getAbsolutePath());
-    this.m_Substitutes_file = a_Substitutes_file.getAbsolutePath();
+  public void set_Pdf_file(File a_Pdf_file) {
+    pref.put(c_Pdf_File, a_Pdf_file.getAbsolutePath());
+    this.m_PdfFile = a_Pdf_file.getAbsolutePath();
+  }
+
+  public void set_Tag(String a_Tag) {
+    pref.put(c_Tag, a_Tag);
+    this.m_Tag = a_Tag;
   }
 
   public void set_toDisk(boolean a_toDisk) {
@@ -142,11 +147,6 @@ public class UserSetting {
     this.m_InputFile = a_InputFile.getAbsolutePath();
   }
 
-  public void set_OutputFile(File a_OutputFile) {
-    pref.put(c_OutputFile, a_OutputFile.getAbsolutePath());
-    this.m_OutputFile = a_OutputFile.getAbsolutePath();
-  }
-
   /**
    * Save all settings
    */
@@ -159,8 +159,8 @@ public class UserSetting {
       pref.put(c_LogDir, m_LogDir);
 
       pref.put(c_LookAndFeel, m_LookAndFeel);
-      pref.put(c_Substitutes_file, m_Substitutes_file);
-      pref.put(c_OutputFile, m_OutputFile);
+      pref.put(c_Pdf_File, m_PdfFile);
+      pref.put(c_Tag, m_Tag);
       pref.put(c_InputFile, m_InputFile);
 
       pref.flush();
@@ -176,9 +176,9 @@ public class UserSetting {
     l_line = l_line + c_ConfirmOnExit + ": " + m_ConfirmOnExit + "\n";
 
     l_line = l_line + c_LookAndFeel + ": " + m_LookAndFeel + "\n";
-    l_line = l_line + c_Substitutes_file + ": " + m_Substitutes_file + "\n";
+    l_line = l_line + c_Pdf_File + ": " + m_PdfFile + "\n";
     l_line = l_line + c_InputFile + ": " + m_InputFile + "\n";
-    l_line = l_line + c_OutputFile + ": " + m_OutputFile + "\n";
+    l_line = l_line + c_Tag + ": " + m_Tag + "\n";
 
     l_line = l_line + c_Level + ": " + m_Level + "\n";
     l_line = l_line + c_LogDir + ": " + m_LogDir + "\n";
