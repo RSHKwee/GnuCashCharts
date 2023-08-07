@@ -7,6 +7,7 @@ import java.util.Set;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -58,10 +59,8 @@ public class MainMenu extends Application {
       }
     });
 
-    Button selectOptionButton = new Button("Select Tag");
     Label l_tag = new Label("Tag");
-    comboBox.setValue(m_param.get_Tag());
-    selectOptionButton.setOnAction(e -> {
+    comboBox.setOnAction(e -> {
       String selectedOption = comboBox.getValue();
       if (selectedOption != null) {
         System.out.println("Selected Option: " + selectedOption);
@@ -77,11 +76,24 @@ public class MainMenu extends Application {
     buttonPiechart.setOnAction(e -> piwindow.openPieChartWindow(inpfile, tag));
 
     HBox openFileLayout = new HBox(openFileButton, l_file);
-    HBox selectOptionLayout = new HBox(comboBox, selectOptionButton, l_tag);
+    HBox selectOptionLayout = new HBox(comboBox, l_tag);
     HBox buttonPiechartLayout = new HBox(buttonPiechart);
+
+    openFileLayout.setSpacing(10);
+    selectOptionLayout.setSpacing(10);
+    buttonPiechartLayout.setSpacing(10);
+
+    HBox.setMargin(openFileButton, new Insets(10, 10, 10, 10));
+    HBox.setMargin(l_file, new Insets(10, 10, 10, 10));
+
+    HBox.setMargin(comboBox, new Insets(10, 10, 10, 10));
+    HBox.setMargin(l_tag, new Insets(10, 10, 10, 10));
+
+    HBox.setMargin(buttonPiechart, new Insets(10, 10, 10, 10));
+
     VBox layout = new VBox(openFileLayout, selectOptionLayout, buttonPiechartLayout);
 
-    Scene scene = new Scene(layout, 400, 300);
+    Scene scene = new Scene(layout, 700, 175);
     primaryStage.setScene(scene);
     primaryStage.setTitle("GnuCash charts");
     primaryStage.show();

@@ -3,6 +3,8 @@ package kwee.gnucashcharts.gui;
 import java.io.File;
 import java.io.IOException;
 
+import javafx.geometry.Insets;
+
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
@@ -57,6 +59,8 @@ public class PieChartWithLegend {
       }
     });
     VBox saveFileLayout = new VBox(saveButton);
+    saveFileLayout.setSpacing(10);
+    VBox.setMargin(saveButton, new Insets(10, 10, 10, 10));
 
     // Set up the scene and add the VBox to it
     Scene scene = pie.getScene(saveFileLayout);
