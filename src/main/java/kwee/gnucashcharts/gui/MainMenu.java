@@ -16,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
 import kwee.gnucashcharts.main.UserSetting;
 import kwee.gnucashcharts.library.html.ReadHTMLTable;
 import kwee.gnucashcharts.library.html.TaartPuntData;
@@ -31,7 +32,7 @@ public class MainMenu extends Application {
     ComboBox<String> comboBox = new ComboBox<>(FXCollections.observableArrayList("Option 1", "Option 2", "Option 3"));
 
     Button openFileButton = new Button("Open File");
-    Label l_file = new Label("File");
+    Label l_file = new Label("Kies een HTML bestand");
     openFileButton.setOnAction(e -> {
       if (!m_param.get_InputFile().isBlank()) {
         File intFile = new File(m_param.get_InputFile());
@@ -44,7 +45,7 @@ public class MainMenu extends Application {
         inpfile = selectedFile.getAbsolutePath();
         l_file.setText(selectedFile.getAbsolutePath());
         m_param.set_InputFile(selectedFile.getAbsoluteFile());
-        m_param.set_Tag("");
+        m_param.set_Tag("Kies een tag");
         m_param.save();
 
         ReadHTMLTable htmltable = new ReadHTMLTable(selectedFile.getAbsolutePath());
@@ -59,7 +60,7 @@ public class MainMenu extends Application {
       }
     });
 
-    Label l_tag = new Label("Tag");
+    Label l_tag = new Label("Kies een tag");
     comboBox.setOnAction(e -> {
       String selectedOption = comboBox.getValue();
       if (selectedOption != null) {
@@ -85,10 +86,8 @@ public class MainMenu extends Application {
 
     HBox.setMargin(openFileButton, new Insets(10, 10, 10, 10));
     HBox.setMargin(l_file, new Insets(10, 10, 10, 10));
-
     HBox.setMargin(comboBox, new Insets(10, 10, 10, 10));
     HBox.setMargin(l_tag, new Insets(10, 10, 10, 10));
-
     HBox.setMargin(buttonPiechart, new Insets(10, 10, 10, 10));
 
     VBox layout = new VBox(openFileLayout, selectOptionLayout, buttonPiechartLayout);

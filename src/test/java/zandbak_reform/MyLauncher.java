@@ -6,10 +6,6 @@ public class MyLauncher {
     // PieChartColorExample.main(args);
     // PieChartWithLegendDemo.main(args);
     // MultipleWindowsExample.main(args);
-    // PieChartWithLegend.main(args);
-    // JavaFXInAWTExample.main(args);
-    // FileChooserWithListViewApp.main(args);
-    // FileChooserWithComboBoxApp.main(args);
-    CombinedWindowExample.main(args);
+    PieChartWithLegend.main(args);
   }
 }
