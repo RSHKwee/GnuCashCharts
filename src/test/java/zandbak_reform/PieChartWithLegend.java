@@ -5,7 +5,7 @@ import java.io.IOException;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import kwee.gnucashcharts.library.createPdf;
+import kwee.gnucashcharts.library.CreatePdf;
 import kwee.gnucashcharts.library.html.PieFromHtmlPage;
 
 public class PieChartWithLegend extends Application {
@@ -40,7 +40,7 @@ public class PieChartWithLegend extends Application {
     primaryStage.show();
 
     try {
-      createPdf.CreatePdfFromImage(pie.getPieChartImage(), pie.getLegendImage(), title,
+      CreatePdf.CreatePdfFromImage(pie.getPieChartImage(), pie.getLegendImage(), title,
           "F:\\dev\\Tools\\GnuCashCharts\\PieChart.pdf");
     } catch (IOException e) {
       // TODO Auto-generated catch block

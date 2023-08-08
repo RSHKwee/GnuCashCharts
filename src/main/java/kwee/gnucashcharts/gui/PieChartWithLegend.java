@@ -11,8 +11,8 @@ import javafx.scene.layout.VBox;
 
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
-import kwee.gnucashcharts.library.createPdf;
+import kwee.gnucashcharts.library.FormatAmount;
+import kwee.gnucashcharts.library.CreatePdf;
 import kwee.gnucashcharts.library.html.PieFromHtmlPage;
 
 public class PieChartWithLegend {
@@ -26,8 +26,7 @@ public class PieChartWithLegend {
 
     // Set the title of the window
     tot_amt = pie.getTotalAmount();
-    title = tag + " (totaal €" + tot_amt + ")";
-    title = title.replace(".", ",");
+    title = tag + " (totaal " + FormatAmount.formatAmount(tot_amt) + ")";
     piechartStage.setTitle(title);
 
     FileChooser fileChooser = new FileChooser();
@@ -47,7 +46,7 @@ public class PieChartWithLegend {
       File selectedFile = fileChooser.showSaveDialog(piechartStage);
       if (selectedFile != null) {
         try {
-          createPdf.CreatePdfFromImage(pie.getPieChartImage(), pie.getLegendImage(), title,
+          CreatePdf.CreatePdfFromImage(pie.getPieChartImage(), pie.getLegendImage(), title,
               selectedFile.getAbsolutePath());
           MainMenu.m_param.set_Pdf_file(selectedFile);
           MainMenu.m_param.save();
@@ -55,7 +54,6 @@ public class PieChartWithLegend {
           // TODO Auto-generated catch block
           e1.printStackTrace();
         }
-        // Save the file at the selected location
       }
     });
     VBox saveFileLayout = new VBox(saveButton);
@@ -64,8 +62,6 @@ public class PieChartWithLegend {
 
     // Set up the scene and add the VBox to it
     Scene scene = pie.getScene(saveFileLayout);
-
-    // Set the scene to the stage
     piechartStage.setScene(scene);
 
     // Show the stage (display the pie chart with the legend)

@@ -15,7 +15,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.WritableImage;
 import kwee.library.TimeStamp;
 
-public class createPdf {
+public class CreatePdf {
   /*
    * @formatter:off
    * If you want to work with centimeters instead of points, 
