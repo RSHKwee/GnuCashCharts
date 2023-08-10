@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,6 +21,7 @@ import kwee.logger.MyLogger;
 public class ReadHTMLTable {
   private static final Logger lOGGER = MyLogger.getLogger();
   private String m_content = "";
+  private Charset charsetName = Charset.forName("UTF-8");
 
   /**
    * Constructor, read HTML page from file or URL
@@ -97,7 +98,7 @@ public class ReadHTMLTable {
    */
   private String readHTMLFromFile(String filePath) throws IOException {
     StringBuilder content = new StringBuilder();
-    try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(filePath, charsetName))) {
       String line;
       while ((line = reader.readLine()) != null) {
         content.append(line);
