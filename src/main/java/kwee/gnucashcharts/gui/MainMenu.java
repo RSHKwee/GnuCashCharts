@@ -1,8 +1,11 @@
 package kwee.gnucashcharts.gui;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -17,17 +20,31 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import kwee.logger.MyLogger;
+
 import kwee.gnucashcharts.main.UserSetting;
 import kwee.gnucashcharts.library.html.ReadHTMLTable;
 import kwee.gnucashcharts.library.html.TaartPuntData;
 
 public class MainMenu extends Application {
-  String inpfile = "";
-  String tag = "";
+  private static final Logger lOGGER = MyLogger.getLogger();
   public static UserSetting m_param = new UserSetting();
+
+  private Level m_Level = Level.INFO;
+  private String m_Logdir = "c:\\";
+  private boolean m_toDisk = false;
+
+  private String m_inpfile = "";
+  private String m_tag = "";
 
   @Override
   public void start(Stage primaryStage) {
+    try {
+      MyLogger.setup(m_Level, m_Logdir, m_toDisk);
+    } catch (IOException e1) {
+      lOGGER.log(Level.INFO, e1.getMessage());
+    }
+
     FileChooser fileChooser = new FileChooser();
     ComboBox<String> comboBox = new ComboBox<>(FXCollections.observableArrayList("Option 1", "Option 2", "Option 3"));
 
@@ -41,8 +58,8 @@ public class MainMenu extends Application {
       }
       File selectedFile = fileChooser.showOpenDialog(primaryStage);
       if (selectedFile != null) {
-        System.out.println("Selected File: " + selectedFile.getAbsolutePath());
-        inpfile = selectedFile.getAbsolutePath();
+        lOGGER.log(Level.INFO, "Selected File: " + selectedFile.getAbsolutePath());
+        m_inpfile = selectedFile.getAbsolutePath();
         l_file.setText(selectedFile.getAbsolutePath());
         m_param.set_InputFile(selectedFile.getAbsoluteFile());
         m_param.set_Tag("Kies een tag");
@@ -64,17 +81,17 @@ public class MainMenu extends Application {
     comboBox.setOnAction(e -> {
       String selectedOption = comboBox.getValue();
       if (selectedOption != null) {
-        System.out.println("Selected Option: " + selectedOption);
-        tag = selectedOption;
-        l_tag.setText(tag);
-        m_param.set_Tag(tag);
+        lOGGER.log(Level.INFO, "Selected Option: " + selectedOption);
+        m_tag = selectedOption;
+        l_tag.setText(m_tag);
+        m_param.set_Tag(m_tag);
         m_param.save();
       }
     });
 
     PieChartWithLegend piwindow = new PieChartWithLegend();
     Button buttonPiechart = new Button("Open Piechart");
-    buttonPiechart.setOnAction(e -> piwindow.openPieChartWindow(inpfile, tag));
+    buttonPiechart.setOnAction(e -> piwindow.openPieChartWindow(m_inpfile, m_tag));
 
     HBox openFileLayout = new HBox(openFileButton, l_file);
     HBox selectOptionLayout = new HBox(comboBox, l_tag);

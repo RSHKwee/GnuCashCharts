@@ -15,18 +15,19 @@
   </parent>
 
   <name>GnuCashCharts</name>
-  
+      <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>11</maven.compiler.release>
+        <javafx.version>20</javafx.version>
+        <javafx.maven.plugin.version>0.0.6</javafx.maven.plugin.version>
+    </properties>
+
   <dependencies>
  	<dependency>
 	  <groupId>kwee.library</groupId>
 	  <artifactId>library</artifactId>
 	  <version>0.0.5.0</version>
 	</dependency> 
- 	<dependency>
-	  <groupId>kwee.ing2ofx</groupId>
-	  <artifactId>ing2ofx</artifactId>
-	  <version>0.2.9.0</version>
-	</dependency>
 	 
     <dependency>
       <groupId>org.apache.poi</groupId>
@@ -52,18 +53,39 @@
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
-      <version>16</version> <!-- Replace with the desired JavaFX version -->
-    </dependency>
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-fxml</artifactId>
-      <version>16</version> <!-- Replace with the desired JavaFX version -->
+      <version>${javafx.version}</version>
     </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-swing</artifactId>
-      <version>19</version>
+      <version>${javafx.version}</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-graphics -->
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-graphics</artifactId>
+      <version>${javafx.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-fxml</artifactId>
+      <version>${javafx.version}</version>
+    </dependency>
+ 
+    <!-- SLF4J API -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.32</version> <!-- Use the latest version -->
+    </dependency>
+
+    <!-- SLF4J JDK14 bridge -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
+      <version>1.7.32</version> <!-- Use the same version as SLF4J API -->
+    </dependency>
+
   </dependencies>
   
   <build>
@@ -75,7 +97,44 @@
     </resources>   
 
     <!--  <pluginManagement> -->
-	<plugins>
+    <plugins>
+    
+
+    <plugin>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-maven-plugin</artifactId>
+        <version>0.0.8</version>
+        <configuration>
+          <stripDebug>true</stripDebug>
+          <compress>2</compress>
+          <noHeaderFiles>true</noHeaderFiles>
+          <noManPages>true</noManPages>
+          <launcher>gnucashcharts</launcher>
+          <jlinkImageName>gnucashcharts</jlinkImageName>
+          <jlinkZipName>gnucashchartszip</jlinkZipName>
+          <mainClass>kwee.gnucashcharts.gui.MainMenu</mainClass>
+       </configuration>
+      </plugin>
+<plugin>
+    <artifactId>maven-shade-plugin</artifactId>
+    <version>3.2.1</version>
+    <executions>
+        <execution>
+            <phase>package</phase>
+            <goals>
+                <goal>shade</goal>
+            </goals>
+            <configuration>
+                <transformers>
+                    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                        <mainClass>kwee.gnucashcharts.main.Main</mainClass>
+                    </transformer>
+                </transformers>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+
       <plugin>
 		<artifactId>maven-assembly-plugin</artifactId>
 		<executions>
@@ -90,7 +149,7 @@
           <archive>
             <manifest>
 		      <addClasspath>true</addClasspath>
-		      <mainClass>kwee.GnuCashCharts.main.Main</mainClass>
+		      <mainClass>kwee.gnucashcharts.main.Main</mainClass>
 		    </manifest>
           </archive>
           <descriptorRefs>
@@ -147,7 +206,7 @@
                <outfile>target/GnuCashCharts.exe</outfile>
                <downloadUrl>https://cdn.azul.com/zulu/bin/zulu17.40.19-ca-jdk17.0.6-win_x64.msi</downloadUrl>
                <classPath>
-                 <mainClass>kwee.GnuCashCharts.main.Main</mainClass>
+                 <mainClass>kwee.gnucashcharts.main.Main</mainClass>
               </classPath>
               <jre>
                 <bundledJre64Bit>true</bundledJre64Bit>
@@ -169,6 +228,7 @@
           </execution>
         </executions>
       </plugin>
+
     </plugins>
 <!--    </pluginManagement> -->
   </build>
@@ -177,7 +237,7 @@
     <repository>
       <id>github</id>
       <name>GitHub Packages</name>
-      <url>https://maven.pkg.github.com/RSHKwee/reformat</url>
+      <url>https://maven.pkg.github.com/RSHKwee/gnucashcharts</url>
     </repository>
     <!-- Upload to Github ^-->
   </distributionManagement>

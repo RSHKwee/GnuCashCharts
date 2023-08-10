@@ -16,8 +16,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import kwee.logger.MyLogger;
+
 public class ReadHTMLTable {
-  private static final Logger LOGGER = Logger.getLogger(Class.class.getName());
+  private static final Logger lOGGER = MyLogger.getLogger();
   private String m_content = "";
 
   /**
@@ -29,14 +31,15 @@ public class ReadHTMLTable {
     try {
       // From file
       m_content = readHTMLFromFile(a_location);
+      lOGGER.log(Level.FINEST, m_content);
     } catch (IOException e) {
       try {
         // From an URL
         m_content = fetchHTML(a_location);
       } catch (IOException e1) {
-        LOGGER.log(Level.INFO, e.getMessage());
+        lOGGER.log(Level.INFO, e.getMessage());
       }
-      LOGGER.log(Level.INFO, e.getMessage());
+      lOGGER.log(Level.INFO, e.getMessage());
     }
   }
 

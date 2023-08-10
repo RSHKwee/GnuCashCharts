@@ -1,0 +1,10 @@
+module kwee.gnucashcharts.gui.MainMenu {
+  requires javafx.controls;
+  // requires java.util.;
+
+  opens kwee.gnucashcharts.gui.MainMenu to javafx.graphics, javafx.fxml;
+  opens java.util.logging;
+  opens javafx.stage.Stage;
+
+  exports kwee.gnucashcharts.gui.MainMenu;
+}

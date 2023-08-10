@@ -3,6 +3,8 @@ package kwee.gnucashcharts.library.html;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -13,9 +15,11 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import kwee.logger.MyLogger;
 import javafx.geometry.Pos;
 
 public class PieFromHtmlPage {
+  private static final Logger lOGGER = MyLogger.getLogger();
   // private static final long serialVersionUID = -709619748064818482L;
   private int m_Teller = 0;
   private double m_total_amount = 0.0;
@@ -26,6 +30,7 @@ public class PieFromHtmlPage {
   public PieFromHtmlPage(String filePath, String tag) {
     ReadHTMLTable htmltable = new ReadHTMLTable(filePath);
     ArrayList<String> regels = htmltable.parseHTMLpage();
+    lOGGER.log(Level.FINE, "Regels lengte :" + regels.size());
     TaartPuntData pieData = new TaartPuntData(regels);
 
     // Create a pie chart & a GridPane to hold the legend
@@ -99,6 +104,7 @@ public class PieFromHtmlPage {
   }
 
   private void createPieChart(Map<String, Double> taartpuntdata) {
+    lOGGER.log(Level.FINE, "#Taartpunt data: " + taartpuntdata.size());
     m_pieChartData = new PieChart.Data[taartpuntdata.size()];
     m_total_amount = 0.0;
     m_Teller = 0;
@@ -107,6 +113,7 @@ public class PieFromHtmlPage {
     keys.forEach(key -> {
       m_pieChartData[m_Teller] = new PieChart.Data(key, taartpuntdata.get(key));
       m_total_amount = m_total_amount + m_pieChartData[m_Teller].getPieValue();
+      lOGGER.log(Level.FINE, "i:" + m_Teller + " Key:" + key + " value:" + m_pieChartData[m_Teller].getPieValue());
       m_Teller++;
     });
     // Create the pie chart and add the data slices to it

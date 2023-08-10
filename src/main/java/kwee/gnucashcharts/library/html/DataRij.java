@@ -1,6 +1,12 @@
 package kwee.gnucashcharts.library.html;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import kwee.logger.MyLogger;
+
 public class DataRij {
+  private static final Logger lOGGER = MyLogger.getLogger();
 
   String m_AccountNr = "";
   String m_AccountName = "";
@@ -72,16 +78,26 @@ public class DataRij {
   }
 
   private double convertToDouble(String input) {
+    lOGGER.log(Level.FINE, "input: " + input);
     // Remove the Euro currency symbol and the thousand separator
+    input = input.trim();
+    String[] selems = input.split(" ");
+    if (selems.length > 1) {
+      input = selems[1];
+    }
     String cleanedInput = input.replace("€", "").replace(".", "").replace(",", ".");
+    lOGGER.log(Level.FINE, "cleanedInput: " + cleanedInput);
 
     try {
       // Parse the cleaned string as a double
       double result = Double.parseDouble(cleanedInput);
       return result;
     } catch (Exception e) {
-      // Handle any parsing exceptions
-      // System.err.println("Error converting to double: " + e.getMessage());
+      if (!cleanedInput.isBlank()) {
+        lOGGER.log(Level.INFO, "Error converting to double: " + e.getMessage() + " " + cleanedInput);
+        // Handle any parsing exceptions
+        // System.err.println("Error converting to double: " + e.getMessage());
+      }
       return 0.0; // Return a default value or handle the error accordingly
     }
   }
