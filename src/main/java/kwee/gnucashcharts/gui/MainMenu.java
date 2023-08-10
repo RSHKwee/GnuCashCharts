@@ -15,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -23,6 +24,7 @@ import javafx.stage.Stage;
 import kwee.logger.MyLogger;
 
 import kwee.gnucashcharts.main.UserSetting;
+import kwee.gnucashcharts.library.JavaFXLogHandler;
 import kwee.gnucashcharts.library.html.ReadHTMLTable;
 import kwee.gnucashcharts.library.html.TaartPuntData;
 
@@ -39,8 +41,15 @@ public class MainMenu extends Application {
 
   @Override
   public void start(Stage primaryStage) {
+    TextArea logTextArea = new TextArea();
     try {
       MyLogger.setup(m_Level, m_Logdir, m_toDisk);
+      // Create a Logger and configure it
+      Logger logger = Logger.getLogger("");
+
+      // Create and add the custom handler to the logger
+      JavaFXLogHandler fxLogHandler = new JavaFXLogHandler(logTextArea);
+      logger.addHandler(fxLogHandler);
     } catch (IOException e1) {
       lOGGER.log(Level.INFO, e1.getMessage());
     }
@@ -107,9 +116,9 @@ public class MainMenu extends Application {
     HBox.setMargin(l_tag, new Insets(10, 10, 10, 10));
     HBox.setMargin(buttonPiechart, new Insets(10, 10, 10, 10));
 
-    VBox layout = new VBox(openFileLayout, selectOptionLayout, buttonPiechartLayout);
+    VBox layout = new VBox(openFileLayout, selectOptionLayout, buttonPiechartLayout, logTextArea);
 
-    Scene scene = new Scene(layout, 700, 175);
+    Scene scene = new Scene(layout, 700, 325);
     primaryStage.setScene(scene);
     primaryStage.setTitle("GnuCash charts");
     primaryStage.show();
