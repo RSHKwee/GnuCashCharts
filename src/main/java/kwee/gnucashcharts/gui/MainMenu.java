@@ -44,12 +44,10 @@ public class MainMenu extends Application {
     TextArea logTextArea = new TextArea();
     try {
       MyLogger.setup(m_Level, m_Logdir, m_toDisk);
-      // Create a Logger and configure it
-      Logger logger = Logger.getLogger("");
 
       // Create and add the custom handler to the logger
       JavaFXLogHandler fxLogHandler = new JavaFXLogHandler(logTextArea);
-      logger.addHandler(fxLogHandler);
+      lOGGER.addHandler(fxLogHandler);
     } catch (IOException e1) {
       lOGGER.log(Level.INFO, e1.getMessage());
     }
@@ -57,8 +55,10 @@ public class MainMenu extends Application {
     FileChooser fileChooser = new FileChooser();
     ComboBox<String> comboBox = new ComboBox<>(FXCollections.observableArrayList("Option 1", "Option 2", "Option 3"));
 
-    Button openFileButton = new Button("Open File");
     Label l_file = new Label("Kies een HTML bestand");
+    Label l_tag = new Label("Kies een tag");
+
+    Button openFileButton = new Button("Open File");
     openFileButton.setOnAction(e -> {
       if (!m_param.get_InputFile().isBlank()) {
         File intFile = new File(m_param.get_InputFile());
@@ -71,14 +71,13 @@ public class MainMenu extends Application {
         m_inpfile = selectedFile.getAbsolutePath();
         l_file.setText(selectedFile.getAbsolutePath());
         m_param.set_InputFile(selectedFile.getAbsoluteFile());
-        m_param.set_Tag("Kies een tag");
+        l_tag.setText("Kies een tag");
         m_param.save();
 
         ReadHTMLTable htmltable = new ReadHTMLTable(selectedFile.getAbsolutePath());
         ArrayList<String> regels = htmltable.parseHTMLpage();
         TaartPuntData pieData = new TaartPuntData(regels);
         Set<String> tags = pieData.getTags();
-
         // Convert the Set<String> to ObservableList<String>
         ObservableList<String> observableList;
         observableList = FXCollections.observableArrayList(tags);
@@ -86,7 +85,6 @@ public class MainMenu extends Application {
       }
     });
 
-    Label l_tag = new Label("Kies een tag");
     comboBox.setOnAction(e -> {
       String selectedOption = comboBox.getValue();
       if (selectedOption != null) {
@@ -98,6 +96,7 @@ public class MainMenu extends Application {
       }
     });
 
+    // Do the layout
     PieChartWithLegend piwindow = new PieChartWithLegend();
     Button buttonPiechart = new Button("Open Piechart");
     buttonPiechart.setOnAction(e -> piwindow.openPieChartWindow(m_inpfile, m_tag));
