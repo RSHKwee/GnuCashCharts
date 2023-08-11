@@ -2,6 +2,9 @@ package kwee.gnucashcharts.library;
 
 import java.awt.Label;
 import java.awt.TextArea;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -20,7 +23,7 @@ public class AboutWindow extends Application {
   public void start(Stage primaryStage) {
     // Create the About window stage
     Stage aboutStage = new Stage();
-    aboutStage.setTitle("About");
+    aboutStage.setTitle("GitHub Update Window");
 
     // Create layout for the About window
     VBox aboutLayout = new VBox();
@@ -47,6 +50,16 @@ public class AboutWindow extends Application {
 
     // Show the About window as a popup
     aboutStage.show();
+  }
+
+  private void openDownloadLink(String owner, String repoName) {
+    try {
+      URI uri = new URI("https://github.com/" + owner + "/" + repoName + "/releases");
+      // Desktop.getDesktop().browse(uri);
+    } catch (URISyntaxException e) {
+//      LOGGER.log(Level.INFO, e.getMessage());
+      // e.printStackTrace();
+    }
   }
 
   public static void main(String[] args) {
