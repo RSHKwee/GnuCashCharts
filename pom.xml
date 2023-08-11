@@ -186,6 +186,80 @@
           </execution>
         </executions>
       </plugin>
+	  <!-- LAUNCH4J ^ -->
+	  <!-- Sign executable v -->
+      <plugin>
+        <groupId>net.jsign</groupId>
+        <artifactId>jsign-maven-plugin</artifactId>
+        <version>${jsign-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+            <configuration>
+              <file>target/GnuCashCharts.exe</file>
+              <name>ING OFX Converter</name>
+              <url>https://github.com/RSHKwee/GnuCashCharts</url>
+              <keystore>keystore.jks</keystore>
+              <alias>RSHK</alias>
+              <storepass>GW93ayi0j2CfeJx9VoSo</storepass>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+	  <!-- Sign executable ^ -->
+       <!-- Windows installers v -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>${exec-maven-plugin.version}</version>
+        <executions>
+		  
+          <execution>
+            <id>innoSetup</id>
+            <phase>package</phase>
+           <goals>
+              <goal>exec</goal>
+            </goals>          
+            <configuration>
+              <executable>C:\Program Files (x86)\Inno Setup 6\ISCC.exe</executable>
+              <workingDirectory>...</workingDirectory>
+              <arguments>
+                <argument>gnucashcharts.iss</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>innoSetupNoJre</id>
+            <phase>package</phase>
+           <goals>
+              <goal>exec</goal>
+            </goals>          
+            <configuration>
+              <executable>C:\Program Files (x86)\Inno Setup 6\ISCC.exe</executable>
+              <workingDirectory>...</workingDirectory>
+              <arguments>
+                <argument>gnucashcharts_jre.iss</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>innoSetupJreDown</id>
+            <phase>package</phase>
+           <goals>
+              <goal>exec</goal>
+            </goals>          
+            <configuration>
+              <executable>C:\Program Files (x86)\Inno Setup 6\ISCC.exe</executable>
+              <workingDirectory>...</workingDirectory>
+              <arguments>
+                <argument>gnucashcharts_JreDownload.iss</argument>
+              </arguments>
+            </configuration>
+          </execution>         
+        </executions>
+      </plugin>
 
     </plugins>
     <!--    </pluginManagement> -->
