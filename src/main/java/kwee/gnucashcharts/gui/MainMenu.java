@@ -41,6 +41,7 @@ public class MainMenu extends Application {
 
   @Override
   public void start(Stage primaryStage) {
+    // Logger setup
     TextArea logTextArea = new TextArea();
     try {
       MyLogger.setup(m_Level, m_Logdir, m_toDisk);
@@ -52,6 +53,9 @@ public class MainMenu extends Application {
       lOGGER.log(Level.INFO, e1.getMessage());
     }
 
+    // Menubar
+
+    // Main Window
     FileChooser fileChooser = new FileChooser();
     ComboBox<String> comboBox = new ComboBox<>(FXCollections.observableArrayList("Option 1", "Option 2", "Option 3"));
 
