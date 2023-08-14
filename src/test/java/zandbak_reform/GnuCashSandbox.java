@@ -32,7 +32,8 @@ public class GnuCashSandbox {
     GnucashFileWritingImpl gnucashFile = new GnucashFileWritingImpl(new File("D:\\temp\\Bewindvoering.gnucash"));
     Collection<GnucashAccount> accounts = gnucashFile.getAccounts();
     for (GnucashAccount account : accounts) {
-      System.out.println(account.getQualifiedName());
+      System.out.println(account.getQualifiedName() + account.getBalanceFormated());
+      ;
     }
 
     GnucashWritableTransaction writableTransaction = gnucashFile.createWritableTransaction();
