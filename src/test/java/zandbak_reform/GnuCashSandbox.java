@@ -29,7 +29,7 @@ public class GnuCashSandbox {
 
   private void process() throws IOException {
 
-    GnucashFileWritingImpl gnucashFile = new GnucashFileWritingImpl(new File("F:\\temp\\misc\\Bewindvoering.gnucash"));
+    GnucashFileWritingImpl gnucashFile = new GnucashFileWritingImpl(new File("D:\\temp\\Bewindvoering.gnucash"));
     Collection<GnucashAccount> accounts = gnucashFile.getAccounts();
     for (GnucashAccount account : accounts) {
       System.out.println(account.getQualifiedName());
