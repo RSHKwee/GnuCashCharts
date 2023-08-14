@@ -29,13 +29,18 @@ public class GnuCashSandbox {
 
   private void process() throws IOException {
 
-    GnucashFileWritingImpl gnucashFile = new GnucashFileWritingImpl(new File("D:\\temp\\Bewindvoering.gnucash"));
+    // GnucashFileWritingImpl gnucashFile = new GnucashFileWritingImpl(new
+    // File("D:\\temp\\Bewindvoering.gnucash"));
+    GnucashFileWritingImpl gnucashFile = new GnucashFileWritingImpl(new File("D:\\temp\\KHKwee.gnucash"));
     Collection<GnucashAccount> accounts = gnucashFile.getAccounts();
     for (GnucashAccount account : accounts) {
-      System.out.println(account.getQualifiedName() + account.getBalanceFormated());
-      ;
+      System.out.print(account.getQualifiedName() + "\t € " + account.getBalanceFormated());
+      System.out.print(" dsc: " + account.getDescription() + " nam: " + account.getName());
+      System.out.println(" note: " + account.getUserDefinedAttribute("notes"));
     }
-
+    /*
+ * @formatter:off
+ * KHKwee.gnucash
     GnucashWritableTransaction writableTransaction = gnucashFile.createWritableTransaction();
     writableTransaction.setDescription("check");
     writableTransaction.setCurrencyID("EUR");
@@ -53,6 +58,7 @@ public class GnuCashSandbox {
         System.out.println("\t" + split.getQuantity());
       }
     }
-
+   @formatter:on
+*/
   }
 }
