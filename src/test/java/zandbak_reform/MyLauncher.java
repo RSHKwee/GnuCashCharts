@@ -6,6 +6,6 @@ public class MyLauncher {
     // PieChartColorExample.main(args);
     // PieChartWithLegendDemo.main(args);
     // MultipleWindowsExample.main(args);
-    PieChartWithLegend.main(args);
+    // PieChartWithLegend.main(args);
   }
 }

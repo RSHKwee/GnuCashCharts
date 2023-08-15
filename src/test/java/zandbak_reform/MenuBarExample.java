@@ -3,6 +3,7 @@ package zandbak_reform;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -15,6 +16,7 @@ import kwee.library.ShowPreferences;
 import kwee.logger.MyLogger;
 
 public class MenuBarExample extends Application {
+  private static final Logger lOGGER = MyLogger.getLogger();
 
   @Override
   public void start(Stage primaryStage) {
@@ -185,10 +187,10 @@ public class MenuBarExample extends Application {
       }
     });
     mnHelpAbout.add(mntmAbout);
-
-    menuBar.getMenus().addAll(fileMenu, editMenu);
        @formatter:on
     */
+
+    menuBar.getMenus().addAll(fileMenu, editMenu);
 
     BorderPane root = new BorderPane();
     root.setTop(menuBar);

@@ -21,7 +21,6 @@ public class ZonedDateTimeFormatting {
       String formattedDateTime1 = zonedDateTime.format(formatter);
       System.out.println("Formatted date and time2: " + formattedDateTime1 + " " + tmp);
     } catch (DateTimeException e) {
-
       zonedDateTime = date.atStartOfDay(ZoneId.systemDefault());
       boolean tmp = zonedDateTime.isAfter(ChronoZonedDateTime.from(zonedDateTime));
       String formattedDateTime1 = zonedDateTime.format(formatter);
