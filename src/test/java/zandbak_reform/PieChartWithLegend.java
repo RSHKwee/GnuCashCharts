@@ -7,8 +7,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import kwee.gnucashcharts.library.CreatePdf;
-import kwee.gnucashcharts.library.TaartPuntDataIf;
-import kwee.gnucashcharts.library.html.PieFromHtmlPage;
+
 import kwee.gnucashcharts.library.html.ReadHTMLTable;
 import kwee.gnucashcharts.library.html.TaartPuntData;
 import kwee.gnucashcharts.library.piechart.PieScene;

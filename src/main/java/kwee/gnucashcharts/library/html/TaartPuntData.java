@@ -10,7 +10,7 @@ import java.util.TreeMap;
 import kwee.gnucashcharts.library.TaartPuntDataIf;
 
 public class TaartPuntData implements TaartPuntDataIf {
-
+  // m_Tags : tag, SliceName, SliceAmount
   private Map<String, SortedMap<String, Double>> m_Tags = new TreeMap<String, SortedMap<String, Double>>();
 
   public TaartPuntData() {

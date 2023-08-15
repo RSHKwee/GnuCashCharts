@@ -69,8 +69,13 @@ public class MainMenu extends Application {
       }
       File selectedFile = fileChooser.showOpenDialog(primaryStage);
       if (selectedFile != null) {
-        ActionHTMLPieChart pieSelect = new ActionHTMLPieChart(selectedFile);
-        m_pieData = pieSelect.getData();
+        if (selectedFile.getAbsolutePath().toLowerCase().contains(".html")) {
+          ActionHTMLPieChart pieSelect = new ActionHTMLPieChart(selectedFile);
+          m_pieData = pieSelect.getData();
+        } else {
+          ActionGnuCashDbPieChart pieSelect = new ActionGnuCashDbPieChart(selectedFile);
+          m_pieData = pieSelect.getData();
+        }
 
         l_file.setText(selectedFile.getAbsolutePath());
         l_tag.setText("Kies een tag");

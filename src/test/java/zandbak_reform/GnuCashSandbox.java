@@ -26,7 +26,18 @@ public class GnuCashSandbox {
     GnuCashSandbox sandbox = new GnuCashSandbox();
     sandbox.process();
   }
-
+/*
+ * @formatter:on
+ *   String m_AccountNr = ""; account.getName()
+  String m_AccountName = ""; account.getDescription()
+  double m_Amount = 0.0; account.getBalanceFormated()
+  double m_Saldo = 0.0;
+  String m_Remark = ""; account.getUserDefinedAttribute("notes")
+  
+ * @formatter:off
+ */
+  
+  
   private void process() throws IOException {
     String l_filename = "D:\\temp\\KHKwee.gnucash";
     // String l_filename = "D:\\temp\\Bewindvoering.gnucash";
