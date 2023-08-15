@@ -28,13 +28,14 @@ public class GnuCashSandbox {
   }
 
   private void process() throws IOException {
+    String l_filename = "D:\\temp\\KHKwee.gnucash";
+    // String l_filename = "D:\\temp\\Bewindvoering.gnucash";
 
-    // GnucashFileWritingImpl gnucashFile = new GnucashFileWritingImpl(new
-    // File("D:\\temp\\Bewindvoering.gnucash"));
-    GnucashFileWritingImpl gnucashFile = new GnucashFileWritingImpl(new File("D:\\temp\\KHKwee.gnucash"));
+    GnucashFileWritingImpl gnucashFile = new GnucashFileWritingImpl(new File(l_filename));
     Collection<GnucashAccount> accounts = gnucashFile.getAccounts();
     for (GnucashAccount account : accounts) {
       System.out.print(account.getQualifiedName() + "\t € " + account.getBalanceFormated());
+      // System.out.print(" accd: " + account..getAccountCode());
       System.out.print(" dsc: " + account.getDescription() + " nam: " + account.getName());
       System.out.println(" note: " + account.getUserDefinedAttribute("notes"));
     }

@@ -2,7 +2,7 @@ package kwee.gnucashcharts.gui;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -25,8 +25,7 @@ import kwee.logger.MyLogger;
 
 import kwee.gnucashcharts.main.UserSetting;
 import kwee.gnucashcharts.library.JavaFXLogHandler;
-import kwee.gnucashcharts.library.html.ReadHTMLTable;
-import kwee.gnucashcharts.library.html.TaartPuntData;
+import kwee.gnucashcharts.library.TaartPuntDataIf;
 
 public class MainMenu extends Application {
   private static final Logger lOGGER = MyLogger.getLogger();
@@ -36,8 +35,8 @@ public class MainMenu extends Application {
   private String m_Logdir = "c:\\";
   private boolean m_toDisk = false;
 
-  private String m_inpfile = "";
   private String m_tag = "";
+  private TaartPuntDataIf m_pieData;
 
   @Override
   public void start(Stage primaryStage) {
@@ -46,7 +45,6 @@ public class MainMenu extends Application {
     try {
       MyLogger.setup(m_Level, m_Logdir, m_toDisk);
 
-      // Create and add the custom handler to the logger
       JavaFXLogHandler fxLogHandler = new JavaFXLogHandler(logTextArea);
       lOGGER.addHandler(fxLogHandler);
     } catch (IOException e1) {
@@ -71,17 +69,13 @@ public class MainMenu extends Application {
       }
       File selectedFile = fileChooser.showOpenDialog(primaryStage);
       if (selectedFile != null) {
-        lOGGER.log(Level.INFO, "Selected File: " + selectedFile.getAbsolutePath());
-        m_inpfile = selectedFile.getAbsolutePath();
-        l_file.setText(selectedFile.getAbsolutePath());
-        m_param.set_InputFile(selectedFile.getAbsoluteFile());
-        l_tag.setText("Kies een tag");
-        m_param.save();
+        ActionHTMLPieChart pieSelect = new ActionHTMLPieChart(selectedFile);
+        m_pieData = pieSelect.getData();
 
-        ReadHTMLTable htmltable = new ReadHTMLTable(selectedFile.getAbsolutePath());
-        ArrayList<String> regels = htmltable.parseHTMLpage();
-        TaartPuntData pieData = new TaartPuntData(regels);
-        Set<String> tags = pieData.getTags();
+        l_file.setText(selectedFile.getAbsolutePath());
+        l_tag.setText("Kies een tag");
+
+        Set<String> tags = m_pieData.getTags();
         // Convert the Set<String> to ObservableList<String>
         ObservableList<String> observableList;
         observableList = FXCollections.observableArrayList(tags);
@@ -103,7 +97,7 @@ public class MainMenu extends Application {
     // Do the layout
     PieChartWithLegend piwindow = new PieChartWithLegend();
     Button buttonPiechart = new Button("Open Piechart");
-    buttonPiechart.setOnAction(e -> piwindow.openPieChartWindow(m_inpfile, m_tag));
+    buttonPiechart.setOnAction(e -> piwindow.openPieChartWindow(m_pieData, m_tag));
 
     HBox openFileLayout = new HBox(openFileButton, l_file);
     HBox selectOptionLayout = new HBox(comboBox, l_tag);

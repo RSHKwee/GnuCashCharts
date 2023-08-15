@@ -1,6 +1,5 @@
-package kwee.gnucashcharts.library.html;
+package kwee.gnucashcharts.library.piechart;
 
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -15,10 +14,12 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+
+import kwee.gnucashcharts.library.TaartPuntDataIf;
 import kwee.logger.MyLogger;
 import javafx.geometry.Pos;
 
-public class PieFromHtmlPage {
+public class PieScene {
   private static final Logger lOGGER = MyLogger.getLogger();
   // private static final long serialVersionUID = -709619748064818482L;
   private int m_Teller = 0;
@@ -27,12 +28,7 @@ public class PieFromHtmlPage {
   private GridPane m_legendGrid;
   private PieChart.Data[] m_pieChartData;
 
-  public PieFromHtmlPage(String filePath, String tag) {
-    ReadHTMLTable htmltable = new ReadHTMLTable(filePath);
-    ArrayList<String> regels = htmltable.parseHTMLpage();
-    lOGGER.log(Level.FINE, "Regels lengte :" + regels.size());
-    TaartPuntData pieData = new TaartPuntData(regels);
-
+  public PieScene(TaartPuntDataIf pieData, String tag) {
     // Create a pie chart & a GridPane to hold the legend
     createPieChart(pieData.getPieSlices(tag));
     createLegendGrid();

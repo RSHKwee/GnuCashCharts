@@ -8,8 +8,8 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.stage.Stage;
-import kwee.gnucashcharts.library.html.TaartPuntData;
 import kwee.gnucashcharts.library.html.ReadHTMLTable;
+import kwee.gnucashcharts.library.html.TaartPuntData;
 
 public class PieChartFX extends Application {
 
@@ -19,7 +19,9 @@ public class PieChartFX extends Application {
     ReadHTMLTable htmltable = new ReadHTMLTable(filePath);
     ArrayList<String> regels = htmltable.parseHTMLpage();
 
-    TaartPuntData pieData = new TaartPuntData(regels);
+    TaartPuntData pieData = new TaartPuntData();
+    pieData.putData(regels);
+    @SuppressWarnings("unused")
     Set<String> tags = pieData.getTags();
     // String tag = "Inkomen";
     String tag = "Type";

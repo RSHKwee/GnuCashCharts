@@ -1,12 +1,17 @@
 package zandbak_reform;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import kwee.gnucashcharts.library.CreatePdf;
+import kwee.gnucashcharts.library.TaartPuntDataIf;
 import kwee.gnucashcharts.library.html.PieFromHtmlPage;
+import kwee.gnucashcharts.library.html.ReadHTMLTable;
+import kwee.gnucashcharts.library.html.TaartPuntData;
+import kwee.gnucashcharts.library.piechart.PieScene;
 
 public class PieChartWithLegend extends Application {
   int i = 0;
@@ -14,15 +19,25 @@ public class PieChartWithLegend extends Application {
 
   @Override
   public void start(Stage primaryStage) {
-    // String filePath =
-    // "G:\\Users\\René\\OneDrive\\Documenten\\Administraties\\Samenvatting.html";
-    //
-    String filePath = "G:\\Users\\René\\OneDrive\\Documenten\\Administraties\\SamenvattingKH Kwee.html"; // Replace this
-    // String tag = "Inkomen";
-    // String tag = "Type";
-    String tag = "Kosten";
+    String rootdir = "D:\\Users\\René\\OneDrive"; // Laptoprk-2021
+    // String rootdir = "G:\\Users\\René\\OneDrive"; // PcPrive-2017
 
-    PieFromHtmlPage pie = new PieFromHtmlPage(filePath, tag);
+    // String filePath = rootdir + "\\Documenten\\Administraties\\SamenvattingKH
+    // Kwee.html"; // Replace this
+    // String tag = "Type";
+    // String tag = "Kosten";
+
+    String filePath = rootdir + "\\Documenten\\Administraties\\Samenvatting.html"; // Replace this
+    // String tag = "Inkomen";
+    String tag = "Vermogen";
+
+    ReadHTMLTable htmltable = new ReadHTMLTable(filePath);
+    ArrayList<String> regels = htmltable.parseHTMLpage();
+    TaartPuntData pieData;
+    pieData = new TaartPuntData();
+    pieData.putData(regels);
+
+    PieScene pie = new PieScene(pieData, tag);
 
     // Set up the scene and add the VBox to it
     Scene scene = pie.getScene();

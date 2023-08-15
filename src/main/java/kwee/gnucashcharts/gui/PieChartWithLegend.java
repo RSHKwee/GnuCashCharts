@@ -13,9 +13,12 @@ import javafx.scene.layout.VBox;
 
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
 import kwee.gnucashcharts.library.FormatAmount;
+import kwee.gnucashcharts.library.TaartPuntDataIf;
 import kwee.gnucashcharts.library.CreatePdf;
-import kwee.gnucashcharts.library.html.PieFromHtmlPage;
+import kwee.gnucashcharts.library.piechart.PieScene;
+
 import kwee.logger.MyLogger;
 
 public class PieChartWithLegend {
@@ -24,11 +27,11 @@ public class PieChartWithLegend {
   private double tot_amt = 0.0;
   private String title = "";
 
-  public void openPieChartWindow(String filePath, String tag) {
-    lOGGER.log(Level.INFO, "Filenaam " + filePath + " met tag " + tag);
+  public void openPieChartWindow(TaartPuntDataIf pieData, String tag) {
+    lOGGER.log(Level.INFO, "Tag " + tag);
 
     Stage piechartStage = new Stage();
-    PieFromHtmlPage pie = new PieFromHtmlPage(filePath, tag);
+    PieScene pie = new PieScene(pieData, tag);
 
     // Set the title of the window
     tot_amt = pie.getTotalAmount();
