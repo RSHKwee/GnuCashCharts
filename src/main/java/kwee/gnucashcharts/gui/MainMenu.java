@@ -22,6 +22,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import kwee.logger.MyLogger;
+import kwee.library.JarInfo;
 
 import kwee.gnucashcharts.main.UserSetting;
 import kwee.gnucashcharts.library.JavaFXLogHandler;
@@ -30,6 +31,7 @@ import kwee.gnucashcharts.library.TaartPuntDataIf;
 public class MainMenu extends Application {
   private static final Logger lOGGER = MyLogger.getLogger();
   public static UserSetting m_param = new UserSetting();
+  static public String m_creationtime;
 
   private Level m_Level = Level.INFO;
   private String m_Logdir = "c:\\";
@@ -50,14 +52,13 @@ public class MainMenu extends Application {
     } catch (IOException e1) {
       lOGGER.log(Level.INFO, e1.getMessage());
     }
-
     // Menubar
 
     // Main Window
     FileChooser fileChooser = new FileChooser();
     ComboBox<String> comboBox = new ComboBox<>(FXCollections.observableArrayList("Option 1", "Option 2", "Option 3"));
 
-    Label l_file = new Label("Kies een HTML bestand");
+    Label l_file = new Label("Kies een HTML- of GnuCash bestand");
     Label l_tag = new Label("Kies een tag");
 
     Button openFileButton = new Button("Open File");
@@ -119,14 +120,17 @@ public class MainMenu extends Application {
     HBox.setMargin(buttonPiechart, new Insets(10, 10, 10, 10));
 
     VBox layout = new VBox(openFileLayout, selectOptionLayout, buttonPiechartLayout, logTextArea);
-
     Scene scene = new Scene(layout, 700, 325);
+
     primaryStage.setScene(scene);
-    primaryStage.setTitle("GnuCash charts");
+    primaryStage.setTitle("GnuCash charts (" + m_creationtime + ")");
     primaryStage.show();
+
+    lOGGER.log(Level.INFO, "GnuCash charts (" + m_creationtime + ")");
   }
 
   public static void main(String[] args) {
+    m_creationtime = JarInfo.getProjectVersion(MainMenu.class);
     launch(args);
   }
 }
