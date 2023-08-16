@@ -10,11 +10,15 @@ import java.time.format.DateTimeFormatter;
 public class ZonedDateTimeFormatting {
   public static void main(String[] args) {
     ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of("Europe/Amsterdam"));
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     String formattedDateTime = zonedDateTime.format(formatter);
     System.out.println("Formatted date and time1: " + formattedDateTime);
-    LocalDate date = LocalDate.now();
+    LocalDate date = LocalDate.parse("2023-08-20");
+    // LocalDate date = LocalDate.now();
+    DateTimeFormatter lformatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    String formattedLocalDate = date.format(lformatter);
+    System.out.println("Formatted date and time local: " + formattedLocalDate);
 
     try {
       boolean tmp = zonedDateTime.isAfter(ChronoZonedDateTime.from(date.atStartOfDay()));

@@ -13,11 +13,12 @@ import kwee.gnucashcharts.library.TaartPuntDataIf;
 public class TaartPuntData implements TaartPuntDataIf {
   /*
    * @formatter:on
-   *  0 String m_AccountNr = ""; account.getName()
-   *  1 String m_AccountName = ""; account.getDescription()
-   *  2 double m_Amount = 0.0; account.getBalanceFormated()
-   *  3 double m_Saldo = 0.0;
-   *  4 String m_Remark = ""; account.getUserDefinedAttribute("notes")    
+   *  0 String LocalDate
+   *  1 String m_AccountNr = ""; account.getName()
+   *  2 String m_AccountName = ""; account.getDescription()
+   *  3 double m_Amount = 0.0; account.getBalanceFormated()
+   *  4 double m_Saldo = 0.0;
+   *  5 String m_Remark = ""; account.getUserDefinedAttribute("notes")    
    * @formatter:off
    */ 
   // m_Tags : tag, SliceName, SliceAmount
@@ -30,9 +31,9 @@ public class TaartPuntData implements TaartPuntDataIf {
   public void putData(ArrayList<String> a_Regels) {
     a_Regels.forEach(regel -> {
       String[] l_Selems = regel.split(";");
-      if (l_Selems.length > 4) {
-        if (!l_Selems[4].isBlank()) {
-          String[] elems = l_Selems[4].split(",");
+      if (l_Selems.length > 5) {
+        if (!l_Selems[5].isBlank()) {
+          String[] elems = l_Selems[5].split(",");
           for (int i = 0; i < elems.length; i++) {
             String[] tags = elems[i].split(":");
             String tag = tags[0].strip();
@@ -41,7 +42,7 @@ public class TaartPuntData implements TaartPuntDataIf {
               SortedMap<String, Double> slices = m_Tags.get(tag);
               if (slices == null) {
                 slices = new TreeMap<String, Double>();
-                double lamt = FormatAmount.convertToDouble(l_Selems[2]);
+                double lamt = FormatAmount.convertToDouble(l_Selems[3]);
                 slices.put(slice, lamt);
                 m_Tags.put(tag, slices);
               } else {
@@ -51,7 +52,7 @@ public class TaartPuntData implements TaartPuntDataIf {
                 } catch (Exception e) {
                   // Do nothing...
                 }
-                double lamt = FormatAmount.convertToDouble(l_Selems[2]);             
+                double lamt = FormatAmount.convertToDouble(l_Selems[3]);             
                 amt = amt + lamt;
                 slices.put(slice, amt);
                 m_Tags.put(tag, slices);
@@ -60,9 +61,7 @@ public class TaartPuntData implements TaartPuntDataIf {
           }
         }
       }
-    }); 
-    
-    // TODO Auto-generated method stub    
+    });  
   }
 
   @Override
