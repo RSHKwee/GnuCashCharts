@@ -19,11 +19,9 @@ public class ActionGnuCashDbPieChart {
     lOGGER.log(Level.INFO, "Selected File: " + a_SelectedFile);
     MainMenu.m_param.set_InputFile(a_SelectedFile.getAbsoluteFile());
     MainMenu.m_param.save();
-    // l_file.setText(a_SelectedFile.getAbsolutePath());
-    // l_tag.setText("Kies een tag");
 
-    ReadGnuCashDB htmltable = new ReadGnuCashDB(a_SelectedFile);
-    ArrayList<String> regels = htmltable.getRegels();
+    ReadGnuCashDB gnucashdbtable = new ReadGnuCashDB(a_SelectedFile);
+    ArrayList<String> regels = gnucashdbtable.getRegels();
 
     pieData = new TaartPuntData();
     pieData.putData(regels);

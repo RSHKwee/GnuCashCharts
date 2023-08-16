@@ -11,6 +11,7 @@ import org.gnucash.write.impl.GnucashFileWritingImpl;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -44,7 +45,12 @@ public class GnuCashSandbox {
 
     GnucashFileWritingImpl gnucashFile = new GnucashFileWritingImpl(new File(l_filename));
     Collection<GnucashAccount> accounts = gnucashFile.getAccounts();
+ //  Collection<GnucashAccount> accounts = gnucashFile.getAccounts();
     for (GnucashAccount account : accounts) {
+      LocalDate lDate = LocalDate.of(2022, 8, 15); // Jaar, maand, dag
+      double amt = account.getBalance().doubleValue();
+      System.out.print(account.getBalance(lDate) + " ");
+      
       System.out.print(account.getQualifiedName() + "\t € " + account.getBalanceFormated());
       // System.out.print(" accd: " + account..getAccountCode());
       System.out.print(" dsc: " + account.getDescription() + " nam: " + account.getName());

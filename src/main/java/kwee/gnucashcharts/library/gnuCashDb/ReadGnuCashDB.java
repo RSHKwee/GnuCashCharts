@@ -19,7 +19,7 @@ public class ReadGnuCashDB {
    * @formatter:on
    *   String m_AccountNr = ""; account.getName()
    *   String m_AccountName = ""; account.getDescription()
-   *   double m_Amount = 0.0; account.getBalanceFormated()
+   *   double m_Amount = 0.0; account.getBalance().doubleValue()
    *   double m_Saldo = 0.0;
    *   String m_Remark = ""; account.getUserDefinedAttribute("notes")    
    * @formatter:off
@@ -46,6 +46,5 @@ public class ReadGnuCashDB {
   public ArrayList<String> getRegels() {
     return m_Regels;
   }
-  
-  
+   
 }

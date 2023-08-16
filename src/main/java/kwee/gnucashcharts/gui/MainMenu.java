@@ -22,8 +22,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import kwee.logger.MyLogger;
-import kwee.library.JarInfo;
 
+import kwee.gnucashcharts.main.Main;
 import kwee.gnucashcharts.main.UserSetting;
 import kwee.gnucashcharts.library.JavaFXLogHandler;
 import kwee.gnucashcharts.library.TaartPuntDataIf;
@@ -31,7 +31,7 @@ import kwee.gnucashcharts.library.TaartPuntDataIf;
 public class MainMenu extends Application {
   private static final Logger lOGGER = MyLogger.getLogger();
   public static UserSetting m_param = new UserSetting();
-  static public String m_creationtime;
+  static String m_creationtime = Main.m_creationtime;
 
   private Level m_Level = Level.INFO;
   private String m_Logdir = "c:\\";
@@ -58,7 +58,7 @@ public class MainMenu extends Application {
     FileChooser fileChooser = new FileChooser();
     ComboBox<String> comboBox = new ComboBox<>(FXCollections.observableArrayList("Option 1", "Option 2", "Option 3"));
 
-    Label l_file = new Label("Kies een HTML- of GnuCash bestand");
+    Label l_file = new Label("Kies een GnuCash bestand");
     Label l_tag = new Label("Kies een tag");
 
     Button openFileButton = new Button("Open File");
@@ -130,7 +130,6 @@ public class MainMenu extends Application {
   }
 
   public static void main(String[] args) {
-    m_creationtime = JarInfo.getProjectVersion(MainMenu.class);
     launch(args);
   }
 }
