@@ -5,14 +5,14 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import kwee.gnucashcharts.library.TaartPuntDataIf;
+import kwee.gnucashcharts.library.TaartPuntData;
 import kwee.gnucashcharts.library.html.ReadHTMLTable;
-import kwee.gnucashcharts.library.html.TaartPuntData;
+import kwee.gnucashcharts.library.html.TaartPuntDataImpl;
 import kwee.logger.MyLogger;
 
 public class ActionHTMLPieChart {
   private static final Logger lOGGER = MyLogger.getLogger();
-  private TaartPuntDataIf pieData;
+  private TaartPuntData pieData;
 
   public ActionHTMLPieChart(File a_SelectedFile) {
     lOGGER.log(Level.INFO, "Selected File: " + a_SelectedFile);
@@ -24,11 +24,11 @@ public class ActionHTMLPieChart {
     ReadHTMLTable htmltable = new ReadHTMLTable(a_SelectedFile.getAbsolutePath());
     ArrayList<String> regels = htmltable.parseHTMLpage();
 
-    pieData = new TaartPuntData();
+    pieData = new TaartPuntDataImpl();
     pieData.putData(regels);
   }
 
-  public TaartPuntDataIf getData() {
+  public TaartPuntData getData() {
     return pieData;
   }
 }

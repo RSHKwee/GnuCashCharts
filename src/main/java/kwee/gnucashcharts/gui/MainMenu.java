@@ -26,7 +26,7 @@ import kwee.logger.MyLogger;
 import kwee.gnucashcharts.main.Main;
 import kwee.gnucashcharts.main.UserSetting;
 import kwee.gnucashcharts.library.JavaFXLogHandler;
-import kwee.gnucashcharts.library.TaartPuntDataIf;
+import kwee.gnucashcharts.library.TaartPuntData;
 
 public class MainMenu extends Application {
   private static final Logger lOGGER = MyLogger.getLogger();
@@ -38,7 +38,7 @@ public class MainMenu extends Application {
   private boolean m_toDisk = false;
 
   private String m_tag = "";
-  private TaartPuntDataIf m_pieData;
+  private TaartPuntData m_pieData;
 
   @Override
   public void start(Stage primaryStage) {

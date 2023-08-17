@@ -15,7 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-import kwee.gnucashcharts.library.TaartPuntDataIf;
+import kwee.gnucashcharts.library.TaartPuntData;
 import kwee.logger.MyLogger;
 import javafx.geometry.Pos;
 
@@ -28,7 +28,7 @@ public class PieScene {
   private GridPane m_legendGrid;
   private PieChart.Data[] m_pieChartData;
 
-  public PieScene(TaartPuntDataIf pieData, String tag) {
+  public PieScene(TaartPuntData pieData, String tag) {
     // Create a pie chart & a GridPane to hold the legend
     createPieChart(pieData.getPieSlices(tag));
     createLegendGrid();

@@ -7,13 +7,13 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import kwee.gnucashcharts.library.TaartPuntDataIf;
+import kwee.gnucashcharts.library.TaartPuntData;
 
-public class TaartPuntData implements TaartPuntDataIf {
+public class TaartPuntDataImpl implements TaartPuntData {
   // m_Tags : tag, SliceName, SliceAmount
   private Map<String, SortedMap<String, Double>> m_Tags = new TreeMap<String, SortedMap<String, Double>>();
 
-  public TaartPuntData() {
+  public TaartPuntDataImpl() {
   }
 
   public void putData(ArrayList<String> a_regels) {

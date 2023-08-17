@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
-public interface TaartPuntDataIf {
+public interface TaartPuntData {
 
   public void putData(ArrayList<String> a_Regels);
 

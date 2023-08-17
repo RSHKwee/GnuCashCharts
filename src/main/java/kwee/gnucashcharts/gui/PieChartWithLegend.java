@@ -15,7 +15,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import kwee.gnucashcharts.library.FormatAmount;
-import kwee.gnucashcharts.library.TaartPuntDataIf;
+import kwee.gnucashcharts.library.TaartPuntData;
 import kwee.gnucashcharts.library.CreatePdf;
 import kwee.gnucashcharts.library.piechart.PieScene;
 
@@ -27,7 +27,7 @@ public class PieChartWithLegend {
   private double tot_amt = 0.0;
   private String title = "";
 
-  public void openPieChartWindow(TaartPuntDataIf pieData, String tag) {
+  public void openPieChartWindow(TaartPuntData pieData, String tag) {
     lOGGER.log(Level.INFO, "Tag " + tag);
 
     Stage piechartStage = new Stage();
