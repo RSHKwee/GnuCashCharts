@@ -31,6 +31,7 @@ public class StackedBarChartExample extends Application {
     series2.getData().add(new XYChart.Data<>("A", 15));
     series2.getData().add(new XYChart.Data<>("B", 25));
     series2.getData().add(new XYChart.Data<>("C", 35));
+    // series2.
 
     stackedBarChart.getData().addAll(series1, series2);
 
