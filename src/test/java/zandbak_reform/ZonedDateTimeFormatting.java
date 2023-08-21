@@ -20,6 +20,10 @@ public class ZonedDateTimeFormatting {
     String formattedLocalDate = date.format(lformatter);
     System.out.println("Formatted date and time local: " + formattedLocalDate);
 
+    lformatter = DateTimeFormatter.ofPattern("MMMyy");
+    formattedLocalDate = date.format(lformatter);
+    System.out.println("Formatted date month year: " + formattedLocalDate);
+
     try {
       boolean tmp = zonedDateTime.isAfter(ChronoZonedDateTime.from(date.atStartOfDay()));
       String formattedDateTime1 = zonedDateTime.format(formatter);

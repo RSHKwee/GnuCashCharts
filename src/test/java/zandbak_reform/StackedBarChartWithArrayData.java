@@ -8,7 +8,7 @@ import javafx.scene.chart.StackedBarChart;
 import javafx.scene.chart.XYChart;
 import javafx.stage.Stage;
 
-public class StackedBarChartExample extends Application {
+public class StackedBarChartWithArrayData extends Application {
 
   @Override
   public void start(Stage primaryStage) {
@@ -20,20 +20,24 @@ public class StackedBarChartExample extends Application {
     xAxis.setLabel("Category");
     yAxis.setLabel("Value");
 
-    XYChart.Series<String, Number> series1 = new XYChart.Series<>();
-    series1.setName("Series 1");
-    series1.getData().add(new XYChart.Data<>("A", 10));
-    series1.getData().add(new XYChart.Data<>("B", 20));
-    series1.getData().add(new XYChart.Data<>("C", 30));
+    // Create an array of data
+    String[] categories = { "A", "B", "C" };
+    int[][] dataArray = { { 10, 20, 30 }, { 15, 25, 35 } };
 
-    XYChart.Series<String, Number> series2 = new XYChart.Series<>();
-    series2.setName("Series 2");
-    series2.getData().add(new XYChart.Data<>("A", 15));
-    series2.getData().add(new XYChart.Data<>("B", 25));
-    series2.getData().add(new XYChart.Data<>("C", 35));
-    // series2.
+    XYChart.Series<String, Number>[] seriesArray = new XYChart.Series[dataArray.length];
 
-    stackedBarChart.getData().addAll(series1, series2);
+    for (int i = 0; i < dataArray.length; i++) {
+      XYChart.Series<String, Number> series = new XYChart.Series<>();
+      series.setName("Series " + (i + 1));
+
+      for (int j = 0; j < categories.length; j++) {
+        series.getData().add(new XYChart.Data<>(categories[j], dataArray[i][j]));
+      }
+
+      seriesArray[i] = series;
+    }
+
+    stackedBarChart.getData().addAll(seriesArray);
 
     Scene scene = new Scene(stackedBarChart, 800, 600);
     primaryStage.setScene(scene);

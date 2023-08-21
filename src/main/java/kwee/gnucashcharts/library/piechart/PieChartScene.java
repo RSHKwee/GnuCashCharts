@@ -19,7 +19,7 @@ import kwee.gnucashcharts.library.TaartPuntData;
 import kwee.logger.MyLogger;
 import javafx.geometry.Pos;
 
-public class PieScene {
+public class PieChartScene {
   private static final Logger lOGGER = MyLogger.getLogger();
   // private static final long serialVersionUID = -709619748064818482L;
   private int m_Teller = 0;
@@ -28,7 +28,7 @@ public class PieScene {
   private GridPane m_legendGrid;
   private PieChart.Data[] m_pieChartData;
 
-  public PieScene(TaartPuntData pieData, String tag) {
+  public PieChartScene(TaartPuntData pieData, String tag) {
     // Create a pie chart & a GridPane to hold the legend
     createPieChart(pieData.getPieSlices(tag));
     createLegendGrid();

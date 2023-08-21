@@ -16,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -33,12 +34,16 @@ public class MainMenu extends Application {
   public static UserSetting m_param = new UserSetting();
   static String m_creationtime = Main.m_creationtime;
 
+  private int c_NrBars = 24; // Months
+  private int nrBars = c_NrBars;
+
   private Level m_Level = Level.INFO;
   private String m_Logdir = "c:\\";
   private boolean m_toDisk = false;
 
   private String m_tag = "";
   private TaartPuntData m_pieData;
+  private File m_SelectedFile;
 
   @Override
   public void start(Stage primaryStage) {
@@ -70,6 +75,7 @@ public class MainMenu extends Application {
       }
       File selectedFile = fileChooser.showOpenDialog(primaryStage);
       if (selectedFile != null) {
+        m_SelectedFile = selectedFile;
         if (selectedFile.getAbsolutePath().toLowerCase().contains(".html")) {
           ActionHTMLPieChart pieSelect = new ActionHTMLPieChart(selectedFile);
           m_pieData = pieSelect.getData();
@@ -86,6 +92,9 @@ public class MainMenu extends Application {
         ObservableList<String> observableList;
         observableList = FXCollections.observableArrayList(tags);
         comboBox.setItems(observableList);
+
+        m_param.set_InputFile(selectedFile);
+        m_param.save();
       }
     });
 
@@ -100,27 +109,48 @@ public class MainMenu extends Application {
       }
     });
 
-    // Do the layout
     PieChartWithLegend piwindow = new PieChartWithLegend();
     Button buttonPiechart = new Button("Open Piechart");
     buttonPiechart.setOnAction(e -> piwindow.openPieChartWindow(m_pieData, m_tag));
 
+    Label titleLabel = new Label(" # bars:");
+    TextField integerField = new TextField(Integer.toString(nrBars));
+    integerField.setOnAction(e -> {
+      try {
+        int integerValue = Integer.parseInt(integerField.getText());
+        nrBars = integerValue;
+        lOGGER.log(Level.INFO, "Number of bars: " + nrBars);
+      } catch (NumberFormatException ex) {
+        lOGGER.log(Level.INFO, "Invalid input. Please enter a valid integer.");
+      }
+    });
+
+    BarChartWithLegend barwindow = new BarChartWithLegend();
+    Button buttonBarchart = new Button("Open Barchart");
+    buttonBarchart.setOnAction(e -> {
+      barwindow.openBarChartWindow(m_SelectedFile, m_tag, nrBars);
+    });
+
+    // Do the layout
     HBox openFileLayout = new HBox(openFileButton, l_file);
     HBox selectOptionLayout = new HBox(comboBox, l_tag);
     HBox buttonPiechartLayout = new HBox(buttonPiechart);
+    HBox buttonBarchartLayout = new HBox(titleLabel, integerField, buttonBarchart);
 
     openFileLayout.setSpacing(10);
     selectOptionLayout.setSpacing(10);
     buttonPiechartLayout.setSpacing(10);
+    buttonBarchartLayout.setSpacing(10);
 
     HBox.setMargin(openFileButton, new Insets(10, 10, 10, 10));
     HBox.setMargin(l_file, new Insets(10, 10, 10, 10));
     HBox.setMargin(comboBox, new Insets(10, 10, 10, 10));
     HBox.setMargin(l_tag, new Insets(10, 10, 10, 10));
     HBox.setMargin(buttonPiechart, new Insets(10, 10, 10, 10));
+    HBox.setMargin(buttonBarchart, new Insets(10, 10, 10, 10));
 
-    VBox layout = new VBox(openFileLayout, selectOptionLayout, buttonPiechartLayout, logTextArea);
-    Scene scene = new Scene(layout, 700, 325);
+    VBox layout = new VBox(openFileLayout, selectOptionLayout, buttonPiechartLayout, buttonBarchartLayout, logTextArea);
+    Scene scene = new Scene(layout, 700, 375);
 
     primaryStage.setScene(scene);
     primaryStage.setTitle("GnuCash charts (" + m_creationtime + ")");

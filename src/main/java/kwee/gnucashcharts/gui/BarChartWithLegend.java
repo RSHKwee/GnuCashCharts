@@ -14,29 +14,27 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import kwee.gnucashcharts.library.FormatAmount;
-import kwee.gnucashcharts.library.TaartPuntData;
+import kwee.gnucashcharts.library.barchart.StackedBarChartScene;
+import kwee.gnucashcharts.library.gnuCashDb.SamengesteldeStaafData;
 import kwee.gnucashcharts.library.CreatePdf;
-import kwee.gnucashcharts.library.piechart.PieChartScene;
 
 import kwee.logger.MyLogger;
 
-public class PieChartWithLegend {
+public class BarChartWithLegend {
   private static final Logger lOGGER = MyLogger.getLogger();
-
-  private double tot_amt = 0.0;
   private String title = "";
 
-  public void openPieChartWindow(TaartPuntData pieData, String tag) {
+  public void openBarChartWindow(File inpFile, String tag, int a_NrBars) {
     lOGGER.log(Level.INFO, "Tag " + tag);
+    ActionGnuCshDbStackedBarChart l_barchart = new ActionGnuCshDbStackedBarChart(inpFile, a_NrBars);
+    SamengesteldeStaafData a_barData = l_barchart.getData();
 
-    Stage piechartStage = new Stage();
-    PieChartScene pie = new PieChartScene(pieData, tag);
+    Stage barchartStage = new Stage();
+    StackedBarChartScene l_ScenBar = new StackedBarChartScene(a_barData, tag);
 
     // Set the title of the window
-    tot_amt = pie.getTotalAmount();
-    title = tag + " (totaal " + FormatAmount.formatAmount(tot_amt) + ")";
-    piechartStage.setTitle(title);
+    title = tag;
+    barchartStage.setTitle(title);
 
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Save File");
@@ -51,10 +49,10 @@ public class PieChartWithLegend {
         fileChooser.setInitialDirectory(new File(ldir));
       }
       // Show save file dialog
-      File selectedFile = fileChooser.showSaveDialog(piechartStage);
+      File selectedFile = fileChooser.showSaveDialog(barchartStage);
       if (selectedFile != null) {
         try {
-          CreatePdf.CreatePdfFromImage(pie.getPieChartImage(), pie.getLegendImage(), title,
+          CreatePdf.CreatePdfFromImage(l_ScenBar.getBarChartImage(), l_ScenBar.getLegendImage(), title,
               selectedFile.getAbsolutePath());
           lOGGER.log(Level.INFO, "PDF file aangemaakt: " + selectedFile.getAbsolutePath());
 
@@ -70,10 +68,10 @@ public class PieChartWithLegend {
     VBox.setMargin(saveButton, new Insets(10, 10, 10, 10));
 
     // Set up the scene and add the VBox to it
-    Scene scene = pie.getScene(saveFileLayout);
-    piechartStage.setScene(scene);
+    Scene scene = l_ScenBar.getScene(saveFileLayout);
+    barchartStage.setScene(scene);
 
     // Show the stage (display the pie chart with the legend)
-    piechartStage.show();
+    barchartStage.show();
   }
 }

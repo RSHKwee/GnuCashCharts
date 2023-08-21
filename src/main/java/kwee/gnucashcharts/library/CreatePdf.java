@@ -39,7 +39,7 @@ public class CreatePdf {
   private static float xFooter = 700; // X-coordinate for the footer text
   private static float yFooter = 10; // Y-coordinate for the footer text (adjust as needed)
 
-  private static float xPosition = -25;
+  private static float xPosition = 0;
   private static float yPosition = 110;
 
   private static float xPositionForLegend = 20;

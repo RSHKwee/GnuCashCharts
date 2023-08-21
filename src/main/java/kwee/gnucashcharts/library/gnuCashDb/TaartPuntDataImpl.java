@@ -21,7 +21,7 @@ public class TaartPuntDataImpl implements TaartPuntData {
    *  5 String m_Remark = ""; account.getUserDefinedAttribute("notes")    
    * @formatter:off
    */ 
-  // m_Tags : tag, SliceName, SliceAmount
+  // m_Tags : tag, {SliceName, SliceAmount}
   private Map<String, SortedMap<String, Double>> m_Tags = new TreeMap<String, SortedMap<String, Double>>();
 
   public TaartPuntDataImpl() {
