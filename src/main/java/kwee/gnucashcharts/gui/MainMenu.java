@@ -113,12 +113,15 @@ public class MainMenu extends Application {
     Button buttonPiechart = new Button("Open Piechart");
     buttonPiechart.setOnAction(e -> piwindow.openPieChartWindow(m_pieData, m_tag));
 
+    nrBars = m_param.get_NrBars();
     Label titleLabel = new Label(" # bars:");
     TextField integerField = new TextField(Integer.toString(nrBars));
     integerField.setOnAction(e -> {
       try {
         int integerValue = Integer.parseInt(integerField.getText());
         nrBars = integerValue;
+        m_param.set_NrBars(nrBars);
+        m_param.save();
         lOGGER.log(Level.INFO, "Number of bars: " + nrBars);
       } catch (NumberFormatException ex) {
         lOGGER.log(Level.INFO, "Invalid input. Please enter a valid integer.");
@@ -148,6 +151,8 @@ public class MainMenu extends Application {
     HBox.setMargin(l_tag, new Insets(10, 10, 10, 10));
     HBox.setMargin(buttonPiechart, new Insets(10, 10, 10, 10));
     HBox.setMargin(buttonBarchart, new Insets(10, 10, 10, 10));
+    HBox.setMargin(titleLabel, new Insets(10, 10, 10, 10));
+    HBox.setMargin(integerField, new Insets(10, 10, 10, 10));
 
     VBox layout = new VBox(openFileLayout, selectOptionLayout, buttonPiechartLayout, buttonBarchartLayout, logTextArea);
     Scene scene = new Scene(layout, 700, 375);

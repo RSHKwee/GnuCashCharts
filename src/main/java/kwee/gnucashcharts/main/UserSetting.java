@@ -27,6 +27,7 @@ public class UserSetting {
   private String c_InputFile = "InputFile";
   private String c_Pdf_File = "PdfFile";
   private String c_Tag = "Tag";
+  private String c_NrBars = "NrBars";
 
   private String m_Level = c_LevelValue;
   private String m_LookAndFeel;
@@ -39,6 +40,7 @@ public class UserSetting {
   private boolean m_toDisk = false;
 
   private String m_Tag = "";
+  private int m_NrBars = 12;
   private String m_InputFile = "";
   private String m_PdfFile = "";
 
@@ -59,9 +61,18 @@ public class UserSetting {
     m_InputFile = pref.get(c_InputFile, "");
     m_Tag = pref.get(c_Tag, "");
     m_PdfFile = pref.get(c_Pdf_File, "");
+    m_NrBars = pref.getInt(c_NrBars, 12);
 
     m_Level = pref.get(c_Level, c_LevelValue);
     m_LogDir = pref.get(c_LogDir, "");
+  }
+
+  public int get_NrBars() {
+    return m_NrBars;
+  }
+
+  public void set_NrBars(int m_NrBars) {
+    this.m_NrBars = m_NrBars;
   }
 
   public String get_LogDir() {
@@ -161,6 +172,7 @@ public class UserSetting {
       pref.put(c_LookAndFeel, m_LookAndFeel);
       pref.put(c_Pdf_File, m_PdfFile);
       pref.put(c_Tag, m_Tag);
+      pref.putInt(c_NrBars, m_NrBars);
       pref.put(c_InputFile, m_InputFile);
 
       pref.flush();
@@ -179,6 +191,7 @@ public class UserSetting {
     l_line = l_line + c_Pdf_File + ": " + m_PdfFile + "\n";
     l_line = l_line + c_InputFile + ": " + m_InputFile + "\n";
     l_line = l_line + c_Tag + ": " + m_Tag + "\n";
+    l_line = l_line + c_NrBars + ": " + m_NrBars + "\n";
 
     l_line = l_line + c_Level + ": " + m_Level + "\n";
     l_line = l_line + c_LogDir + ": " + m_LogDir + "\n";

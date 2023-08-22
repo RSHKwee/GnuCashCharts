@@ -11,6 +11,7 @@ import java.util.TreeSet;
 
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
@@ -35,8 +36,7 @@ public class StackedBarChartScene {
   private GridPane m_legendGrid;
   private StackedBarChart<String, Number> m_BarChart;
   private String m_Tag = "";
-  private int m_Teller = 0;
-
+  private XYChart.Series<String, Number>[] m_seriesArray;
   /**
    * Map:(Account, Map:(Enddate, Saldo))
    */
@@ -68,7 +68,7 @@ public class StackedBarChartScene {
     // Set up the scene and add the VBox to it
     Scene scene = new Scene(vbox, 800, 600);
     // TODO
-//    adjustColors();
+    // adjustColors();
 //    m_BarChart.setLegendVisible(false);
 
     return scene;
@@ -106,8 +106,8 @@ public class StackedBarChartScene {
     NumberAxis yAxis = new NumberAxis();
     m_BarChart = new StackedBarChart<>(xAxis, yAxis);
 
-    m_BarChart.setTitle("Stacked Bar Chart " + m_Tag);
-    xAxis.setLabel("Month");
+    m_BarChart.setTitle(m_Tag);
+    xAxis.setLabel("Maand");
     yAxis.setLabel(m_Tag);
 
     Set<String> l_AccountKeys = m_SerieData.keySet();
@@ -149,18 +149,26 @@ public class StackedBarChartScene {
       }
       seriesArray[i] = series;
     }
+    m_seriesArray = seriesArray;
     m_BarChart.getData().addAll(seriesArray);
   }
 
   // private functions
   private void adjustColors() {
-    ObservableList<Series<String, Number>> observableList = m_BarChart.getData();
-    m_Teller = 0;
-    observableList.forEach(item -> {
-      Color Kleur = getDistinctColor(m_Teller, observableList.size());
-      item.getNode().setStyle("-fx-pie-color: " + toHex(Kleur) + ";");
-      m_Teller++;
-    });
+    // Change the color of a specific data series (Series 1)
+    for (int i = 0; i > m_seriesArray.length; i++) {
+      Node seriesNode = m_seriesArray[i].getNode();
+
+    }
+
+    XYChart.Series<String, Number> series1 = m_BarChart.getData().get(0); // Assuming it's the first series
+    Node seriesNode = series1.getNode();
+    seriesNode.setStyle("-fx-bar-fill: #FF5733;"); // Set a custom color for Series 1
+
+    // Change the color of specific bars within the series
+    Node barNode = seriesNode.lookup(".data0.chart-bar"); // Adjust for the specific bar you want to change
+    barNode.setStyle("-fx-bar-fill: #00FF00;"); // Set a custom color for this bar
+
   }
 
   private void createLegendGrid() {
