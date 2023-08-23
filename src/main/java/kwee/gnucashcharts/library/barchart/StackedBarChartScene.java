@@ -2,13 +2,16 @@ package kwee.gnucashcharts.library.barchart;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -27,7 +30,8 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-
+import javafx.scene.text.Text;
+import kwee.gnucashcharts.library.FormatAmount;
 import kwee.gnucashcharts.library.LocalDateAndAmount;
 import kwee.gnucashcharts.library.gnuCashDb.SamengesteldeStaafData;
 
@@ -38,6 +42,7 @@ public class StackedBarChartScene {
   private StackedBarChart<String, Number> m_BarChart;
   private String m_Tag = "";
   private XYChart.Series<String, Number>[] m_seriesArray;
+  private SortedMap<String, Double> m_DateTotAmt = new TreeMap<String, Double>();
 
   /**
    * Map:(Account, Map:(Enddate, Saldo))
@@ -93,12 +98,12 @@ public class StackedBarChartScene {
     // Convert the PieChart to a WritableImage
     SnapshotParameters params = new SnapshotParameters();
     params.setDepthBuffer(true);
-    WritableImage pieChartImage = m_BarChart.snapshot(params, null);
-    return pieChartImage;
+    WritableImage barChartImage = m_BarChart.snapshot(params, null);
+    return barChartImage;
   }
 
   public WritableImage getLegendImage() {
-    // Convert the PieChart to a WritableImage
+    // Convert the BarChart to a WritableImage
     WritableImage legendImage = m_legendGrid.snapshot(null, null);
     return legendImage;
   }
@@ -145,6 +150,13 @@ public class StackedBarChartScene {
         String formattedLocalDate = lsa_DateKeys[j].format(lformatter);
         XYChart.Data<String, Number> data1 = new XYChart.Data<>(formattedLocalDate, ll_amt);
         series.getData().add(data1);
+
+        if (m_DateTotAmt.get(formattedLocalDate) == null) {
+          m_DateTotAmt.put(formattedLocalDate, ll_amt);
+        } else {
+          double totAmt = m_DateTotAmt.get(formattedLocalDate) + ll_amt;
+          m_DateTotAmt.put(formattedLocalDate, totAmt);
+        }
       }
       seriesArray[i] = series;
     }
@@ -154,11 +166,28 @@ public class StackedBarChartScene {
     // Create tooltips for the data points
     for (XYChart.Series<String, Number> series : m_BarChart.getData()) {
       for (XYChart.Data<String, Number> data : series.getData()) {
-        Tooltip tooltip = new Tooltip("Value: " + data.getYValue());
+        double l_amt = (double) data.getYValue();
+        Tooltip tooltip = new Tooltip(series.getName() + " " + FormatAmount.formatAmount(l_amt));
         Node nod = data.getNode();
         Tooltip.install(data.getNode(), tooltip);
       }
     }
+
+    xAxis.getChildrenUnmodifiable().addListener((ListChangeListener<Node>) p -> {
+      if (p.next()) {
+        p.getAddedSubList().forEach(node -> {
+          if (node != null && node instanceof Text) {
+            final Text textNode = (Text) node;
+            final Optional<XYChart.Data<String, Number>> data = m_BarChart.getData().get(0).getData().stream()
+                .filter(item -> item.getXValue().equalsIgnoreCase(textNode.getText())).findFirst();
+            data.ifPresent(d -> {
+              double totAmt = m_DateTotAmt.get(d.getXValue());
+              Tooltip.install(textNode, new Tooltip(d.getXValue() + " " + FormatAmount.formatAmount(totAmt)));
+            });
+          }
+        });
+      }
+    });
   }
 
   // private functions
