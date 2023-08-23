@@ -1,6 +1,7 @@
 package zandbak_reform;
 
 import javafx.application.Application;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
@@ -34,6 +35,10 @@ public class StackedBarChartWithTooltips extends Application {
       XYChart.Data<String, Number> data1 = new XYChart.Data<>(categories[i], dataArray[i][0]);
       XYChart.Data<String, Number> data2 = new XYChart.Data<>(categories[i], dataArray[i][1]);
 
+      Node nod = data1.getNode();
+      series1.getData().add(data1);
+      series2.getData().add(data2);
+
       // Create tooltips for each data point
       Tooltip tooltip1 = new Tooltip("Value: " + dataArray[i][0]);
       Tooltip tooltip2 = new Tooltip("Value: " + dataArray[i][1]);
@@ -41,8 +46,6 @@ public class StackedBarChartWithTooltips extends Application {
       Tooltip.install(data1.getNode(), tooltip1);
       Tooltip.install(data2.getNode(), tooltip2);
 
-      series1.getData().add(data1);
-      series2.getData().add(data2);
     }
 
     stackedBarChart.getData().addAll(series1, series2);

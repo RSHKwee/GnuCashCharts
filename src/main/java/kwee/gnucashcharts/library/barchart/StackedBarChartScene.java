@@ -13,6 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 
@@ -37,6 +38,7 @@ public class StackedBarChartScene {
   private StackedBarChart<String, Number> m_BarChart;
   private String m_Tag = "";
   private XYChart.Series<String, Number>[] m_seriesArray;
+
   /**
    * Map:(Account, Map:(Enddate, Saldo))
    */
@@ -89,7 +91,9 @@ public class StackedBarChartScene {
 
   public WritableImage getBarChartImage() {
     // Convert the PieChart to a WritableImage
-    WritableImage pieChartImage = m_BarChart.snapshot(null, null);
+    SnapshotParameters params = new SnapshotParameters();
+    params.setDepthBuffer(true);
+    WritableImage pieChartImage = m_BarChart.snapshot(params, null);
     return pieChartImage;
   }
 
@@ -140,17 +144,21 @@ public class StackedBarChartScene {
         DateTimeFormatter lformatter = DateTimeFormatter.ofPattern("MMMyy");
         String formattedLocalDate = lsa_DateKeys[j].format(lformatter);
         XYChart.Data<String, Number> data1 = new XYChart.Data<>(formattedLocalDate, ll_amt);
-
-        // Create tooltips for each data point
-        Tooltip tooltip1 = new Tooltip("Value: " + ll_amt);
-        Tooltip.install(data1.getNode(), tooltip1);
-
         series.getData().add(data1);
       }
       seriesArray[i] = series;
     }
     m_seriesArray = seriesArray;
     m_BarChart.getData().addAll(seriesArray);
+
+    // Create tooltips for the data points
+    for (XYChart.Series<String, Number> series : m_BarChart.getData()) {
+      for (XYChart.Data<String, Number> data : series.getData()) {
+        Tooltip tooltip = new Tooltip("Value: " + data.getYValue());
+        Node nod = data.getNode();
+        Tooltip.install(data.getNode(), tooltip);
+      }
+    }
   }
 
   // private functions
