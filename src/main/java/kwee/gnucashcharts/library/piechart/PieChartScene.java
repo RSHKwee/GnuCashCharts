@@ -6,15 +6,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.PieChart.Data;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-
+import kwee.gnucashcharts.library.FormatAmount;
 import kwee.gnucashcharts.library.TaartPuntData;
 import kwee.logger.MyLogger;
 import javafx.geometry.Pos;
@@ -108,7 +110,9 @@ public class PieChartScene {
     Set<String> keys = taartpuntdata.keySet();
     keys.forEach(key -> {
       m_pieChartData[m_Teller] = new PieChart.Data(key, taartpuntdata.get(key));
-      m_total_amount = m_total_amount + m_pieChartData[m_Teller].getPieValue();
+      double l_amt = m_pieChartData[m_Teller].getPieValue();
+      m_total_amount = m_total_amount + l_amt;
+
       lOGGER.log(Level.FINE, "i:" + m_Teller + " Key:" + key + " value:" + m_pieChartData[m_Teller].getPieValue());
       m_Teller++;
     });
@@ -138,6 +142,10 @@ public class PieChartScene {
       int perc = (int) ((amt / m_total_amount) * 10000.0);
       Label label = new Label(data.getName() + " - " + perc / 100.0 + "%");
       label.setStyle("-fx-font-size: 14px; -fx-text-fill: black;");
+
+      Tooltip tooltip = new Tooltip(data.getName() + " " + FormatAmount.formatAmount(amt));
+      // Node nod = m_pieChartData[m_Teller].getNode();
+      Tooltip.install(m_pieChartData[m_Teller].getNode(), tooltip);
 
       m_legendGrid.add(colorBox, col * 2, row);
       m_legendGrid.add(label, col * 2 + 1, row);

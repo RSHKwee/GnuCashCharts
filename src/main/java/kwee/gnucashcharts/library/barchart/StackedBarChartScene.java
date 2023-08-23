@@ -163,12 +163,12 @@ public class StackedBarChartScene {
     m_seriesArray = seriesArray;
     m_BarChart.getData().addAll(seriesArray);
 
-    // Create tooltips for the data points
+    // Create tooltips for the data points and x-axis
     for (XYChart.Series<String, Number> series : m_BarChart.getData()) {
       for (XYChart.Data<String, Number> data : series.getData()) {
         double l_amt = (double) data.getYValue();
         Tooltip tooltip = new Tooltip(series.getName() + " " + FormatAmount.formatAmount(l_amt));
-        Node nod = data.getNode();
+        // Node nod = data.getNode();
         Tooltip.install(data.getNode(), tooltip);
       }
     }
