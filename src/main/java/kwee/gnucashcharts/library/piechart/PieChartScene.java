@@ -6,7 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.PieChart.Data;
@@ -16,10 +16,10 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+
 import kwee.gnucashcharts.library.FormatAmount;
 import kwee.gnucashcharts.library.TaartPuntData;
 import kwee.logger.MyLogger;
-import javafx.geometry.Pos;
 
 public class PieChartScene {
   private static final Logger lOGGER = MyLogger.getLogger();
@@ -31,9 +31,9 @@ public class PieChartScene {
   private PieChart.Data[] m_pieChartData;
 
   public PieChartScene(TaartPuntData pieData, String tag) {
-    // Create a pie chart & a GridPane to hold the legend
+    // Create a pie chart & a GridPane to hold the legend and tooltips
     createPieChart(pieData.getPieSlices(tag));
-    createLegendGrid();
+    createLegenAndTooltipsdGrid();
   }
 
   public PieChart getPieChart() {
@@ -121,7 +121,7 @@ public class PieChartScene {
     m_PieChart.getData().addAll(m_pieChartData);
   }
 
-  private void createLegendGrid() {
+  private void createLegenAndTooltipsdGrid() {
     ObservableList<Data> observableList = m_PieChart.getData();
     m_legendGrid = new GridPane();
     m_legendGrid.setCenterShape(true);

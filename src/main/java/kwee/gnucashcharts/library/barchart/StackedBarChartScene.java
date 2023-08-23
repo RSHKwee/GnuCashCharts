@@ -163,7 +163,7 @@ public class StackedBarChartScene {
     m_seriesArray = seriesArray;
     m_BarChart.getData().addAll(seriesArray);
 
-    // Create tooltips for the data points and x-axis
+    // Create tool tips for the data points
     for (XYChart.Series<String, Number> series : m_BarChart.getData()) {
       for (XYChart.Data<String, Number> data : series.getData()) {
         double l_amt = (double) data.getYValue();
@@ -173,6 +173,7 @@ public class StackedBarChartScene {
       }
     }
 
+    // Create tool tips on X-axis
     xAxis.getChildrenUnmodifiable().addListener((ListChangeListener<Node>) p -> {
       if (p.next()) {
         p.getAddedSubList().forEach(node -> {

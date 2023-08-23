@@ -147,9 +147,12 @@ public class MainMenu extends Application {
 
     HBox.setMargin(openFileButton, new Insets(10, 10, 10, 10));
     HBox.setMargin(l_file, new Insets(10, 10, 10, 10));
+
     HBox.setMargin(comboBox, new Insets(10, 10, 10, 10));
     HBox.setMargin(l_tag, new Insets(10, 10, 10, 10));
+
     HBox.setMargin(buttonPiechart, new Insets(10, 10, 10, 10));
+
     HBox.setMargin(buttonBarchart, new Insets(10, 10, 10, 10));
     HBox.setMargin(titleLabel, new Insets(10, 10, 10, 10));
     HBox.setMargin(integerField, new Insets(10, 10, 10, 10));
