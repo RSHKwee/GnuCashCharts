@@ -12,4 +12,6 @@ public interface TaartPuntData {
 
   public Map<String, Double> getPieSlices(String a_Tag);
 
+  public ArrayList<String> getSubjects(String a_Tag);
+
 }

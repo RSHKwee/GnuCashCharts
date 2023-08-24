@@ -31,4 +31,5 @@ public class ActionHTMLPieChart {
   public TaartPuntData getData() {
     return pieData;
   }
+
 }

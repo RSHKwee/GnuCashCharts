@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 
 import kwee.gnucashcharts.library.FormatAmount;
 import kwee.gnucashcharts.library.TaartPuntData;
+import kwee.gnucashcharts.library.SubjectsColors;
 import kwee.gnucashcharts.library.CreatePdf;
 import kwee.gnucashcharts.library.piechart.PieChartScene;
 
@@ -27,11 +28,11 @@ public class PieChartWithLegend {
   private double tot_amt = 0.0;
   private String title = "";
 
-  public void openPieChartWindow(TaartPuntData pieData, String tag) {
+  public void openPieChartWindow(TaartPuntData pieData, String tag, SubjectsColors a_AccColor) {
     lOGGER.log(Level.INFO, "Tag " + tag);
 
     Stage piechartStage = new Stage();
-    PieChartScene pie = new PieChartScene(pieData, tag);
+    PieChartScene pie = new PieChartScene(pieData, tag, a_AccColor);
 
     // Set the title of the window
     tot_amt = pie.getTotalAmount();

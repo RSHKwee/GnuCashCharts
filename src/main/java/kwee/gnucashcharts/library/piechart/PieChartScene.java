@@ -16,7 +16,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-
+import kwee.gnucashcharts.library.SubjectsColors;
 import kwee.gnucashcharts.library.FormatAmount;
 import kwee.gnucashcharts.library.TaartPuntData;
 import kwee.logger.MyLogger;
@@ -29,9 +29,11 @@ public class PieChartScene {
   private PieChart m_PieChart;
   private GridPane m_legendGrid;
   private PieChart.Data[] m_pieChartData;
+  private SubjectsColors m_AccColors;
 
-  public PieChartScene(TaartPuntData pieData, String tag) {
+  public PieChartScene(TaartPuntData pieData, String tag, SubjectsColors a_AccColors) {
     // Create a pie chart & a GridPane to hold the legend and tooltips
+    m_AccColors = a_AccColors;
     createPieChart(pieData.getPieSlices(tag));
     createLegenAndTooltipsdGrid();
   }
@@ -59,7 +61,7 @@ public class PieChartScene {
     return scene;
   }
 
-  public Scene getScene() {
+  public Scene getScene(SubjectsColors a_AccColors) {
     // Create a VBox to hold the pie chart and the legend
     VBox vbox = new VBox(m_PieChart, m_legendGrid);
 
@@ -95,8 +97,9 @@ public class PieChartScene {
     ObservableList<Data> observableList = m_PieChart.getData();
     m_Teller = 0;
     observableList.forEach(item -> {
-      Color Kleur = getDistinctColor(m_Teller, observableList.size());
-      item.getNode().setStyle("-fx-pie-color: " + toHex(Kleur) + ";");
+      Color AccKleur = m_AccColors.getColor(item.getName());
+      // Color Kleur = getDistinctColor(m_Teller, observableList.size());
+      item.getNode().setStyle("-fx-pie-color: " + m_AccColors.toHex(AccKleur) + ";");
       m_Teller++;
     });
   }
@@ -122,7 +125,6 @@ public class PieChartScene {
   }
 
   private void createLegenAndTooltipsdGrid() {
-    ObservableList<Data> observableList = m_PieChart.getData();
     m_legendGrid = new GridPane();
     m_legendGrid.setCenterShape(true);
     m_legendGrid.setHgap(20);
@@ -133,10 +135,11 @@ public class PieChartScene {
     int col = 0;
     m_Teller = 0;
     for (PieChart.Data data : m_pieChartData) {
-      Color Kleur = getDistinctColor(m_Teller, observableList.size());
+      Color AccKleur = m_AccColors.getColor(data.getName());
+      // Color Kleur = getDistinctColor(m_Teller, observableList.size());
       Label colorBox = new Label();
       colorBox.setPrefSize(15, 15);
-      colorBox.setStyle("-fx-background-color: " + toHex(Kleur) + ";");
+      colorBox.setStyle("-fx-background-color: " + m_AccColors.toHex(AccKleur) + ";");
 
       double amt = data.getPieValue();
       int perc = (int) ((amt / m_total_amount) * 10000.0);
@@ -144,7 +147,6 @@ public class PieChartScene {
       label.setStyle("-fx-font-size: 14px; -fx-text-fill: black;");
 
       Tooltip tooltip = new Tooltip(data.getName() + " " + FormatAmount.formatAmount(amt));
-      // Node nod = m_pieChartData[m_Teller].getNode();
       Tooltip.install(m_pieChartData[m_Teller].getNode(), tooltip);
 
       m_legendGrid.add(colorBox, col * 2, row);
@@ -157,19 +159,5 @@ public class PieChartScene {
       }
       m_Teller++;
     }
-  }
-
-  private Color getDistinctColor(int colorIndex, int numColors) {
-    int baseHue = 30; // Starting hue value
-    // Calculate the hue value based on the index
-    int hue = (baseHue + (colorIndex * (360 / numColors))) % 360;
-    // Convert the hue value to an RGB color
-    Color color = Color.hsb(hue, 1.0, 1.0);
-    return color;
-  }
-
-  private String toHex(Color color) {
-    return String.format("#%02X%02X%02X", (int) (color.getRed() * 255), (int) (color.getGreen() * 255),
-        (int) (color.getBlue() * 255));
   }
 }

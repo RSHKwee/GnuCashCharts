@@ -13,7 +13,7 @@ import javafx.scene.layout.VBox;
 
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
+import kwee.gnucashcharts.library.barchart.BarChartToTable;
 import kwee.gnucashcharts.library.barchart.StackedBarChartScene;
 import kwee.gnucashcharts.library.gnuCashDb.SamengesteldeStaafData;
 import kwee.gnucashcharts.library.CreatePdf;
@@ -71,7 +71,12 @@ public class BarChartWithLegend {
     Scene scene = l_ScenBar.getScene(saveFileLayout);
     barchartStage.setScene(scene);
 
-    // Show the stage (display the pie chart with the legend)
+    // Show the stage (display the bar chart and the table
     barchartStage.show();
+
+    Stage barchartTableStage = new Stage();
+    BarChartToTable barchartable = new BarChartToTable(l_ScenBar.getBarChart());
+    barchartTableStage.setScene(barchartable.getScene());
+    barchartTableStage.show();
   }
 }

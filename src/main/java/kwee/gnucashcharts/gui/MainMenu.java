@@ -2,7 +2,7 @@ package kwee.gnucashcharts.gui;
 
 import java.io.File;
 import java.io.IOException;
-
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -26,6 +26,7 @@ import kwee.logger.MyLogger;
 
 import kwee.gnucashcharts.main.Main;
 import kwee.gnucashcharts.main.UserSetting;
+import kwee.gnucashcharts.library.SubjectsColors;
 import kwee.gnucashcharts.library.JavaFXLogHandler;
 import kwee.gnucashcharts.library.TaartPuntData;
 
@@ -44,6 +45,7 @@ public class MainMenu extends Application {
   private String m_tag = "";
   private TaartPuntData m_pieData;
   private File m_SelectedFile;
+  private SubjectsColors m_SubjColors;
 
   @Override
   public void start(Stage primaryStage) {
@@ -106,12 +108,15 @@ public class MainMenu extends Application {
         l_tag.setText(m_tag);
         m_param.set_Tag(m_tag);
         m_param.save();
+
+        ArrayList<String> l_Subjects = m_pieData.getSubjects(m_tag);
+        m_SubjColors = new SubjectsColors(l_Subjects);
       }
     });
 
     PieChartWithLegend piwindow = new PieChartWithLegend();
     Button buttonPiechart = new Button("Open Piechart");
-    buttonPiechart.setOnAction(e -> piwindow.openPieChartWindow(m_pieData, m_tag));
+    buttonPiechart.setOnAction(e -> piwindow.openPieChartWindow(m_pieData, m_tag, m_SubjColors));
 
     nrBars = m_param.get_NrBars();
     Label titleLabel = new Label(" # bars:");

@@ -12,7 +12,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -22,26 +21,21 @@ import javafx.scene.chart.NumberAxis;
 
 import javafx.scene.chart.StackedBarChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.chart.XYChart.Series;
-
-import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+
 import kwee.gnucashcharts.library.FormatAmount;
 import kwee.gnucashcharts.library.LocalDateAndAmount;
 import kwee.gnucashcharts.library.gnuCashDb.SamengesteldeStaafData;
 
-//TODO
 public class StackedBarChartScene {
   private SamengesteldeStaafData m_barData;
   private GridPane m_legendGrid;
   private StackedBarChart<String, Number> m_BarChart;
   private String m_Tag = "";
-  private XYChart.Series<String, Number>[] m_seriesArray;
   private SortedMap<String, Double> m_DateTotAmt = new TreeMap<String, Double>();
 
   /**
@@ -58,7 +52,7 @@ public class StackedBarChartScene {
     createLegendGrid();
   }
 
-  public StackedBarChart<String, Number> getrBarChart() {
+  public StackedBarChart<String, Number> getBarChart() {
     return m_BarChart;
   }
 
@@ -160,7 +154,6 @@ public class StackedBarChartScene {
       }
       seriesArray[i] = series;
     }
-    m_seriesArray = seriesArray;
     m_BarChart.getData().addAll(seriesArray);
 
     // Create tool tips for the data points
@@ -192,35 +185,17 @@ public class StackedBarChartScene {
   }
 
   // private functions
-  private void adjustColors() {
-    // Change the color of a specific data series (Series 1)
-    for (int i = 0; i > m_seriesArray.length; i++) {
-      Node seriesNode = m_seriesArray[i].getNode();
-
-    }
-
-    XYChart.Series<String, Number> series1 = m_BarChart.getData().get(0); // Assuming it's the first series
-    Node seriesNode = series1.getNode();
-    seriesNode.setStyle("-fx-bar-fill: #FF5733;"); // Set a custom color for Series 1
-
-    // Change the color of specific bars within the series
-    Node barNode = seriesNode.lookup(".data0.chart-bar"); // Adjust for the specific bar you want to change
-    barNode.setStyle("-fx-bar-fill: #00FF00;"); // Set a custom color for this bar
-
-  }
-
   private void createLegendGrid() {
-    ObservableList<Series<String, Number>> observableList = m_BarChart.getData();
     m_legendGrid = new GridPane();
     m_legendGrid.setCenterShape(true);
     m_legendGrid.setHgap(20);
     m_legendGrid.setVgap(5);
     m_legendGrid.setAlignment(Pos.CENTER);
 
-    int row = 0;
-    int col = 0;
     /*
      * @formatter:off
+    int row = 0;
+    int col = 0;
     m_Teller = 0;
     for (PieChart.Data data : m_pieChartData) {
       Color Kleur = getDistinctColor(m_Teller, observableList.size());
@@ -246,20 +221,6 @@ public class StackedBarChartScene {
       @formatter:on
       */
 
-  }
-
-  private Color getDistinctColor(int colorIndex, int numColors) {
-    int baseHue = 30; // Starting hue value
-    // Calculate the hue value based on the index
-    int hue = (baseHue + (colorIndex * (360 / numColors))) % 360;
-    // Convert the hue value to an RGB color
-    Color color = Color.hsb(hue, 1.0, 1.0);
-    return color;
-  }
-
-  private String toHex(Color color) {
-    return String.format("#%02X%02X%02X", (int) (color.getRed() * 255), (int) (color.getGreen() * 255),
-        (int) (color.getBlue() * 255));
   }
 
 }
