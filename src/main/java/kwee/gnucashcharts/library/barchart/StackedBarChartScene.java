@@ -138,7 +138,7 @@ public class StackedBarChartScene {
         lsa_DateKeys[ik] = datkey;
         ik++;
       });
-      for (int j = 0; j < lsa_DateKeys.length - 1; j++) {
+      for (int j = 0; j < lsa_DateKeys.length; j++) {
         double ll_amt = DateAmtMap.get(lsa_DateKeys[j]);
         DateTimeFormatter lformatter = DateTimeFormatter.ofPattern("MMMyy");
         String formattedLocalDate = lsa_DateKeys[j].format(lformatter);

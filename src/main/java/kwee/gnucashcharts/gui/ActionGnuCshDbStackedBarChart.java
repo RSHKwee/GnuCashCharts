@@ -32,7 +32,7 @@ public class ActionGnuCshDbStackedBarChart {
     int month = l_Now.getMonthValue();
     int day = 1;
 
-    for (int i = 0; i <= m_NrBars; i++) {
+    for (int i = 0; i < m_NrBars; i++) {
       LocalDate l_Date;
       int[] l_result1 = decrMonth(year, month);
       year = l_result1[0];
