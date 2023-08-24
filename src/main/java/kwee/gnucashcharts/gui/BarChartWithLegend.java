@@ -33,7 +33,7 @@ public class BarChartWithLegend {
     StackedBarChartScene l_ScenBar = new StackedBarChartScene(a_barData, tag);
 
     // Set the title of the window
-    title = tag;
+    title = "Staafdiagram voor " + tag;
     barchartStage.setTitle(title);
 
     FileChooser fileChooser = new FileChooser();
@@ -75,6 +75,8 @@ public class BarChartWithLegend {
     barchartStage.show();
 
     Stage barchartTableStage = new Stage();
+    title = "Tabel voor " + tag;
+    barchartTableStage.setTitle(title);
     BarChartToTable barchartable = new BarChartToTable(l_ScenBar.getBarChart(), l_ScenBar.getCombinedTotals());
     barchartTableStage.setScene(barchartable.getScene());
     barchartTableStage.show();

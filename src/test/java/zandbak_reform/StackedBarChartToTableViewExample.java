@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 
 public class StackedBarChartToTableViewExample extends Application {
 
+  @SuppressWarnings("unchecked")
   @Override
   public void start(Stage primaryStage) {
     // Sample data for StackedBarChart
