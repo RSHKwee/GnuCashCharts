@@ -75,7 +75,7 @@ public class BarChartWithLegend {
     barchartStage.show();
 
     Stage barchartTableStage = new Stage();
-    BarChartToTable barchartable = new BarChartToTable(l_ScenBar.getBarChart());
+    BarChartToTable barchartable = new BarChartToTable(l_ScenBar.getBarChart(), l_ScenBar.getCombinedTotals());
     barchartTableStage.setScene(barchartable.getScene());
     barchartTableStage.show();
   }

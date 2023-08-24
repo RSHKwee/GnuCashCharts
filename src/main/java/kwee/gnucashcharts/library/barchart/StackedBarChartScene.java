@@ -184,6 +184,10 @@ public class StackedBarChartScene {
     });
   }
 
+  public SortedMap<String, Double> getCombinedTotals() {
+    return m_DateTotAmt;
+  }
+
   // private functions
   private void createLegendGrid() {
     m_legendGrid = new GridPane();
