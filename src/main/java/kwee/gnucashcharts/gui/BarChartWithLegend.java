@@ -13,7 +13,7 @@ import javafx.scene.layout.VBox;
 
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import kwee.gnucashcharts.library.barchart.BarChartToTableScene;
+
 import kwee.gnucashcharts.library.barchart.StackedBarChartScene;
 import kwee.gnucashcharts.library.gnuCashDb.SamengesteldeStaafData;
 import kwee.gnucashcharts.library.CreatePdf;
@@ -38,7 +38,6 @@ public class BarChartWithLegend {
 
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Save File");
-
     Button saveButton = new Button("Create PDF File");
     saveButton.setOnAction(e -> {
       FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.pdf)", "*.pdf");
@@ -48,6 +47,7 @@ public class BarChartWithLegend {
         String ldir = intFile.getParent();
         fileChooser.setInitialDirectory(new File(ldir));
       }
+
       // Show save file dialog
       File selectedFile = fileChooser.showSaveDialog(barchartStage);
       if (selectedFile != null) {
@@ -73,13 +73,5 @@ public class BarChartWithLegend {
 
     // Show the stage (display the bar chart and the table
     barchartStage.show();
-
-    // Stage barchartTableStage = new Stage();
-    // title = "Table for " + tag;
-    // barchartTableStage.setTitle(title);
-    // BarChartToTable barchartable = new BarChartToTable(l_ScenBar.getBarChart(),
-    // l_ScenBar.getCombinedTotals());
-    // barchartTableStage.setScene(barchartable.getScene());
-    // barchartTableStage.show();
   }
 }
