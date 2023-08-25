@@ -7,7 +7,6 @@ import java.util.logging.Level;
 
 import javafx.geometry.Insets;
 
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 
@@ -20,21 +19,21 @@ import kwee.gnucashcharts.library.CreatePdf;
 
 import kwee.logger.MyLogger;
 
-public class BarChartWithLegend {
+public class BarChartTable {
   private static final Logger lOGGER = MyLogger.getLogger();
   private String title = "";
 
-  public void openBarChartWindow(File inpFile, String tag, int a_NrBars) {
+  public void openBarChartTableWindow(File inpFile, String tag, int a_NrBars) {
     lOGGER.log(Level.INFO, "Tag " + tag);
     ActionGnuCshDbStackedBarChart l_barchart = new ActionGnuCshDbStackedBarChart(inpFile, a_NrBars);
     SamengesteldeStaafData a_barData = l_barchart.getData();
-
-    Stage barchartStage = new Stage();
     StackedBarChartScene l_ScenBar = new StackedBarChartScene(a_barData, tag);
 
-    // Set the title of the window
-    title = "Bartchart for " + tag + " period " + l_ScenBar.get_StartPeriod() + " to " + l_ScenBar.get_EndPeriod();
-    barchartStage.setTitle(title);
+    Stage barchartTableStage = new Stage();
+    BarChartToTableScene barchartable = new BarChartToTableScene(l_ScenBar.getBarChart(),
+        l_ScenBar.getCombinedTotals());
+    title = "Table for " + tag + " period " + barchartable.get_StartPeriod() + " to " + barchartable.get_EndPeriod();
+    barchartTableStage.setTitle(title);
 
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Save File");
@@ -49,11 +48,10 @@ public class BarChartWithLegend {
         fileChooser.setInitialDirectory(new File(ldir));
       }
       // Show save file dialog
-      File selectedFile = fileChooser.showSaveDialog(barchartStage);
+      File selectedFile = fileChooser.showSaveDialog(barchartTableStage);
       if (selectedFile != null) {
         try {
-          CreatePdf.CreatePdfFromImage(l_ScenBar.getBarChartImage(), l_ScenBar.getLegendImage(), title,
-              selectedFile.getAbsolutePath());
+          CreatePdf.CreatePdfFromImage(barchartable.getTableViewImage(), title, selectedFile.getAbsolutePath());
           lOGGER.log(Level.INFO, "PDF file generated: " + selectedFile.getAbsolutePath());
 
           MainMenu.m_param.set_Pdf_file(selectedFile);
@@ -68,18 +66,7 @@ public class BarChartWithLegend {
     VBox.setMargin(saveButton, new Insets(10, 10, 10, 10));
 
     // Set up the scene and add the VBox to it
-    Scene scene = l_ScenBar.getScene(saveFileLayout);
-    barchartStage.setScene(scene);
-
-    // Show the stage (display the bar chart and the table
-    barchartStage.show();
-
-    // Stage barchartTableStage = new Stage();
-    // title = "Table for " + tag;
-    // barchartTableStage.setTitle(title);
-    // BarChartToTable barchartable = new BarChartToTable(l_ScenBar.getBarChart(),
-    // l_ScenBar.getCombinedTotals());
-    // barchartTableStage.setScene(barchartable.getScene());
-    // barchartTableStage.show();
+    barchartTableStage.setScene(barchartable.getScene(saveFileLayout));
+    barchartTableStage.show();
   }
 }

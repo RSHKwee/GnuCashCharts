@@ -26,6 +26,7 @@ import kwee.logger.MyLogger;
 
 import kwee.gnucashcharts.main.Main;
 import kwee.gnucashcharts.main.UserSetting;
+import kwee.library.JarInfo;
 import kwee.gnucashcharts.library.SubjectsColors;
 import kwee.gnucashcharts.library.JavaFXLogHandler;
 import kwee.gnucashcharts.library.TaartPuntData;
@@ -134,9 +135,12 @@ public class MainMenu extends Application {
     });
 
     BarChartWithLegend barwindow = new BarChartWithLegend();
+    BarChartTable barTableWindow = new BarChartTable();
     Button buttonBarchart = new Button("Open Barchart");
     buttonBarchart.setOnAction(e -> {
+      ;
       barwindow.openBarChartWindow(m_SelectedFile, m_tag, nrBars);
+      barTableWindow.openBarChartTableWindow(m_SelectedFile, m_tag, nrBars);
     });
 
     // Do the layout
@@ -173,6 +177,9 @@ public class MainMenu extends Application {
   }
 
   public static void main(String[] args) {
+    if (m_creationtime == null) {
+      m_creationtime = JarInfo.getProjectVersion(Main.class);
+    }
     launch(args);
   }
 }

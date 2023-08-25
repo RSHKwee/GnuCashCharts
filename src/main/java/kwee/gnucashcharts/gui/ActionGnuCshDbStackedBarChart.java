@@ -19,6 +19,11 @@ public class ActionGnuCshDbStackedBarChart {
   private SamengesteldeStaafData barData = new SamengesteldeStaafData();
   private File m_SelectedFile;
 
+  /**
+   * 
+   * @param a_SelectedFile GnuCash file
+   * @param a_nrBars       Number of Bars, the bars are a month apart.
+   */
   public ActionGnuCshDbStackedBarChart(File a_SelectedFile, int a_nrBars) {
     lOGGER.log(Level.INFO, "Selected File: " + a_SelectedFile + ", #bars: " + a_nrBars);
     m_NrBars = a_nrBars;
@@ -46,6 +51,7 @@ public class ActionGnuCshDbStackedBarChart {
     return barData;
   }
 
+  // Local Functions
   private void addData(LocalDate a_Date) {
     ReadGnuCashDB gnucashdbtable = new ReadGnuCashDB(m_SelectedFile, a_Date);
     ArrayList<String> regels = gnucashdbtable.getRegels();

@@ -37,6 +37,8 @@ public class StackedBarChartScene {
   private StackedBarChart<String, Number> m_BarChart;
   private String m_Tag = "";
   private SortedMap<String, Double> m_DateTotAmt = new TreeMap<String, Double>();
+  private String m_StartPeriod = "";
+  private String m_EndPeriod = "";
 
   /**
    * Map:(Account, Map:(Enddate, Saldo))
@@ -89,7 +91,7 @@ public class StackedBarChartScene {
   }
 
   public WritableImage getBarChartImage() {
-    // Convert the PieChart to a WritableImage
+    // Convert the BarChart to a WritableImage
     SnapshotParameters params = new SnapshotParameters();
     params.setDepthBuffer(true);
     WritableImage barChartImage = m_BarChart.snapshot(params, null);
@@ -102,6 +104,14 @@ public class StackedBarChartScene {
     return legendImage;
   }
 
+  public String get_StartPeriod() {
+    return m_StartPeriod;
+  }
+
+  public String get_EndPeriod() {
+    return m_EndPeriod;
+  }
+
   int ik = 0;
 
   private void createBarChart() {
@@ -110,7 +120,7 @@ public class StackedBarChartScene {
     m_BarChart = new StackedBarChart<>(xAxis, yAxis);
 
     m_BarChart.setTitle(m_Tag);
-    xAxis.setLabel("Maand");
+    xAxis.setLabel("Month");
     yAxis.setLabel(m_Tag);
 
     Set<String> l_AccountKeys = m_SerieData.keySet();
@@ -144,7 +154,10 @@ public class StackedBarChartScene {
         String formattedLocalDate = lsa_DateKeys[j].format(lformatter);
         XYChart.Data<String, Number> data1 = new XYChart.Data<>(formattedLocalDate, ll_amt);
         series.getData().add(data1);
-
+        if (m_StartPeriod.isBlank()) {
+          m_StartPeriod = formattedLocalDate;
+        }
+        m_EndPeriod = formattedLocalDate;
         if (m_DateTotAmt.get(formattedLocalDate) == null) {
           m_DateTotAmt.put(formattedLocalDate, ll_amt);
         } else {
