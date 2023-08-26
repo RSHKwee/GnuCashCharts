@@ -2,6 +2,8 @@ package kwee.gnucashcharts.library;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -14,8 +16,10 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.WritableImage;
 import kwee.library.TimeStamp;
+import kwee.logger.MyLogger;
 
 public class CreatePdf {
+  private static final Logger lOGGER = MyLogger.getLogger();
   /*
    * @formatter:off
    * For A4 paper size:
@@ -65,11 +69,11 @@ You can use these coordinates to position elements and set the page size when wo
    * 
    * @formatter:on
    */
-  private static float xTitle = 50;
-  private static float yTitle = 520;
+  private float xTitle = 50;
+  private float yTitle = 520;
 
-  private static float xFooter = 700; // X-coordinate for the footer text
-  private static float yFooter = 10; // Y-coordinate for the footer text (adjust as needed)
+  private float xFooter = 700; // X-coordinate for the footer text
+  private float yFooter = 10; // Y-coordinate for the footer text (adjust as needed)
 
   private static float xPosition = 0;
   private static float yPosition = 110;
@@ -77,30 +81,49 @@ You can use these coordinates to position elements and set the page size when wo
   private static float xPositionForLegend = 20;
   private static float yPositionForLegend = 10;
 
-  static public void CreatePdfFromImage(WritableImage aChartImage, String aTitle, String pdfFile) throws IOException {
+  private String m_PdfFile = "";
+  PDDocument m_document;
+
+  public CreatePdf(String a_pdfFile) {
+    m_PdfFile = a_pdfFile;
+    // Create a new PDF document
+    m_document = new PDDocument();
+  }
+
+  public void SaveDocument() {
+    try {
+      m_document.save(m_PdfFile);
+      m_document.close();
+    } catch (IOException e) {
+      lOGGER.log(Level.INFO, e.getMessage());
+    }
+  }
+
+  public void addImageTable(WritableImage aChartImage, String aTitle) throws IOException {
     // Convert the WritableImage to BufferedImage
     BufferedImage ChartImage = SwingFXUtils.fromFXImage(aChartImage, null);
 
-    // Create a new PDF document
-    PDDocument document = new PDDocument();
     PDPage page = new PDPage();
 
-    // Set the page dimensions for landscape orientation
-    page.setMediaBox(new PDRectangle(PDRectangle.A2.getHeight(), PDRectangle.A2.getWidth()));
-    document.addPage(page);
+    float pageHeight = PDRectangle.A2.getHeight();
+    float pageWidth = PDRectangle.A2.getWidth();
+    calcTitleAndFooterCoord(pageHeight, pageWidth);
 
-    float a3Height = PDRectangle.A2.getHeight();
-    // float a3Width = PDRectangle.A3.getWidth();
+    // Set the page dimensions for landscape orientation
+    page.setMediaBox(new PDRectangle(pageHeight, pageWidth));
+    m_document.addPage(page);
+
     // Create a content stream for the page
-    PDPageContentStream contentStream = new PDPageContentStream(document, page);
+
+    PDPageContentStream contentStream = new PDPageContentStream(m_document, page);
 
     addTitle(contentStream, aTitle);
 
     // Convert the JavaFX image to PDF image
-    PDImageXObject pdfPieChartImage = LosslessFactory.createFromImage(document, ChartImage);
+    PDImageXObject pdfPieChartImage = LosslessFactory.createFromImage(m_document, ChartImage);
 
     // Draw the images on the page
-    float scale = a3Height / ChartImage.getWidth();
+    float scale = pageHeight / ChartImage.getWidth();
     float imageWidth = ChartImage.getWidth() * scale;
     float imageHeight = ChartImage.getHeight() * scale;
     contentStream.drawImage(pdfPieChartImage, xPosition, yPosition, imageWidth, imageHeight);
@@ -109,37 +132,32 @@ You can use these coordinates to position elements and set the page size when wo
 
     // Close the content stream
     contentStream.close();
-
-    // Save the PDF document to a file
-    document.save(pdfFile);
-
-    // Close the PDF document
-    document.close();
   }
 
-  static public void CreatePdfFromImage(WritableImage aChartImage, WritableImage aLegendImage, String aTitle,
-      String pdfFile) throws IOException {
+  public void addImageAndLegend(WritableImage aChartImage, WritableImage aLegendImage, String aTitle)
+      throws IOException {
     // Convert the WritableImage to BufferedImage
     BufferedImage ChartImage = SwingFXUtils.fromFXImage(aChartImage, null);
     BufferedImage LegendImage = SwingFXUtils.fromFXImage(aLegendImage, null);
 
-    // Create a new PDF document
-    PDDocument document = new PDDocument();
     PDPage page = new PDPage();
 
+    float pageHeight = PDRectangle.A4.getHeight();
+    float pageWidth = PDRectangle.A4.getWidth();
+    calcTitleAndFooterCoord(pageHeight, pageWidth);
+
     // Set the page dimensions for landscape orientation
-    page.setMediaBox(new PDRectangle(PDRectangle.A4.getHeight(), PDRectangle.A4.getWidth()));
+    page.setMediaBox(new PDRectangle(pageHeight, pageWidth));
 
-    document.addPage(page);
-
+    m_document.addPage(page);
     // Create a content stream for the page
-    PDPageContentStream contentStream = new PDPageContentStream(document, page);
+    PDPageContentStream contentStream = new PDPageContentStream(m_document, page);
 
     addTitle(contentStream, aTitle);
 
     // Convert the JavaFX image to PDF image
-    PDImageXObject pdfPieChartImage = LosslessFactory.createFromImage(document, ChartImage);
-    PDImageXObject pdfLegendImage = LosslessFactory.createFromImage(document, LegendImage);
+    PDImageXObject pdfPieChartImage = LosslessFactory.createFromImage(m_document, ChartImage);
+    PDImageXObject pdfLegendImage = LosslessFactory.createFromImage(m_document, LegendImage);
 
     // Draw the images on the page
     float imageWidth = ChartImage.getWidth();
@@ -155,15 +173,10 @@ You can use these coordinates to position elements and set the page size when wo
 
     // Close the content stream
     contentStream.close();
-
-    // Save the PDF document to a file
-    document.save(pdfFile);
-
-    // Close the PDF document
-    document.close();
   }
 
-  private static void addTitle(PDPageContentStream contentStream, String text) throws IOException {
+  // Private functions
+  private void addTitle(PDPageContentStream contentStream, String text) throws IOException {
     contentStream.beginText();
     contentStream.setFont(PDType1Font.HELVETICA_BOLD, 18); // Choose your font
 
@@ -172,7 +185,7 @@ You can use these coordinates to position elements and set the page size when wo
     contentStream.endText();
   }
 
-  private static void addFooter(PDPageContentStream contentStream, String text) throws IOException {
+  private void addFooter(PDPageContentStream contentStream, String text) throws IOException {
     contentStream.beginText();
     contentStream.setFont(PDType1Font.HELVETICA, 10);
 
@@ -180,4 +193,13 @@ You can use these coordinates to position elements and set the page size when wo
     contentStream.showText(text);
     contentStream.endText();
   }
+
+  private void calcTitleAndFooterCoord(float a_PageWidth, float a_PageHeight) {
+    xTitle = 50;
+    yTitle = a_PageHeight - 75;
+
+    xFooter = a_PageWidth - 140;
+    yFooter = 10;
+  }
+
 }

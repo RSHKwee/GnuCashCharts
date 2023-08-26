@@ -135,12 +135,12 @@ public class MainMenu extends Application {
     });
 
     BarChartWithLegend barwindow = new BarChartWithLegend();
-    BarChartTable barTableWindow = new BarChartTable();
+    // BarChartTable barTableWindow = new BarChartTable();
     Button buttonBarchart = new Button("Open Barchart");
     buttonBarchart.setOnAction(e -> {
       ;
       barwindow.openBarChartWindow(m_SelectedFile, m_tag, nrBars);
-      barTableWindow.openBarChartTableWindow(m_SelectedFile, m_tag, nrBars);
+      // barTableWindow.openBarChartTableWindow(m_SelectedFile, m_tag, nrBars);
     });
 
     // Do the layout
