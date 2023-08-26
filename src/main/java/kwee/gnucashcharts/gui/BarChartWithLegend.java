@@ -54,11 +54,15 @@ public class BarChartWithLegend {
       File selectedFile = fileChooser.showSaveDialog(barchartStage);
       if (selectedFile != null) {
         try {
-          CreatePdf l_Pdf = new CreatePdf(selectedFile.getAbsolutePath());
-          l_Pdf.addImageAndLegend(l_ScenBar.getBarChartImage(), l_ScenBar.getLegendImage(), title);
           String title1 = "Table for " + tag + " period " + barchartable.get_StartPeriod() + " to "
               + barchartable.get_EndPeriod();
-          l_Pdf.addImageTable(barchartable.getTableViewImage(), title1);
+
+          CreatePdf l_Pdf = new CreatePdf(selectedFile.getAbsolutePath());
+          l_Pdf.CreatePage(CreatePdf.c_PageSizeEnum.A4, title);
+          l_Pdf.addImageAndLegend(l_ScenBar.getBarChartImage(), l_ScenBar.getLegendImage());
+
+          l_Pdf.CreatePage(CreatePdf.c_PageSizeEnum.A2, title1);
+          l_Pdf.addImageTable(barchartable.getTableViewImage());
 
           l_Pdf.SaveDocument();
           lOGGER.log(Level.INFO, "PDF file generated: " + selectedFile.getAbsolutePath());
@@ -89,7 +93,8 @@ public class BarChartWithLegend {
 
     Stage barchartTableStage = new Stage();
     barchartable = new BarChartToTableScene(l_ScenBar.getBarChart(), l_ScenBar.getCombinedTotals());
-    title = "Table for " + tag + " period " + barchartable.get_StartPeriod() + " to " + barchartable.get_EndPeriod();
+    title = "Bartchart and Table for " + tag + " period " + barchartable.get_StartPeriod() + " to "
+        + barchartable.get_EndPeriod();
     barchartTableStage.setTitle(title);
 
     FileChooser fileChooser = new FileChooser();
@@ -108,11 +113,16 @@ public class BarChartWithLegend {
       File selectedFile = fileChooser.showSaveDialog(barchartTableStage);
       if (selectedFile != null) {
         try {
+          // String title1 = "Bartchart and Table for " + tag + " period " +
+          // l_ScenBar.get_StartPeriod() + " to "
+          // + l_ScenBar.get_EndPeriod();
+
           CreatePdf l_Pdf = new CreatePdf(selectedFile.getAbsolutePath());
-          String title1 = "Bartchart for " + tag + " period " + l_ScenBar.get_StartPeriod() + " to "
-              + l_ScenBar.get_EndPeriod();
-          l_Pdf.addImageAndLegend(l_ScenBar.getBarChartImage(), l_ScenBar.getLegendImage(), title1);
-          l_Pdf.addImageTable(barchartable.getTableViewImage(), title);
+          l_Pdf.CreatePage(CreatePdf.c_PageSizeEnum.A2, title);
+          l_Pdf.addImageAndLegend(l_ScenBar.getBarChartImage(), l_ScenBar.getLegendImage());
+
+          // l_Pdf.CreatePage(CreatePdf.c_PageSizeEnum.A2, title1);
+          l_Pdf.addImageTable(barchartable.getTableViewImage());
 
           l_Pdf.SaveDocument();
           lOGGER.log(Level.INFO, "PDF file generated: " + selectedFile.getAbsolutePath());

@@ -2,8 +2,7 @@ package kwee.gnucashcharts.library;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+// import java.util.logging.Level;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -16,10 +15,11 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.WritableImage;
 import kwee.library.TimeStamp;
-import kwee.logger.MyLogger;
+// import kwee.logger.MyLogger;
 
 public class CreatePdf {
-  private static final Logger lOGGER = MyLogger.getLogger();
+  // private static final Logger lOGGER = MyLogger.getLogger();
+
   /*
    * @formatter:off
    * For A4 paper size:
@@ -69,91 +69,127 @@ You can use these coordinates to position elements and set the page size when wo
    * 
    * @formatter:on
    */
-  private float xTitle = 50;
+  public enum c_PageSizeEnum {
+    A2, A4
+  };
+
+  // X,Y coordinate for the title
+  private float xTitle = 50; // Fixed
   private float yTitle = 520;
+  private float yTitle_Offset = 75;
 
-  private float xFooter = 700; // X-coordinate for the footer text
-  private float yFooter = 10; // Y-coordinate for the footer text (adjust as needed)
+  // X,Y coordinate for the footer text
+  private float xFooter = 700;
+  private float yFooter = 10; // Fixed
+  private float xFooter_Offset = 140;
 
-  private static float xPosition = 0;
-  private static float yPosition = 110;
+  private float xMargin = 20;
 
-  private static float xPositionForLegend = 20;
-  private static float yPositionForLegend = 10;
+  // Position image
+  private float xPosition = 20; // Fixed
+  private float yPosition = 110;
+  private float yPositionDefault = 110;
+  private float yPosition_Offset = 600;
+
+  // Position Legend
+  private float xPositionForLegend = 20; // Fixed
+  private float yPositionForLegend = 10;
+  private float yPositionForLegend_Offset = yPosition_Offset + 90;
+
+  private float pageHeight = PDRectangle.A2.getHeight();
+  private float pageWidth = PDRectangle.A2.getWidth();
 
   private String m_PdfFile = "";
-  PDDocument m_document;
+  private PDDocument m_document;
+  private PDPage m_page;
+  private PDPageContentStream contentStream = null;
 
+  /**
+   * Constructor
+   * 
+   * @param a_pdfFile Filename of PDF file to be created.
+   */
   public CreatePdf(String a_pdfFile) {
     m_PdfFile = a_pdfFile;
     // Create a new PDF document
     m_document = new PDDocument();
   }
 
-  public void SaveDocument() {
-    try {
-      m_document.save(m_PdfFile);
-      m_document.close();
-    } catch (IOException e) {
-      lOGGER.log(Level.INFO, e.getMessage());
-    }
+  /**
+   * Save document and create file.
+   */
+  public void SaveDocument() throws IOException {
+    // Close the content stream
+    addFooter(contentStream, TimeStamp.getTimeStampNow());
+    contentStream.close();
+
+    m_document.save(m_PdfFile);
+    m_document.close();
   }
 
-  public void addImageTable(WritableImage aChartImage, String aTitle) throws IOException {
-    // Convert the WritableImage to BufferedImage
-    BufferedImage ChartImage = SwingFXUtils.fromFXImage(aChartImage, null);
+  public void CreatePage(c_PageSizeEnum a_PageSize, String aTitle) throws IOException {
+    // Close a content stream for the page
+    if (contentStream != null) {
+      // Close the content stream
+      addFooter(contentStream, TimeStamp.getTimeStampNow());
+      contentStream.close();
+    }
 
-    PDPage page = new PDPage();
-
-    float pageHeight = PDRectangle.A2.getHeight();
-    float pageWidth = PDRectangle.A2.getWidth();
-    calcTitleAndFooterCoord(pageHeight, pageWidth);
+    m_page = new PDPage();
+    switch (a_PageSize) {
+    case A2:
+      pageHeight = PDRectangle.A2.getHeight();
+      pageWidth = PDRectangle.A2.getWidth();
+      calcTitleAndFooterCoord(pageHeight, pageWidth);
+      break;
+    case A4:
+      pageHeight = PDRectangle.A4.getHeight();
+      pageWidth = PDRectangle.A4.getWidth();
+      calcTitleAndFooterCoord(pageHeight, pageWidth);
+    }
 
     // Set the page dimensions for landscape orientation
-    page.setMediaBox(new PDRectangle(pageHeight, pageWidth));
-    m_document.addPage(page);
+    m_page.setMediaBox(new PDRectangle(pageHeight, pageWidth));
+    m_document.addPage(m_page);
 
     // Create a content stream for the page
-
-    PDPageContentStream contentStream = new PDPageContentStream(m_document, page);
-
+    contentStream = new PDPageContentStream(m_document, m_page);
     addTitle(contentStream, aTitle);
+  }
+
+  /**
+   * Add a Chart image to a page
+   * 
+   * @param aChartImage
+   * @param aTitle
+   * @throws IOException
+   */
+  public void addImageTable(WritableImage aChartImage) throws IOException {
+    // Convert the WritableImage to BufferedImage
+    BufferedImage ChartImage = SwingFXUtils.fromFXImage(aChartImage, null);
 
     // Convert the JavaFX image to PDF image
     PDImageXObject pdfPieChartImage = LosslessFactory.createFromImage(m_document, ChartImage);
 
     // Draw the images on the page
     float scale = pageHeight / ChartImage.getWidth();
-    float imageWidth = ChartImage.getWidth() * scale;
+    float imageWidth = (ChartImage.getWidth() - (xMargin * 2)) * scale;
     float imageHeight = ChartImage.getHeight() * scale;
-    contentStream.drawImage(pdfPieChartImage, xPosition, yPosition, imageWidth, imageHeight);
-
-    addFooter(contentStream, TimeStamp.getTimeStampNow());
-
-    // Close the content stream
-    contentStream.close();
+    contentStream.drawImage(pdfPieChartImage, xPosition, yPositionDefault, imageWidth, imageHeight);
   }
 
-  public void addImageAndLegend(WritableImage aChartImage, WritableImage aLegendImage, String aTitle)
-      throws IOException {
+  /**
+   * Add a Chart image and a Legend to a page
+   * 
+   * @param aChartImage  Image of Chart
+   * @param aLegendImage Image of Legend.
+   * @param aTitle       Title for Chart
+   * @throws IOException may be thrown
+   */
+  public void addImageAndLegend(WritableImage aChartImage, WritableImage aLegendImage) throws IOException {
     // Convert the WritableImage to BufferedImage
     BufferedImage ChartImage = SwingFXUtils.fromFXImage(aChartImage, null);
     BufferedImage LegendImage = SwingFXUtils.fromFXImage(aLegendImage, null);
-
-    PDPage page = new PDPage();
-
-    float pageHeight = PDRectangle.A4.getHeight();
-    float pageWidth = PDRectangle.A4.getWidth();
-    calcTitleAndFooterCoord(pageHeight, pageWidth);
-
-    // Set the page dimensions for landscape orientation
-    page.setMediaBox(new PDRectangle(pageHeight, pageWidth));
-
-    m_document.addPage(page);
-    // Create a content stream for the page
-    PDPageContentStream contentStream = new PDPageContentStream(m_document, page);
-
-    addTitle(contentStream, aTitle);
 
     // Convert the JavaFX image to PDF image
     PDImageXObject pdfPieChartImage = LosslessFactory.createFromImage(m_document, ChartImage);
@@ -168,14 +204,16 @@ You can use these coordinates to position elements and set the page size when wo
     float legendImageHeight = LegendImage.getHeight();
     contentStream.drawImage(pdfLegendImage, xPositionForLegend, yPositionForLegend, legendImageWidth,
         legendImageHeight);
-
-    addFooter(contentStream, TimeStamp.getTimeStampNow());
-
-    // Close the content stream
-    contentStream.close();
   }
 
   // Private functions
+  /**
+   * Add title to Page
+   * 
+   * @param contentStream Stream to buildup page
+   * @param text          Title text
+   * @throws IOException may be thrown
+   */
   private void addTitle(PDPageContentStream contentStream, String text) throws IOException {
     contentStream.beginText();
     contentStream.setFont(PDType1Font.HELVETICA_BOLD, 18); // Choose your font
@@ -185,6 +223,13 @@ You can use these coordinates to position elements and set the page size when wo
     contentStream.endText();
   }
 
+  /**
+   * Add footer to Page
+   * 
+   * @param contentStream Stream to buildup page
+   * @param text          Footer text
+   * @throws IOException may be thrown
+   */
   private void addFooter(PDPageContentStream contentStream, String text) throws IOException {
     contentStream.beginText();
     contentStream.setFont(PDType1Font.HELVETICA, 10);
@@ -194,12 +239,26 @@ You can use these coordinates to position elements and set the page size when wo
     contentStream.endText();
   }
 
+  /**
+   * Calculate position Title and Footer, depends on Page size
+   * 
+   * @param a_PageWidth  Width of Page in points
+   * @param a_PageHeight Height of Page in points
+   */
   private void calcTitleAndFooterCoord(float a_PageWidth, float a_PageHeight) {
-    xTitle = 50;
-    yTitle = a_PageHeight - 75;
+    // xTitle = 50;
+    yTitle = a_PageHeight - yTitle_Offset;
 
-    xFooter = a_PageWidth - 140;
-    yFooter = 10;
+    xFooter = a_PageWidth - xFooter_Offset;
+    // yFooter = 10;
+
+    // Position image
+    // xPosition = 0;
+    yPosition = a_PageHeight - yPosition_Offset;
+
+    // Position Legend
+    // xPositionForLegend = 20;
+    yPositionForLegend = a_PageHeight - yPositionForLegend_Offset;
   }
 
 }

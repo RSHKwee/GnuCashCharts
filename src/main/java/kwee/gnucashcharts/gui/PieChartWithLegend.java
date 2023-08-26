@@ -56,7 +56,8 @@ public class PieChartWithLegend {
       if (selectedFile != null) {
         try {
           CreatePdf l_Pdf = new CreatePdf(selectedFile.getAbsolutePath());
-          l_Pdf.addImageAndLegend(pie.getPieChartImage(), pie.getLegendImage(), title);
+          l_Pdf.CreatePage(CreatePdf.c_PageSizeEnum.A4, title);
+          l_Pdf.addImageAndLegend(pie.getPieChartImage(), pie.getLegendImage());
           l_Pdf.SaveDocument();
           lOGGER.log(Level.INFO, "PDF file aangemaakt: " + selectedFile.getAbsolutePath());
 
