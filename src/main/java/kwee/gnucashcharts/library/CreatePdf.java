@@ -86,10 +86,10 @@ You can use these coordinates to position elements and set the page size when wo
     PDPage page = new PDPage();
 
     // Set the page dimensions for landscape orientation
-    page.setMediaBox(new PDRectangle(PDRectangle.A3.getHeight(), PDRectangle.A3.getWidth()));
+    page.setMediaBox(new PDRectangle(PDRectangle.A2.getHeight(), PDRectangle.A2.getWidth()));
     document.addPage(page);
 
-    float a3Height = PDRectangle.A3.getHeight();
+    float a3Height = PDRectangle.A2.getHeight();
     // float a3Width = PDRectangle.A3.getWidth();
     // Create a content stream for the page
     PDPageContentStream contentStream = new PDPageContentStream(document, page);
