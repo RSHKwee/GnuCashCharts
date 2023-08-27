@@ -84,6 +84,7 @@ public class BarChartWithLegend {
           l_Pdf.addImageAndLegend(m_BarChartDiagram.getBarChartImage(), m_BarChartDiagram.getLegendImage());
 
           // l_Pdf.CreatePage(CreatePdf.c_PageSizeEnum.A2, title1);
+          // l_Pdf.addTable(m_barchartable.getTable());
           l_Pdf.addImageTable(m_barchartable.getTableViewImage());
 
           l_Pdf.SaveDocument();

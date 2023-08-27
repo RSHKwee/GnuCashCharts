@@ -38,6 +38,10 @@ public class BarChartToTableScene {
     return new VBox(m_tableView);
   }
 
+  public TableView<OwnTableCell[]> getTable() {
+    return m_tableView;
+  }
+
   public WritableImage getTableViewImage() {
     // Convert the BarChart to a WritableImage
     SnapshotParameters params = new SnapshotParameters();
