@@ -90,6 +90,10 @@ public class StackedBarChartScene {
     return scene;
   }
 
+  public VBox getVBox() {
+    return new VBox(m_BarChart, m_legendGrid);
+  }
+
   public WritableImage getBarChartImage() {
     // Convert the BarChart to a WritableImage
     SnapshotParameters params = new SnapshotParameters();

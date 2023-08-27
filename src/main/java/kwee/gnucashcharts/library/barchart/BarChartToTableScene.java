@@ -41,7 +41,7 @@ public class BarChartToTableScene {
     VBox vbox = new VBox(m_tableView, SaveDialog);
 
     // Set up the scene and add the VBox to it
-    int x_Width = 85 * m_NumberColomns;
+    int x_Width = 85 * (m_NumberColomns + 3);
     Scene scene = new Scene(vbox, x_Width, 500);
     return scene;
   }
@@ -51,9 +51,13 @@ public class BarChartToTableScene {
     VBox vbox = new VBox(m_tableView);
 
     // Set up the scene and add the VBox to it
-    int x_Width = 85 * m_NumberColomns;
+    int x_Width = 85 * (m_NumberColomns + 3);
     Scene scene = new Scene(vbox, x_Width, 500);
     return scene;
+  }
+
+  public VBox getVBox() {
+    return new VBox(m_tableView);
   }
 
   public WritableImage getTableViewImage() {
