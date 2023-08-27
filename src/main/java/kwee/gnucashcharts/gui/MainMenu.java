@@ -138,8 +138,8 @@ public class MainMenu extends Application {
     // BarChartTable barTableWindow = new BarChartTable();
     Button buttonBarchart = new Button("Open Barchart");
     buttonBarchart.setOnAction(e -> {
-      ;
-      barwindow.openBarChartWindow(m_SelectedFile, m_tag, nrBars);
+      barwindow.openTabsWindow(m_SelectedFile, m_tag, nrBars);
+      // barwindow.openBarChartWindow(m_SelectedFile, m_tag, nrBars);
       // barTableWindow.openBarChartTableWindow(m_SelectedFile, m_tag, nrBars);
     });
 
