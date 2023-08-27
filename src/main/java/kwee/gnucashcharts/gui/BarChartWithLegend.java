@@ -29,9 +29,13 @@ public class BarChartWithLegend {
 
   public void openTabsWindow(File inpFile, String tag, int a_NrBars) {
     // Initialize
-    openBarChartWindow(inpFile, tag, a_NrBars);
-    openBarChartTableWindow(inpFile, tag, a_NrBars);
+    ActionGnuCshDbStackedBarChart l_barchart = new ActionGnuCshDbStackedBarChart(inpFile, a_NrBars);
+    SamengesteldeStaafData a_barData = l_barchart.getData();
+    m_BarChartDiagram = new StackedBarChartScene(a_barData, tag);
 
+    m_barchartable = new BarChartToTableScene(m_BarChartDiagram.getBarChart(), m_BarChartDiagram.getCombinedTotals());
+
+    // Layout
     title = "Barchart and Table for " + tag + " period " + m_barchartable.get_StartPeriod() + " to "
         + m_barchartable.get_EndPeriod();
 
@@ -56,119 +60,6 @@ public class BarChartWithLegend {
 
     tabStage.setScene(mainScene);
     tabStage.show();
-  }
-
-  public void openBarChartWindow(File inpFile, String tag, int a_NrBars) {
-    lOGGER.log(Level.INFO, "Tag " + tag);
-    ActionGnuCshDbStackedBarChart l_barchart = new ActionGnuCshDbStackedBarChart(inpFile, a_NrBars);
-
-    SamengesteldeStaafData a_barData = l_barchart.getData();
-    m_BarChartDiagram = new StackedBarChartScene(a_barData, tag);
-
-    /*
- * @formatter:off
- * 
-    title = "Barchart for " + tag + " period " + m_BarChartDiagram.get_StartPeriod() + " to " + m_BarChartDiagram.get_EndPeriod();
-
-    // Set the title of the window
-    Stage barchartStage = new Stage();
-    barchartStage.setTitle(title);
-
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Save File");
-    Button saveButton = new Button("Create PDF File");
-    saveButton.setOnAction(e -> {
-      FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.pdf)", "*.pdf");
-      fileChooser.getExtensionFilters().add(extFilter);
-      if (!MainMenu.m_param.get_PdfFile().isBlank()) {
-        File intFile = new File(MainMenu.m_param.get_PdfFile());
-        String ldir = intFile.getParent();
-        fileChooser.setInitialDirectory(new File(ldir));
-      }
-
-      // Show save file dialog
-      File selectedFile = fileChooser.showSaveDialog(barchartStage);
-      if (selectedFile != null) {
-        try {
-          String title1 = "Table for " + tag + " period " + m_barchartable.get_StartPeriod() + " to "
-              + m_barchartable.get_EndPeriod();
-
-          CreatePdf l_Pdf = new CreatePdf(selectedFile.getAbsolutePath());
-          l_Pdf.CreatePage(CreatePdf.c_PageSizeEnum.A4, title);
-          l_Pdf.addImageAndLegend(m_BarChartDiagram.getBarChartImage(), m_BarChartDiagram.getLegendImage());
-
-          l_Pdf.CreatePage(CreatePdf.c_PageSizeEnum.A2, title1);
-          l_Pdf.addImageTable(m_barchartable.getTableViewImage());
-
-          l_Pdf.SaveDocument();
-          lOGGER.log(Level.INFO, "PDF file generated: " + selectedFile.getAbsolutePath());
-
-          MainMenu.m_param.set_Pdf_file(selectedFile);
-          MainMenu.m_param.save();
-        } catch (IOException e1) {
-          lOGGER.log(Level.INFO, e1.getMessage());
-        }
-      }
-    });
-    VBox saveFileLayout = new VBox(saveButton);
-    saveFileLayout.setSpacing(10);
-    VBox.setMargin(saveButton, new Insets(10, 10, 10, 10));
- * @formatter:on
- */
-  }
-
-  private void openBarChartTableWindow(File inpFile, String tag, int a_NrBars) {
-    lOGGER.log(Level.INFO, "Tag " + tag);
-
-    m_barchartable = new BarChartToTableScene(m_BarChartDiagram.getBarChart(), m_BarChartDiagram.getCombinedTotals());
-    /*
-     * @formatter:off
-
-    title = "Barchart and Table for " + tag + " period " + m_barchartable.get_StartPeriod() + " to "
-        + m_barchartable.get_EndPeriod();
-
-    Stage barchartTableStage = new Stage();
-    barchartTableStage.setTitle(title);
-
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Save File");
-
-    Button saveButton = new Button("Create PDF File");
-    saveButton.setOnAction(e -> {
-      FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.pdf)", "*.pdf");
-      fileChooser.getExtensionFilters().add(extFilter);
-      if (!MainMenu.m_param.get_PdfFile().isBlank()) {
-        File intFile = new File(MainMenu.m_param.get_PdfFile());
-        String ldir = intFile.getParent();
-        fileChooser.setInitialDirectory(new File(ldir));
-      }
-      // Show save file dialog
-      File selectedFile = fileChooser.showSaveDialog(barchartTableStage);
-      if (selectedFile != null) {
-        try {
-          CreatePdf l_Pdf = new CreatePdf(selectedFile.getAbsolutePath());
-          l_Pdf.CreatePage(CreatePdf.c_PageSizeEnum.A2, title);
-          l_Pdf.addImageAndLegend(m_BarChartDiagram.getBarChartImage(), m_BarChartDiagram.getLegendImage());
-
-          // l_Pdf.CreatePage(CreatePdf.c_PageSizeEnum.A2, title1);
-          l_Pdf.addImageTable(m_barchartable.getTableViewImage());
-
-          l_Pdf.SaveDocument();
-          lOGGER.log(Level.INFO, "PDF file generated: " + selectedFile.getAbsolutePath());
-
-          MainMenu.m_param.set_Pdf_file(selectedFile);
-          MainMenu.m_param.save();
-        } catch (IOException e1) {
-          lOGGER.log(Level.INFO, e1.getMessage());
-        }
-      }
-    });
-    VBox saveFileLayout = new VBox(saveButton);
-    saveFileLayout.setSpacing(10);
-    VBox.setMargin(saveButton, new Insets(10, 10, 10, 10));
- * @formatter:on
- */
-
   }
 
   private VBox saveDialog(Stage a_Stage) {

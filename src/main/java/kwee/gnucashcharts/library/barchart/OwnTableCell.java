@@ -1,9 +1,9 @@
 package kwee.gnucashcharts.library.barchart;
 
-public class TableCell {
+public class OwnTableCell {
   private final String value;
 
-  public TableCell(String value) {
+  public OwnTableCell(String value) {
     this.value = value;
   }
 
