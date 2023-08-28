@@ -83,9 +83,6 @@ public class StackedBarChartScene {
 
     // Set up the scene and add the VBox to it
     Scene scene = new Scene(vbox, 800, 600);
-//TODO
-    // adjustColors();
-    // m_BarChart.setLegendVisible(false);
 
     return scene;
   }

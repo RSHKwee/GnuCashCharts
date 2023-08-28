@@ -2,6 +2,7 @@ package kwee.gnucashcharts.gui;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -18,7 +19,7 @@ import kwee.gnucashcharts.library.barchart.BarChartToTableScene;
 import kwee.gnucashcharts.library.barchart.StackedBarChartScene;
 import kwee.gnucashcharts.library.gnuCashDb.SamengesteldeStaafData;
 import kwee.gnucashcharts.library.CreatePdf;
-
+import kwee.gnucashcharts.library.MessageText;
 import kwee.logger.MyLogger;
 
 public class BarChartWithLegend {
@@ -26,22 +27,23 @@ public class BarChartWithLegend {
   private String title = "";
   private StackedBarChartScene m_BarChartDiagram;
   private BarChartToTableScene m_barchartable;
+  private MessageText m_Messages = new MessageText();
 
-  public void openTabsWindow(File inpFile, String tag, int a_NrBars) {
+  public void openTabsWindow(File inpFile, String tag, int a_NrBars, LocalDate a_Date) {
     // Initialize
-    ActionGnuCshDbStackedBarChart l_barchart = new ActionGnuCshDbStackedBarChart(inpFile, a_NrBars);
+    ActionGnuCshDbStackedBarChart l_barchart = new ActionGnuCshDbStackedBarChart(inpFile, a_NrBars, a_Date);
     SamengesteldeStaafData a_barData = l_barchart.getData();
     m_BarChartDiagram = new StackedBarChartScene(a_barData, tag);
 
     m_barchartable = new BarChartToTableScene(m_BarChartDiagram.getBarChart(), m_BarChartDiagram.getCombinedTotals());
 
     // Layout
-    title = "Barchart and Table for " + tag + " period " + m_barchartable.get_StartPeriod() + " to "
-        + m_barchartable.get_EndPeriod();
+    title = m_Messages.msg_BarchartTable + " " + tag + " " + m_Messages.msg_Period + " "
+        + m_barchartable.get_StartPeriod() + " " + m_Messages.msg_To + " " + m_barchartable.get_EndPeriod();
 
     TabPane tabPane = new TabPane();
-    Tab tabDiagram = new Tab("Diagram");
-    Tab tabTable = new Tab("Table");
+    Tab tabDiagram = new Tab(m_Messages.msg_Diagram);
+    Tab tabTable = new Tab(m_Messages.msg_Table);
 
     // Set the main scene on the primaryStage
     Stage tabStage = new Stage();
@@ -64,11 +66,11 @@ public class BarChartWithLegend {
 
   private VBox saveDialog(Stage a_Stage) {
     FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Save File");
+    fileChooser.setTitle(m_Messages.msg_SaveFile);
 
-    Button saveButton = new Button("Create PDF File");
+    Button saveButton = new Button(m_Messages.msg_PDFCreate);
     saveButton.setOnAction(e -> {
-      FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.pdf)", "*.pdf");
+      FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(m_Messages.msg_PDFFiles, "*.pdf");
       fileChooser.getExtensionFilters().add(extFilter);
       if (!MainMenu.m_param.get_PdfFile().isBlank()) {
         File intFile = new File(MainMenu.m_param.get_PdfFile());
@@ -88,7 +90,7 @@ public class BarChartWithLegend {
           l_Pdf.addImageTable(m_barchartable.getTableViewImage());
 
           l_Pdf.SaveDocument();
-          lOGGER.log(Level.INFO, "PDF file generated: " + selectedFile.getAbsolutePath());
+          lOGGER.log(Level.INFO, m_Messages.msg_PDFGenerated + ": " + selectedFile.getAbsolutePath());
 
           MainMenu.m_param.set_Pdf_file(selectedFile);
           MainMenu.m_param.save();

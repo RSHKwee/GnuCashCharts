@@ -28,10 +28,10 @@
 	  <artifactId>library</artifactId>
 	  <version>0.0.5.0</version>
 	</dependency> 
-     <dependency>
-    	<groupId>org.gnucash</groupId>
-    	<artifactId>gnucash-api</artifactId>
-    	<version>1.0.1-SNAPSHOT</version>
+    <dependency>
+      <groupId>org.gnucash</groupId>
+      <artifactId>gnucash-api</artifactId>
+      <version>1.0.1.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.poi</groupId>

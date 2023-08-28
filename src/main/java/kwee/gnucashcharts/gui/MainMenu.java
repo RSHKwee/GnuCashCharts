@@ -2,6 +2,7 @@ package kwee.gnucashcharts.gui;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -14,6 +15,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -29,11 +31,14 @@ import kwee.gnucashcharts.main.UserSetting;
 import kwee.library.JarInfo;
 import kwee.gnucashcharts.library.SubjectsColors;
 import kwee.gnucashcharts.library.JavaFXLogHandler;
+import kwee.gnucashcharts.library.MessageText;
 import kwee.gnucashcharts.library.TaartPuntData;
 
 public class MainMenu extends Application {
   private static final Logger lOGGER = MyLogger.getLogger();
   public static UserSetting m_param = new UserSetting();
+  private MessageText m_Messages = new MessageText();
+
   static String m_creationtime = Main.m_creationtime;
 
   private int c_NrBars = 24; // Months
@@ -47,9 +52,24 @@ public class MainMenu extends Application {
   private TaartPuntData m_pieData;
   private File m_SelectedFile;
   private SubjectsColors m_SubjColors;
+  private LocalDate m_Date = LocalDate.now();
 
   @Override
   public void start(Stage primaryStage) {
+    // Messages
+    String msg_Title = m_Messages.msg_Title;
+    String msg_SelectedDate = m_Messages.msg_SelectedDate;
+    String msg_InvInpInt = m_Messages.msg_InvInpInt;
+    String msg_NrOfMonth = m_Messages.msg_NrOfMonth;
+    String msg_MonthLab = m_Messages.msg_MonthLab;
+    String msg_DateLabel = m_Messages.msg_DateLabel;
+    String msg_SelectedSubject = m_Messages.msg_SelectedSubject;
+    String msg_SelectSubject = m_Messages.msg_SelectSubject;
+    String msg_ChooseGnuCashFile = m_Messages.msg_ChooseGnuCashFile;
+    String msg_OpenFile = m_Messages.msg_OpenFile;
+    String msg_OpenPieChart = m_Messages.msg_OpenPieChart;
+    String msg_OpenBarChart = m_Messages.msg_OpenBarChart;
+
     // Logger setup
     TextArea logTextArea = new TextArea();
     try {
@@ -60,55 +80,75 @@ public class MainMenu extends Application {
     } catch (IOException e1) {
       lOGGER.log(Level.INFO, e1.getMessage());
     }
+    // Defaults
+    nrBars = m_param.get_NrBars();
+
     // Menubar
 
     // Main Window
-    FileChooser fileChooser = new FileChooser();
-    ComboBox<String> comboBox = new ComboBox<>(FXCollections.observableArrayList("Option 1", "Option 2", "Option 3"));
+    FileChooser inpFileChooser = new FileChooser();
+    ComboBox<String> comboTagBox = new ComboBox<>(
+        FXCollections.observableArrayList("Option 1", "Option 2", "Option 3"));
+    Button buttonPiechart = new Button(msg_OpenPieChart);
+    TextField integerField = new TextField(Integer.toString(nrBars));
+    DatePicker datePicker = new DatePicker();
+    Button buttonBarchart = new Button(msg_OpenBarChart);
 
-    Label l_file = new Label("Kies een GnuCash bestand");
-    Label l_tag = new Label("Kies een tag");
+    comboTagBox.setDisable(true);
+    buttonPiechart.setDisable(true);
+    integerField.setDisable(true);
+    datePicker.setDisable(true);
+    buttonBarchart.setDisable(true);
 
-    Button openFileButton = new Button("Open File");
+    Label l_file = new Label(msg_ChooseGnuCashFile);
+    Label l_tag = new Label(msg_SelectSubject);
+
+    Button openFileButton = new Button(msg_OpenFile);
     openFileButton.setOnAction(e -> {
       if (!m_param.get_InputFile().isBlank()) {
         File intFile = new File(m_param.get_InputFile());
         String ldir = intFile.getParent();
-        fileChooser.setInitialDirectory(new File(ldir));
+        inpFileChooser.setInitialDirectory(new File(ldir));
       }
-      File selectedFile = fileChooser.showOpenDialog(primaryStage);
+      File selectedFile = inpFileChooser.showOpenDialog(primaryStage);
       if (selectedFile != null) {
         m_SelectedFile = selectedFile;
         if (selectedFile.getAbsolutePath().toLowerCase().contains(".html")) {
           ActionHTMLPieChart pieSelect = new ActionHTMLPieChart(selectedFile);
           m_pieData = pieSelect.getData();
         } else {
-          ActionGnuCashDbPieChart pieSelect = new ActionGnuCashDbPieChart(selectedFile);
+          ActionGnuCashDbPieChart pieSelect = new ActionGnuCashDbPieChart(selectedFile, m_Date);
           m_pieData = pieSelect.getData();
         }
 
         l_file.setText(selectedFile.getAbsolutePath());
-        l_tag.setText("Kies een tag");
+        l_tag.setText(msg_SelectSubject);
 
         Set<String> tags = m_pieData.getTags();
-        // Convert the Set<String> to ObservableList<String>
         ObservableList<String> observableList;
         observableList = FXCollections.observableArrayList(tags);
-        comboBox.setItems(observableList);
+        comboTagBox.setItems(observableList);
+
+        comboTagBox.setDisable(false);
+        datePicker.setDisable(false);
 
         m_param.set_InputFile(selectedFile);
         m_param.save();
       }
     });
 
-    comboBox.setOnAction(e -> {
-      String selectedOption = comboBox.getValue();
+    comboTagBox.setOnAction(e -> {
+      String selectedOption = comboTagBox.getValue();
       if (selectedOption != null) {
-        lOGGER.log(Level.INFO, "Selected Option: " + selectedOption);
+        lOGGER.log(Level.INFO, msg_SelectedSubject + ": " + selectedOption);
         m_tag = selectedOption;
         l_tag.setText(m_tag);
         m_param.set_Tag(m_tag);
         m_param.save();
+
+        buttonPiechart.setDisable(false);
+        integerField.setDisable(false);
+        buttonBarchart.setDisable(false);
 
         ArrayList<String> l_Subjects = m_pieData.getSubjects(m_tag);
         m_SubjColors = new SubjectsColors(l_Subjects);
@@ -116,38 +156,42 @@ public class MainMenu extends Application {
     });
 
     PieChartWithLegend piwindow = new PieChartWithLegend();
-    Button buttonPiechart = new Button("Open Piechart");
-    buttonPiechart.setOnAction(e -> piwindow.openPieChartWindow(m_pieData, m_tag, m_SubjColors));
+    buttonPiechart.setOnAction(e -> {
+      ActionGnuCashDbPieChart pieSelect = new ActionGnuCashDbPieChart(m_SelectedFile, m_Date);
+      m_pieData = pieSelect.getData();
+      piwindow.openPieChartWindow(m_pieData, m_tag, m_SubjColors, m_Date);
+    });
 
-    nrBars = m_param.get_NrBars();
-    Label titleLabel = new Label(" # bars:");
-    TextField integerField = new TextField(Integer.toString(nrBars));
+    Label nrBarsLabel = new Label(" # " + msg_MonthLab + ": ");
     integerField.setOnAction(e -> {
       try {
         int integerValue = Integer.parseInt(integerField.getText());
         nrBars = integerValue;
         m_param.set_NrBars(nrBars);
         m_param.save();
-        lOGGER.log(Level.INFO, "Number of bars: " + nrBars);
+        lOGGER.log(Level.INFO, msg_NrOfMonth + ": " + nrBars);
       } catch (NumberFormatException ex) {
-        lOGGER.log(Level.INFO, "Invalid input. Please enter a valid integer.");
+        lOGGER.log(Level.INFO, msg_InvInpInt);
       }
     });
 
+    Label endDateLabel = new Label(msg_DateLabel + ": ");
+    datePicker.setOnAction(event -> {
+      LocalDate selectedDate = datePicker.getValue();
+      m_Date = selectedDate;
+      lOGGER.log(Level.INFO, msg_SelectedDate + ": " + selectedDate);
+    });
+
     BarChartWithLegend barwindow = new BarChartWithLegend();
-    // BarChartTable barTableWindow = new BarChartTable();
-    Button buttonBarchart = new Button("Open Barchart");
     buttonBarchart.setOnAction(e -> {
-      barwindow.openTabsWindow(m_SelectedFile, m_tag, nrBars);
-      // barwindow.openBarChartWindow(m_SelectedFile, m_tag, nrBars);
-      // barTableWindow.openBarChartTableWindow(m_SelectedFile, m_tag, nrBars);
+      barwindow.openTabsWindow(m_SelectedFile, m_tag, nrBars, m_Date);
     });
 
     // Do the layout
     HBox openFileLayout = new HBox(openFileButton, l_file);
-    HBox selectOptionLayout = new HBox(comboBox, l_tag);
+    HBox selectOptionLayout = new HBox(endDateLabel, datePicker, comboTagBox, l_tag);
     HBox buttonPiechartLayout = new HBox(buttonPiechart);
-    HBox buttonBarchartLayout = new HBox(titleLabel, integerField, buttonBarchart);
+    HBox buttonBarchartLayout = new HBox(nrBarsLabel, integerField, buttonBarchart);
 
     openFileLayout.setSpacing(10);
     selectOptionLayout.setSpacing(10);
@@ -157,25 +201,32 @@ public class MainMenu extends Application {
     HBox.setMargin(openFileButton, new Insets(10, 10, 10, 10));
     HBox.setMargin(l_file, new Insets(10, 10, 10, 10));
 
-    HBox.setMargin(comboBox, new Insets(10, 10, 10, 10));
+    HBox.setMargin(comboTagBox, new Insets(10, 10, 10, 10));
     HBox.setMargin(l_tag, new Insets(10, 10, 10, 10));
 
     HBox.setMargin(buttonPiechart, new Insets(10, 10, 10, 10));
 
     HBox.setMargin(buttonBarchart, new Insets(10, 10, 10, 10));
-    HBox.setMargin(titleLabel, new Insets(10, 10, 10, 10));
+    HBox.setMargin(nrBarsLabel, new Insets(10, 10, 10, 10));
     HBox.setMargin(integerField, new Insets(10, 10, 10, 10));
+    HBox.setMargin(endDateLabel, new Insets(10, 10, 10, 10));
+    HBox.setMargin(datePicker, new Insets(10, 10, 10, 10));
 
     VBox layout = new VBox(openFileLayout, selectOptionLayout, buttonPiechartLayout, buttonBarchartLayout, logTextArea);
     Scene scene = new Scene(layout, 700, 375);
 
     primaryStage.setScene(scene);
-    primaryStage.setTitle("GnuCash charts (" + m_creationtime + ")");
+    primaryStage.setTitle(msg_Title);
     primaryStage.show();
 
-    lOGGER.log(Level.INFO, "GnuCash charts (" + m_creationtime + ")");
+    lOGGER.log(Level.INFO, msg_Title);
   }
 
+  /**
+   * Main entry point.
+   * 
+   * @param args Arguments
+   */
   public static void main(String[] args) {
     if (m_creationtime == null) {
       m_creationtime = JarInfo.getProjectVersion(Main.class);

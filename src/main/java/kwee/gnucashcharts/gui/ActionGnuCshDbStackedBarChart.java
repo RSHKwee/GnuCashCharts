@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import kwee.gnucashcharts.library.MessageText;
 import kwee.gnucashcharts.library.TaartPuntData;
 import kwee.gnucashcharts.library.gnuCashDb.TaartPuntDataImpl;
 import kwee.gnucashcharts.library.gnuCashDb.ReadGnuCashDB;
@@ -18,32 +19,38 @@ public class ActionGnuCshDbStackedBarChart {
   private int m_NrBars = 6;
   private SamengesteldeStaafData barData = new SamengesteldeStaafData();
   private File m_SelectedFile;
+  private MessageText m_Messages = new MessageText();
 
   /**
    * 
    * @param a_SelectedFile GnuCash file
    * @param a_nrBars       Number of Bars, the bars are a month apart.
+   * @param a_Date         Enddate period
    */
-  public ActionGnuCshDbStackedBarChart(File a_SelectedFile, int a_nrBars) {
-    lOGGER.log(Level.INFO, "Selected File: " + a_SelectedFile + ", #bars: " + a_nrBars);
-    m_NrBars = a_nrBars;
-    m_SelectedFile = a_SelectedFile;
-    MainMenu.m_param.set_InputFile(a_SelectedFile.getAbsoluteFile());
-    MainMenu.m_param.save();
+  public ActionGnuCshDbStackedBarChart(File a_SelectedFile, int a_nrBars, LocalDate a_Date) {
+    lOGGER.log(Level.INFO,
+        m_Messages.msg_SelectedFile + ": " + a_SelectedFile + ", #" + m_Messages.msg_MonthLab + ": " + a_nrBars);
+    try {
+      m_NrBars = a_nrBars;
+      m_SelectedFile = a_SelectedFile;
+      MainMenu.m_param.set_InputFile(a_SelectedFile.getAbsoluteFile());
+      MainMenu.m_param.save();
 
-    LocalDate l_Now = LocalDate.now();
-    addData(l_Now);
-    int year = l_Now.getYear();
-    int month = l_Now.getMonthValue();
-    int day = 1;
+      addData(a_Date);
+      int year = a_Date.getYear();
+      int month = a_Date.getMonthValue();
+      int day = 1;
 
-    for (int i = 0; i < m_NrBars; i++) {
-      LocalDate l_Date;
-      int[] l_result1 = decrMonth(year, month);
-      year = l_result1[0];
-      month = l_result1[1];
-      l_Date = LocalDate.of(year, month, day);
-      addData(l_Date);
+      for (int i = 0; i < m_NrBars; i++) {
+        LocalDate l_Date;
+        int[] l_result1 = decrMonth(year, month);
+        year = l_result1[0];
+        month = l_result1[1];
+        l_Date = LocalDate.of(year, month, day);
+        addData(l_Date);
+      }
+    } catch (Exception e) {
+      lOGGER.log(Level.INFO, e.getMessage());
     }
   }
 
