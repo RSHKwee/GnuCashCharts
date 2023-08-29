@@ -11,7 +11,7 @@ public class FormatAmount {
   private static final Logger lOGGER = MyLogger.getLogger();
 
   public static String formatAmount(double amt) {
-    Locale locale = new Locale("nl", "NL"); // Dutch locale for Euro format
+    Locale locale = GnuCashSingleton.getInstance().getLocale();
     NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(locale);
     String formattedNumber = currencyFormat.format(amt);
     return formattedNumber;

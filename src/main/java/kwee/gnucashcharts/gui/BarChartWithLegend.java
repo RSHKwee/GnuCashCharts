@@ -58,6 +58,7 @@ public class BarChartWithLegend {
     tabTable.setContent(tabTableSave);
 
     VBox tabTableTransposedSave = new VBox(saveDialog(tabStage), m_barchartable.getVBoxTransposed());
+//    VBox tabTableTransposedSave = new VBox(m_barchartable.getVBoxTransposed());
     tabTransposedTable.setContent(tabTableTransposedSave);
 
     // Create a Scene with the TabPane as the root

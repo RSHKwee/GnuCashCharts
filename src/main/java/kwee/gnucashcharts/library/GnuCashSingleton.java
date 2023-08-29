@@ -7,10 +7,12 @@ import java.time.LocalDate;
 
 public class GnuCashSingleton {
   ResourceBundle bundle;
+  Locale locale;
 
   // Private constructor to prevent instantiation from other classes
   private GnuCashSingleton() {
-    Locale locale = new Locale("nl", "NL"); // Dutch locale for Euro format
+    // java.util.MissingResourceException
+    locale = new Locale("nl", "NL"); // Dutch locale for Euro format
 
     // Load the resource bundle from the "translations" subfolder
     bundle = ResourceBundle.getBundle("translations/messages", locale);
@@ -27,6 +29,10 @@ public class GnuCashSingleton {
   }
 
   // Other methods and fields can be added as needed
+  public Locale getLocale() {
+    return locale;
+  }
+
   public void changeLanguage(String languageCode) {
     Locale newLocale = new Locale(languageCode);
     setLocale(newLocale);
