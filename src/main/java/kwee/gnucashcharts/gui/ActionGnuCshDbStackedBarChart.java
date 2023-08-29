@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import kwee.gnucashcharts.library.GnuCashSingleton;
 import kwee.gnucashcharts.library.TaartPuntData;
 import kwee.gnucashcharts.library.gnuCashDb.TaartPuntDataImpl;
+import kwee.library.ApplicationMessages;
 import kwee.gnucashcharts.library.gnuCashDb.ReadGnuCashDB;
 import kwee.gnucashcharts.library.gnuCashDb.SamengesteldeStaafData;
 
@@ -19,7 +19,7 @@ public class ActionGnuCshDbStackedBarChart {
   private int m_NrBars = 6;
   private SamengesteldeStaafData barData = new SamengesteldeStaafData();
   private File m_SelectedFile;
-  private GnuCashSingleton bundle = GnuCashSingleton.getInstance();
+  private ApplicationMessages bundle = ApplicationMessages.getInstance();
 
   /**
    * 

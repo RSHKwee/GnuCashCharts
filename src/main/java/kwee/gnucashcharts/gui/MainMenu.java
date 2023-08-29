@@ -28,18 +28,18 @@ import kwee.logger.MyLogger;
 
 import kwee.gnucashcharts.main.Main;
 import kwee.gnucashcharts.main.UserSetting;
+import kwee.library.ApplicationMessages;
 import kwee.library.JarInfo;
 import kwee.gnucashcharts.library.SubjectsColors;
 import kwee.gnucashcharts.library.JavaFXLogHandler;
 import kwee.gnucashcharts.library.TaartPuntData;
-import kwee.gnucashcharts.library.GnuCashSingleton;
 
 public class MainMenu extends Application {
   private static final Logger lOGGER = MyLogger.getLogger();
   static String m_creationtime = Main.m_creationtime;
   public static UserSetting m_param = new UserSetting();
 
-  private GnuCashSingleton bundle = GnuCashSingleton.getInstance();
+  private ApplicationMessages bundle = ApplicationMessages.getInstance();
 
   private int c_NrBars = 24; // Months
   private int nrBars = c_NrBars;

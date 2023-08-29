@@ -6,17 +6,16 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import kwee.gnucashcharts.library.GnuCashSingleton;
 import kwee.gnucashcharts.library.TaartPuntData;
 import kwee.gnucashcharts.library.gnuCashDb.ReadGnuCashDB;
 import kwee.gnucashcharts.library.gnuCashDb.TaartPuntDataImpl;
-
+import kwee.library.ApplicationMessages;
 import kwee.logger.MyLogger;
 
 public class ActionGnuCashDbPieChart {
   private static final Logger lOGGER = MyLogger.getLogger();
   private TaartPuntData pieData;
-  private GnuCashSingleton bundle = GnuCashSingleton.getInstance();
+  private ApplicationMessages bundle = ApplicationMessages.getInstance();
 
   public ActionGnuCashDbPieChart(File a_SelectedFile, LocalDate a_Date) {
     lOGGER.log(Level.INFO, bundle.getMessage("SelectedSubject", a_SelectedFile.getAbsolutePath()));

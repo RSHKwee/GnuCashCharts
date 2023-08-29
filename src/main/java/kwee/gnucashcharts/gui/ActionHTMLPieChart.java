@@ -5,16 +5,16 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import kwee.gnucashcharts.library.GnuCashSingleton;
 import kwee.gnucashcharts.library.TaartPuntData;
 import kwee.gnucashcharts.library.html.ReadHTMLTable;
 import kwee.gnucashcharts.library.html.TaartPuntDataImpl;
+import kwee.library.ApplicationMessages;
 import kwee.logger.MyLogger;
 
 public class ActionHTMLPieChart {
   private static final Logger lOGGER = MyLogger.getLogger();
   private TaartPuntData pieData;
-  private GnuCashSingleton bundle = GnuCashSingleton.getInstance();
+  private ApplicationMessages bundle = ApplicationMessages.getInstance();
 
   public ActionHTMLPieChart(File a_SelectedFile) {
     lOGGER.log(Level.INFO, bundle.getMessage("SelectedFile", a_SelectedFile.getAbsolutePath()));

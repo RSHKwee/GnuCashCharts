@@ -18,8 +18,8 @@ import javafx.stage.Stage;
 import kwee.gnucashcharts.library.barchart.BarChartToTableScene;
 import kwee.gnucashcharts.library.barchart.StackedBarChartScene;
 import kwee.gnucashcharts.library.gnuCashDb.SamengesteldeStaafData;
+import kwee.library.ApplicationMessages;
 import kwee.gnucashcharts.library.CreatePdf;
-import kwee.gnucashcharts.library.GnuCashSingleton;
 import kwee.logger.MyLogger;
 
 public class BarChartWithLegend {
@@ -27,7 +27,7 @@ public class BarChartWithLegend {
   private String title = "";
   private StackedBarChartScene m_BarChartDiagram;
   private BarChartToTableScene m_barchartable;
-  private GnuCashSingleton bundle = GnuCashSingleton.getInstance();
+  private ApplicationMessages bundle = ApplicationMessages.getInstance();
 //  private MessageText m_Messages = new MessageText();
 
   public void openTabsWindow(File inpFile, String tag, int a_NrBars, LocalDate a_Date) {
@@ -35,7 +35,6 @@ public class BarChartWithLegend {
     ActionGnuCshDbStackedBarChart l_barchart = new ActionGnuCshDbStackedBarChart(inpFile, a_NrBars, a_Date);
     SamengesteldeStaafData a_barData = l_barchart.getData();
     m_BarChartDiagram = new StackedBarChartScene(a_barData, tag);
-
     m_barchartable = new BarChartToTableScene(m_BarChartDiagram.getBarChart(), m_BarChartDiagram.getCombinedTotals());
 
     // Layout

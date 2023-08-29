@@ -21,7 +21,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.VBox;
 
 import kwee.gnucashcharts.library.FormatAmount;
-import kwee.gnucashcharts.library.GnuCashSingleton;
+import kwee.library.ApplicationMessages;
 import kwee.logger.MyLogger;
 
 public class BarChartToTableScene {
@@ -29,7 +29,7 @@ public class BarChartToTableScene {
   private StackedBarChart<String, Number> m_stackedBarChart;
   private TableView<OwnTableCell[]> m_tableView = new TableView<>();
   private TableView<String[]> m_TransposedTableView = new TableView<>();
-  private GnuCashSingleton bundle = GnuCashSingleton.getInstance();
+  private ApplicationMessages bundle = ApplicationMessages.getInstance();
 
   private SortedMap<String, Double> m_DateTotAmt;
   private int m_NumberColomns;

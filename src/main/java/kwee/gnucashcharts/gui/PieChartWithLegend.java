@@ -17,12 +17,11 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import kwee.gnucashcharts.library.FormatAmount;
-import kwee.gnucashcharts.library.GnuCashSingleton;
 import kwee.gnucashcharts.library.TaartPuntData;
 import kwee.gnucashcharts.library.SubjectsColors;
 import kwee.gnucashcharts.library.CreatePdf;
 import kwee.gnucashcharts.library.piechart.PieChartScene;
-
+import kwee.library.ApplicationMessages;
 import kwee.logger.MyLogger;
 
 public class PieChartWithLegend {
@@ -30,7 +29,7 @@ public class PieChartWithLegend {
 
   private double tot_amt = 0.0;
   private String title = "";
-  private GnuCashSingleton bundle = GnuCashSingleton.getInstance();
+  private ApplicationMessages bundle = ApplicationMessages.getInstance();
 
   public void openPieChartWindow(TaartPuntData pieData, String tag, SubjectsColors a_AccColor, LocalDate a_Date) {
     lOGGER.log(Level.INFO, bundle.getMessage("SelectedSubject", tag));
