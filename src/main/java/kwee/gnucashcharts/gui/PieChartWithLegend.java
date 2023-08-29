@@ -17,7 +17,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import kwee.gnucashcharts.library.FormatAmount;
-import kwee.gnucashcharts.library.MessageText;
+import kwee.gnucashcharts.library.GnuCashSingleton;
 import kwee.gnucashcharts.library.TaartPuntData;
 import kwee.gnucashcharts.library.SubjectsColors;
 import kwee.gnucashcharts.library.CreatePdf;
@@ -30,10 +30,10 @@ public class PieChartWithLegend {
 
   private double tot_amt = 0.0;
   private String title = "";
-  private MessageText m_Messages = new MessageText();
+  private GnuCashSingleton bundle = GnuCashSingleton.getInstance();
 
   public void openPieChartWindow(TaartPuntData pieData, String tag, SubjectsColors a_AccColor, LocalDate a_Date) {
-    lOGGER.log(Level.INFO, m_Messages.msg_SelectedSubject + ": " + tag);
+    lOGGER.log(Level.INFO, bundle.getMessage("SelectedSubject", tag));
 
     Stage piechartStage = new Stage();
     PieChartScene pie = new PieChartScene(pieData, tag, a_AccColor);
@@ -45,16 +45,15 @@ public class PieChartWithLegend {
     String formattedDate = a_Date.format(formatter);
 
     tot_amt = pie.getTotalAmount();
-    title = tag + " " + m_Messages.msg_onDate + " " + formattedDate + "(" + m_Messages.msg_Total + " "
-        + FormatAmount.formatAmount(tot_amt) + ")";
+    title = bundle.getMessage("PiechartTitle", tag, formattedDate, FormatAmount.formatAmount(tot_amt));
     piechartStage.setTitle(title);
 
     FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle(m_Messages.msg_SaveFile);
+    fileChooser.setTitle(bundle.getMessage("SaveFile"));
 
-    Button saveButton = new Button(m_Messages.msg_PDFCreate);
+    Button saveButton = new Button(bundle.getMessage("PDFCreate"));
     saveButton.setOnAction(e -> {
-      FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(m_Messages.msg_PDFFiles, "*.pdf");
+      FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(bundle.getMessage("PDFFiles"), "*.pdf");
       fileChooser.getExtensionFilters().add(extFilter);
       if (!MainMenu.m_param.get_PdfFile().isBlank()) {
         File intFile = new File(MainMenu.m_param.get_PdfFile());
@@ -69,7 +68,7 @@ public class PieChartWithLegend {
           l_Pdf.CreatePage(CreatePdf.c_PageSizeEnum.A4, title);
           l_Pdf.addImageAndLegend(pie.getPieChartImage(), pie.getLegendImage());
           l_Pdf.SaveDocument();
-          lOGGER.log(Level.INFO, m_Messages.msg_PDFGenerated + ": " + selectedFile.getAbsolutePath());
+          lOGGER.log(Level.INFO, bundle.getMessage("PDFGenerated", selectedFile.getAbsolutePath()));
 
           MainMenu.m_param.set_Pdf_file(selectedFile);
           MainMenu.m_param.save();

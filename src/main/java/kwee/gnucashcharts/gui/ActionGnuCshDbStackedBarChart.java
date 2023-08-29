@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import kwee.gnucashcharts.library.MessageText;
+import kwee.gnucashcharts.library.GnuCashSingleton;
 import kwee.gnucashcharts.library.TaartPuntData;
 import kwee.gnucashcharts.library.gnuCashDb.TaartPuntDataImpl;
 import kwee.gnucashcharts.library.gnuCashDb.ReadGnuCashDB;
@@ -19,7 +19,7 @@ public class ActionGnuCshDbStackedBarChart {
   private int m_NrBars = 6;
   private SamengesteldeStaafData barData = new SamengesteldeStaafData();
   private File m_SelectedFile;
-  private MessageText m_Messages = new MessageText();
+  private GnuCashSingleton bundle = GnuCashSingleton.getInstance();
 
   /**
    * 
@@ -29,7 +29,7 @@ public class ActionGnuCshDbStackedBarChart {
    */
   public ActionGnuCshDbStackedBarChart(File a_SelectedFile, int a_nrBars, LocalDate a_Date) {
     lOGGER.log(Level.INFO,
-        m_Messages.msg_SelectedFile + ": " + a_SelectedFile + ", #" + m_Messages.msg_MonthLab + ": " + a_nrBars);
+        bundle.getMessage("BarChartSelections", a_SelectedFile.getAbsolutePath(), Integer.toString(a_nrBars)));
     try {
       m_NrBars = a_nrBars;
       m_SelectedFile = a_SelectedFile;

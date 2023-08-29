@@ -209,36 +209,7 @@ public class StackedBarChartScene {
     m_legendGrid.setHgap(20);
     m_legendGrid.setVgap(5);
     m_legendGrid.setAlignment(Pos.CENTER);
-
-    /*
-     * @formatter:off
-    int row = 0;
-    int col = 0;
-    m_Teller = 0;
-    for (PieChart.Data data : m_pieChartData) {
-      Color Kleur = getDistinctColor(m_Teller, observableList.size());
-      Label colorBox = new Label();
-      colorBox.setPrefSize(15, 15);
-      colorBox.setStyle("-fx-background-color: " + toHex(Kleur) + ";");
-
-      double amt = data.getPieValue();
-      int perc = (int) ((amt / m_total_amount) * 10000.0);
-      Label label = new Label(data.getName() + " - " + perc / 100.0 + "%");
-      label.setStyle("-fx-font-size: 14px; -fx-text-fill: black;");
-
-      m_legendGrid.add(colorBox, col * 2, row);
-      m_legendGrid.add(label, col * 2 + 1, row);
-
-      col++;
-      if (col == 3) {
-        col = 0;
-        row++;
-      }
-    }
-      m_Teller++;
-      @formatter:on
-      */
-
+    // TODO
   }
 
 }

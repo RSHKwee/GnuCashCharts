@@ -31,15 +31,15 @@ import kwee.gnucashcharts.main.UserSetting;
 import kwee.library.JarInfo;
 import kwee.gnucashcharts.library.SubjectsColors;
 import kwee.gnucashcharts.library.JavaFXLogHandler;
-import kwee.gnucashcharts.library.MessageText;
 import kwee.gnucashcharts.library.TaartPuntData;
+import kwee.gnucashcharts.library.GnuCashSingleton;
 
 public class MainMenu extends Application {
   private static final Logger lOGGER = MyLogger.getLogger();
-  public static UserSetting m_param = new UserSetting();
-  private MessageText m_Messages = new MessageText();
-
   static String m_creationtime = Main.m_creationtime;
+  public static UserSetting m_param = new UserSetting();
+
+  private GnuCashSingleton bundle = GnuCashSingleton.getInstance();
 
   private int c_NrBars = 24; // Months
   private int nrBars = c_NrBars;
@@ -56,20 +56,6 @@ public class MainMenu extends Application {
 
   @Override
   public void start(Stage primaryStage) {
-    // Messages
-    String msg_Title = m_Messages.msg_Title;
-    String msg_SelectedDate = m_Messages.msg_SelectedDate;
-    String msg_InvInpInt = m_Messages.msg_InvInpInt;
-    String msg_NrOfMonth = m_Messages.msg_NrOfMonth;
-    String msg_MonthLab = m_Messages.msg_MonthLab;
-    String msg_DateLabel = m_Messages.msg_DateLabel;
-    String msg_SelectedSubject = m_Messages.msg_SelectedSubject;
-    String msg_SelectSubject = m_Messages.msg_SelectSubject;
-    String msg_ChooseGnuCashFile = m_Messages.msg_ChooseGnuCashFile;
-    String msg_OpenFile = m_Messages.msg_OpenFile;
-    String msg_OpenPieChart = m_Messages.msg_OpenPieChart;
-    String msg_OpenBarChart = m_Messages.msg_OpenBarChart;
-
     // Logger setup
     TextArea logTextArea = new TextArea();
     try {
@@ -89,10 +75,10 @@ public class MainMenu extends Application {
     FileChooser inpFileChooser = new FileChooser();
     ComboBox<String> comboTagBox = new ComboBox<>(
         FXCollections.observableArrayList("Option 1", "Option 2", "Option 3"));
-    Button buttonPiechart = new Button(msg_OpenPieChart);
+    Button buttonPiechart = new Button(bundle.getMessage("OpenPieChart"));
     TextField integerField = new TextField(Integer.toString(nrBars));
     DatePicker datePicker = new DatePicker();
-    Button buttonBarchart = new Button(msg_OpenBarChart);
+    Button buttonBarchart = new Button(bundle.getMessage("OpenBarChart"));
 
     comboTagBox.setDisable(true);
     buttonPiechart.setDisable(true);
@@ -100,10 +86,10 @@ public class MainMenu extends Application {
     datePicker.setDisable(true);
     buttonBarchart.setDisable(true);
 
-    Label l_file = new Label(msg_ChooseGnuCashFile);
-    Label l_tag = new Label(msg_SelectSubject);
+    Label l_file = new Label(bundle.getMessage("ChooseGnuCashFile"));
+    Label l_tag = new Label(bundle.getMessage("SelectSubject"));
 
-    Button openFileButton = new Button(msg_OpenFile);
+    Button openFileButton = new Button(bundle.getMessage("OpenFile"));
     openFileButton.setOnAction(e -> {
       if (!m_param.get_InputFile().isBlank()) {
         File intFile = new File(m_param.get_InputFile());
@@ -122,7 +108,7 @@ public class MainMenu extends Application {
         }
 
         l_file.setText(selectedFile.getAbsolutePath());
-        l_tag.setText(msg_SelectSubject);
+        l_tag.setText(bundle.getMessage("SelectSubject"));
 
         Set<String> tags = m_pieData.getTags();
         ObservableList<String> observableList;
@@ -140,7 +126,7 @@ public class MainMenu extends Application {
     comboTagBox.setOnAction(e -> {
       String selectedOption = comboTagBox.getValue();
       if (selectedOption != null) {
-        lOGGER.log(Level.INFO, msg_SelectedSubject + ": " + selectedOption);
+        lOGGER.log(Level.INFO, bundle.getMessage("SelectedSubject", selectedOption));
         m_tag = selectedOption;
         l_tag.setText(m_tag);
         m_param.set_Tag(m_tag);
@@ -162,24 +148,24 @@ public class MainMenu extends Application {
       piwindow.openPieChartWindow(m_pieData, m_tag, m_SubjColors, m_Date);
     });
 
-    Label nrBarsLabel = new Label(" # " + msg_MonthLab + ": ");
+    Label nrBarsLabel = new Label(bundle.getMessage("MonthLab"));
     integerField.setOnAction(e -> {
       try {
         int integerValue = Integer.parseInt(integerField.getText());
         nrBars = integerValue;
         m_param.set_NrBars(nrBars);
         m_param.save();
-        lOGGER.log(Level.INFO, msg_NrOfMonth + ": " + nrBars);
+        lOGGER.log(Level.INFO, bundle.getMessage("NrOfMonth", nrBars));
       } catch (NumberFormatException ex) {
-        lOGGER.log(Level.INFO, msg_InvInpInt);
+        lOGGER.log(Level.INFO, bundle.getMessage("InvInpInt"));
       }
     });
 
-    Label endDateLabel = new Label(msg_DateLabel + ": ");
+    Label endDateLabel = new Label(bundle.getMessage("DateLabel"));
     datePicker.setOnAction(event -> {
       LocalDate selectedDate = datePicker.getValue();
       m_Date = selectedDate;
-      lOGGER.log(Level.INFO, msg_SelectedDate + ": " + selectedDate);
+      lOGGER.log(Level.INFO, bundle.getMessage("SelectedDate", selectedDate));
     });
 
     BarChartWithLegend barwindow = new BarChartWithLegend();
@@ -216,10 +202,10 @@ public class MainMenu extends Application {
     Scene scene = new Scene(layout, 700, 375);
 
     primaryStage.setScene(scene);
-    primaryStage.setTitle(msg_Title);
+    primaryStage.setTitle(bundle.getMessage("Title", m_creationtime));
     primaryStage.show();
 
-    lOGGER.log(Level.INFO, msg_Title);
+    lOGGER.log(Level.INFO, bundle.getMessage("Title", m_creationtime));
   }
 
   /**
