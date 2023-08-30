@@ -16,6 +16,7 @@ public class AvailableTranslationsExample {
       ResourceBundle bundle = ResourceBundle.getBundle(baseName, locale);
       if (bundle.getLocale().equals(locale)) {
         System.out.println("Translation available for locale: " + locale);
+        System.out.println("Language code: " + locale.getLanguage());
       }
     }
   }
