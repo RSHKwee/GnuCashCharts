@@ -1,5 +1,6 @@
 package kwee.gnucashcharts.gui;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -14,13 +15,21 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -38,6 +47,12 @@ public class MainMenu extends Application {
   private static final Logger lOGGER = MyLogger.getLogger();
   static String m_creationtime = Main.m_creationtime;
   public static UserSetting m_param = new UserSetting();
+  private final String[] c_levels = { "OFF", "SEVERE", "WARNING", "INFO", "CONFIG", "FINE", "FINER", "FINEST", "ALL" };
+
+  // Replace "path/to/help/file" with the actual path to your help file
+  static final String m_HelpFile = "GNUCharts.chm";
+
+  private String m_Language = "en";
 
   private ApplicationMessages bundle = ApplicationMessages.getInstance();
 
@@ -70,6 +85,7 @@ public class MainMenu extends Application {
     nrBars = m_param.get_NrBars();
 
     // Menubar
+    MenuBar menubar = doTheMenuBar(primaryStage);
 
     // Main Window
     FileChooser inpFileChooser = new FileChooser();
@@ -199,13 +215,128 @@ public class MainMenu extends Application {
     HBox.setMargin(datePicker, new Insets(10, 10, 10, 10));
 
     VBox layout = new VBox(openFileLayout, selectOptionLayout, buttonPiechartLayout, buttonBarchartLayout, logTextArea);
-    Scene scene = new Scene(layout, 700, 375);
 
+    BorderPane root = new BorderPane();
+    root.setTop(menubar);
+    root.setCenter(layout);
+
+    Scene scene = new Scene(root, 700, 375);
     primaryStage.setScene(scene);
     primaryStage.setTitle(bundle.getMessage("Title", m_creationtime));
     primaryStage.show();
 
     lOGGER.log(Level.INFO, bundle.getMessage("Title", m_creationtime));
+  }
+
+  private int il = 0;
+
+  private MenuBar doTheMenuBar(Stage primaryStage) {
+    MenuBar menuBar = new MenuBar();
+
+    // Settings Menu
+    Menu mnSettings = new Menu("Settings");
+    mnSettings.setDisable(false);
+
+    // Loglevel:
+    Menu mntmLoglevel = new Menu("Loglevel");
+    ToggleGroup toggleGroup = new ToggleGroup();
+    RadioMenuItem[] loglevelitems = new RadioMenuItem[c_levels.length];
+
+    ArrayList<String> ca_Levels = new ArrayList<String>();
+    for (il = 0; il < c_levels.length; il++) {
+      ca_Levels.add(c_levels[il]);
+    }
+
+    il = 0;
+    ca_Levels.forEach(level -> {
+      loglevelitems[il] = new RadioMenuItem(c_levels[il]);
+      toggleGroup.getToggles().add(loglevelitems[il]);
+      mntmLoglevel.getItems().add(loglevelitems[il]);
+      loglevelitems[il].setOnAction(e -> {
+        m_Level = Level.parse(level);
+        System.out.println(level + " Selected");
+      });
+      if (c_levels[il].toLowerCase().equals(m_Level.toString().toLowerCase())) {
+        toggleGroup.selectToggle(loglevelitems[il]);
+      }
+      il++;
+    });
+    mnSettings.getItems().add(mntmLoglevel);
+
+    // Look and Feel
+    // Will not be implemented....
+
+    // Language
+    ToggleGroup toggleLanguagesGroup = new ToggleGroup();
+    Set<String> langs = bundle.getTranslations();
+    Menu mntmLanguages = new Menu("Languages");
+    il = 0;
+    RadioMenuItem[] mnLanguages = new RadioMenuItem[langs.size()];
+    langs.forEach(lang -> {
+      mnLanguages[il] = new RadioMenuItem(lang);
+      toggleLanguagesGroup.getToggles().add(mnLanguages[il]);
+      mntmLanguages.getItems().add(mnLanguages[il]);
+      mnLanguages[il].setOnAction(e -> {
+        m_Language = lang;
+        System.out.println(lang + " Selected");
+      });
+      if (lang.toLowerCase().equals(m_Language.toLowerCase())) {
+        toggleLanguagesGroup.selectToggle(mnLanguages[il]);
+      }
+      il++;
+    });
+    mnSettings.getItems().add(mntmLanguages);
+
+    // Logfiles
+    CheckMenuItem checkMenuItem = new CheckMenuItem("Logfiles");
+    checkMenuItem.setOnAction(e -> {
+      DirectoryChooser directoryChooser = new DirectoryChooser();
+      directoryChooser.setTitle("Output Directory");
+      File selectedDirectory = directoryChooser.showDialog(primaryStage);
+
+      if (selectedDirectory != null) {
+        // The user selected a directory
+        String selectedPath = selectedDirectory.getAbsolutePath();
+        // Do something with the selected directory path
+        System.out.println("Selected Directory: " + selectedPath);
+      } else {
+        // No directory was selected
+        System.out.println("No directory selected.");
+      }
+
+    });
+    mnSettings.getItems().add(checkMenuItem);
+
+    // Stored preferences
+
+    // Menu "?"
+    Menu questMenu = new Menu("?");
+
+    // About
+    MenuItem menuAbout = new MenuItem("About");
+
+    // Help
+    MenuItem menuHelp = new MenuItem("Help");
+    menuHelp.setOnAction(e -> {
+      File helpFile = new File("help\\" + m_Language + "\\" + m_HelpFile);
+
+      if (helpFile.exists()) {
+        try {
+          // Open the help file with the default viewer
+          Desktop.getDesktop().open(helpFile);
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
+      } else {
+        lOGGER.log(Level.INFO, bundle.getMessage("HelpFileNotFound", helpFile.getAbsolutePath()));
+      }
+    });
+    questMenu.getItems().add(menuHelp);
+    questMenu.getItems().add(menuAbout);
+
+    // MenuBar build up
+    menuBar.getMenus().addAll(mnSettings, questMenu);
+    return menuBar;
   }
 
   /**

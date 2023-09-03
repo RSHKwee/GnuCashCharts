@@ -1,5 +1,9 @@
-package kwee.gnucashcharts.gui;
+package zandbak_reform;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,12 +13,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 
 import javafx.scene.layout.BorderPane;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import kwee.library.ApplicationMessages;
 import kwee.logger.MyLogger;
 
 public class MenuBarMain extends Application {
   private static final Logger lOGGER = MyLogger.getLogger();
+  private final String[] c_levels = { "OFF", "SEVERE", "WARNING", "INFO", "CONFIG", "FINE", "FINER", "FINEST", "ALL" };
+
+  // Replace "path/to/help/file" with the actual path to your help file
+  static final String m_HelpFile = "GNUCharts.chm";
 
   private Level m_Level = Level.INFO;
   private String m_Language = "en";
@@ -42,114 +51,38 @@ public class MenuBarMain extends Application {
   public void start(Stage primaryStage) throws Exception {
     MenuBar menuBar = new MenuBar();
 
+    // Settings Menu
     Menu mnSettings = new Menu("Settings");
     mnSettings.setDisable(false);
 
     // Loglevel:
     Menu mntmLoglevel = new Menu("Loglevel");
-    RadioMenuItem mnItemLogOFF = new RadioMenuItem("OFF");
-    RadioMenuItem mnItemLogSEVERE = new RadioMenuItem("SEVERE");
-    RadioMenuItem mnItemLogWARNING = new RadioMenuItem("WARNING");
-    RadioMenuItem mnItemLogINFO = new RadioMenuItem("INFO");
-    RadioMenuItem mnItemLogCONFIG = new RadioMenuItem("CONFIG");
-    RadioMenuItem mnItemLogFINE = new RadioMenuItem("FINE");
-    RadioMenuItem mnItemLogFINER = new RadioMenuItem("FINER");
-    RadioMenuItem mnItemLogFINEST = new RadioMenuItem("FINEST");
-    RadioMenuItem mnItemLogALL = new RadioMenuItem("ALL");
-
     ToggleGroup toggleGroup = new ToggleGroup();
-    toggleGroup.getToggles().add(mnItemLogOFF);
-    toggleGroup.getToggles().add(mnItemLogSEVERE);
-    toggleGroup.getToggles().add(mnItemLogWARNING);
-    toggleGroup.getToggles().add(mnItemLogINFO);
-    toggleGroup.getToggles().add(mnItemLogCONFIG);
-    toggleGroup.getToggles().add(mnItemLogFINE);
-    toggleGroup.getToggles().add(mnItemLogFINER);
-    toggleGroup.getToggles().add(mnItemLogFINEST);
-    toggleGroup.getToggles().add(mnItemLogALL);
+    RadioMenuItem[] loglevelitems = new RadioMenuItem[c_levels.length];
 
-    switch (m_Level.toString()) {
-    case "OFF":
-      toggleGroup.selectToggle(mnItemLogOFF);
-      break;
-    case "SEVERE":
-      toggleGroup.selectToggle(mnItemLogSEVERE);
-      break;
-    case "WARNING":
-      toggleGroup.selectToggle(mnItemLogWARNING);
-      break;
-    case "INFO":
-      toggleGroup.selectToggle(mnItemLogINFO);
-      break;
-    case "CONFIG":
-      toggleGroup.selectToggle(mnItemLogCONFIG);
-      break;
-    case "FINE":
-      toggleGroup.selectToggle(mnItemLogFINE);
-      break;
-    case "FINER":
-      toggleGroup.selectToggle(mnItemLogFINER);
-      break;
-    case "FINEST":
-      toggleGroup.selectToggle(mnItemLogFINEST);
-      break;
-    case "ALL":
-      toggleGroup.selectToggle(mnItemLogALL);
-      break;
-    default:
-      toggleGroup.selectToggle(mnItemLogINFO);
+    ArrayList<String> ca_Levels = new ArrayList<String>();
+    for (il = 0; il < c_levels.length; il++) {
+      ca_Levels.add(c_levels[il]);
     }
 
-    mntmLoglevel.getItems().add(mnItemLogOFF);
-    mntmLoglevel.getItems().add(mnItemLogSEVERE);
-    mntmLoglevel.getItems().add(mnItemLogWARNING);
-    mntmLoglevel.getItems().add(mnItemLogINFO);
-    mntmLoglevel.getItems().add(mnItemLogCONFIG);
-    mntmLoglevel.getItems().add(mnItemLogFINE);
-    mntmLoglevel.getItems().add(mnItemLogFINER);
-    mntmLoglevel.getItems().add(mnItemLogFINEST);
-    mntmLoglevel.getItems().add(mnItemLogALL);
-
+    il = 0;
+    ca_Levels.forEach(level -> {
+      loglevelitems[il] = new RadioMenuItem(c_levels[il]);
+      toggleGroup.getToggles().add(loglevelitems[il]);
+      mntmLoglevel.getItems().add(loglevelitems[il]);
+      loglevelitems[il].setOnAction(e -> {
+        m_Level = Level.parse(level);
+        System.out.println(level + " Selected");
+      });
+      if (c_levels[il].toLowerCase().equals(m_Level.toString().toLowerCase())) {
+        toggleGroup.selectToggle(loglevelitems[il]);
+      }
+      il++;
+    });
     mnSettings.getItems().add(mntmLoglevel);
 
-    mnItemLogOFF.setOnAction(e -> {
-      m_Level = Level.OFF;
-      System.out.println("OFF Selected");
-    });
-    mnItemLogSEVERE.setOnAction(e -> {
-      m_Level = Level.SEVERE;
-      System.out.println("SEVERE Selected");
-    });
-    mnItemLogWARNING.setOnAction(e -> {
-      m_Level = Level.WARNING;
-      System.out.println("WARNING Selected");
-    });
-    mnItemLogINFO.setOnAction(e -> {
-      m_Level = Level.INFO;
-      System.out.println("INFO Selected");
-    });
-    mnItemLogCONFIG.setOnAction(e -> {
-      m_Level = Level.CONFIG;
-      System.out.println("CONFIG Selected");
-    });
-    mnItemLogFINE.setOnAction(e -> {
-      m_Level = Level.FINE;
-      System.out.println("FINE Selected");
-    });
-    mnItemLogFINER.setOnAction(e -> {
-      m_Level = Level.FINER;
-      System.out.println("FINER Selected");
-    });
-    mnItemLogFINEST.setOnAction(e -> {
-      m_Level = Level.FINEST;
-      System.out.println("FINEST Selected");
-    });
-    mnItemLogALL.setOnAction(e -> {
-      m_Level = Level.ALL;
-      System.out.println("ALL Selected");
-    });
-
     // Look and Feel
+    // Will not be implemented....
 
     // Language
     ToggleGroup toggleLanguagesGroup = new ToggleGroup();
@@ -173,6 +106,24 @@ public class MenuBarMain extends Application {
     mnSettings.getItems().add(mntmLanguages);
 
     // Logfiles
+    CheckMenuItem checkMenuItem = new CheckMenuItem("Logfiles");
+    checkMenuItem.setOnAction(e -> {
+      DirectoryChooser directoryChooser = new DirectoryChooser();
+      directoryChooser.setTitle("Output Directory");
+      File selectedDirectory = directoryChooser.showDialog(primaryStage);
+
+      if (selectedDirectory != null) {
+        // The user selected a directory
+        String selectedPath = selectedDirectory.getAbsolutePath();
+        // Do something with the selected directory path
+        System.out.println("Selected Directory: " + selectedPath);
+      } else {
+        // No directory was selected
+        System.out.println("No directory selected.");
+      }
+
+    });
+    mnSettings.getItems().add(checkMenuItem);
 
     // Stored preferences
 
@@ -180,13 +131,34 @@ public class MenuBarMain extends Application {
     Menu questMenu = new Menu("?");
 
     // About
+    MenuItem menuAbout = new MenuItem("About");
 
     // Help
+    MenuItem menuHelp = new MenuItem("Help");
+    menuHelp.setOnAction(e -> {
+      File helpFile = new File("help\\" + m_Language + "\\" + m_HelpFile);
 
+      if (helpFile.exists()) {
+        try {
+          // Open the help file with the default viewer
+          Desktop.getDesktop().open(helpFile);
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
+      } else {
+        lOGGER.log(Level.INFO, bundle.getMessage("HelpFileNotFound", helpFile.getAbsolutePath()));
+      }
+    });
+    questMenu.getItems().add(menuHelp);
+    questMenu.getItems().add(menuAbout);
+
+    // MenuBar build up
     menuBar.getMenus().addAll(mnSettings, questMenu);
 
+    // Test purpose
     BorderPane root = new BorderPane();
     root.setTop(menuBar);
+
     Scene scene = new Scene(root, 800, 600);
 
     primaryStage.setTitle("JavaFX MenuBar Example");
