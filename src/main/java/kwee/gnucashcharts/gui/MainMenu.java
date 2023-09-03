@@ -83,6 +83,8 @@ public class MainMenu extends Application {
     }
     // Defaults
     nrBars = m_param.get_NrBars();
+    m_Language = m_param.get_Language();
+    bundle.changeLanguage(m_param.get_Language());
 
     // Menubar
     MenuBar menubar = doTheMenuBar(primaryStage);
