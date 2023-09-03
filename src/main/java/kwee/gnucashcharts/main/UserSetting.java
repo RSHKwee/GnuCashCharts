@@ -28,6 +28,7 @@ public class UserSetting {
   private String c_Pdf_File = "PdfFile";
   private String c_Tag = "Tag";
   private String c_NrBars = "NrBars";
+  private String c_Language = "Language";
 
   private String m_Level = c_LevelValue;
   private String m_LookAndFeel;
@@ -43,6 +44,7 @@ public class UserSetting {
   private int m_NrBars = 12;
   private String m_InputFile = "";
   private String m_PdfFile = "";
+  private String m_Language = "nl";
 
   private Preferences pref;
   private Preferences userPrefs = Preferences.userRoot();
@@ -62,6 +64,7 @@ public class UserSetting {
     m_Tag = pref.get(c_Tag, "");
     m_PdfFile = pref.get(c_Pdf_File, "");
     m_NrBars = pref.getInt(c_NrBars, 12);
+    m_Language = pref.get(c_Language, "nl");
 
     m_Level = pref.get(c_Level, c_LevelValue);
     m_LogDir = pref.get(c_LogDir, "");
@@ -89,6 +92,10 @@ public class UserSetting {
 
   public File[] get_CsvFiles() {
     return this.m_CsvFiles;
+  }
+
+  public String get_Language() {
+    return m_Language;
   }
 
   public Level get_Level() {
@@ -136,6 +143,10 @@ public class UserSetting {
   public void set_toDisk(boolean a_toDisk) {
     pref.putBoolean(c_toDisk, a_toDisk);
     this.m_toDisk = a_toDisk;
+  }
+
+  public void set_Language(String m_Language) {
+    this.m_Language = m_Language;
   }
 
   public void set_Level(Level a_Level) {

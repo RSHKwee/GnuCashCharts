@@ -228,17 +228,18 @@ public class MainMenu extends Application {
     lOGGER.log(Level.INFO, bundle.getMessage("Title", m_creationtime));
   }
 
+  // Menubar
   private int il = 0;
 
   private MenuBar doTheMenuBar(Stage primaryStage) {
     MenuBar menuBar = new MenuBar();
 
     // Settings Menu
-    Menu mnSettings = new Menu("Settings");
+    Menu mnSettings = new Menu(bundle.getMessage("Settings"));
     mnSettings.setDisable(false);
 
     // Loglevel:
-    Menu mntmLoglevel = new Menu("Loglevel");
+    Menu mntmLoglevel = new Menu(bundle.getMessage("Loglevel"));
     ToggleGroup toggleGroup = new ToggleGroup();
     RadioMenuItem[] loglevelitems = new RadioMenuItem[c_levels.length];
 
@@ -253,8 +254,10 @@ public class MainMenu extends Application {
       toggleGroup.getToggles().add(loglevelitems[il]);
       mntmLoglevel.getItems().add(loglevelitems[il]);
       loglevelitems[il].setOnAction(e -> {
-        m_Level = Level.parse(level);
-        System.out.println(level + " Selected");
+        m_Level = Level.parse(level.toUpperCase());
+        m_param.set_Level(m_Level);
+        MyLogger.changeLogLevel(m_Level);
+        lOGGER.log(Level.INFO, level + " Selected");
       });
       if (c_levels[il].toLowerCase().equals(m_Level.toString().toLowerCase())) {
         toggleGroup.selectToggle(loglevelitems[il]);
@@ -272,15 +275,19 @@ public class MainMenu extends Application {
     Menu mntmLanguages = new Menu("Languages");
     il = 0;
     RadioMenuItem[] mnLanguages = new RadioMenuItem[langs.size()];
-    langs.forEach(lang -> {
-      mnLanguages[il] = new RadioMenuItem(lang);
+    langs.forEach(language -> {
+      mnLanguages[il] = new RadioMenuItem(language);
       toggleLanguagesGroup.getToggles().add(mnLanguages[il]);
       mntmLanguages.getItems().add(mnLanguages[il]);
       mnLanguages[il].setOnAction(e -> {
-        m_Language = lang;
-        System.out.println(lang + " Selected");
+        lOGGER.log(Level.INFO, language + " Selected");
+        m_Language = language;
+        m_param.set_Language(m_Language);
+        m_param.save();
+        bundle.changeLanguage(language);
+        restartGUI(primaryStage);
       });
-      if (lang.toLowerCase().equals(m_Language.toLowerCase())) {
+      if (language.toLowerCase().equals(m_Language.toLowerCase())) {
         toggleLanguagesGroup.selectToggle(mnLanguages[il]);
       }
       il++;
@@ -337,6 +344,11 @@ public class MainMenu extends Application {
     // MenuBar build up
     menuBar.getMenus().addAll(mnSettings, questMenu);
     return menuBar;
+  }
+
+  private void restartGUI(Stage primaryStage) {
+    primaryStage.close();
+    start(new Stage());
   }
 
   /**
