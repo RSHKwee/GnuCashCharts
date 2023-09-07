@@ -62,7 +62,7 @@ public class BarChartToTableScene {
 
   public VBox getVBoxTransposed() {
     VBox lVbox = new VBox(m_TransposedTableView);
-
+    // m_TransposedTableView.prefHeightProperty().bind(lVbox.heightProperty());
     return lVbox;
   }
 

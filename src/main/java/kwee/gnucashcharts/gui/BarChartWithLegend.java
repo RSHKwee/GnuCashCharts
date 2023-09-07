@@ -59,6 +59,7 @@ public class BarChartWithLegend {
     tabTable.setContent(tabTableSave);
 
     VBox tabTableTransposedSave = new VBox(saveDialog(tabStage), m_barchartable.getVBoxTransposed());
+    // m_barchartable.getVBoxTransposed().prefHeightProperty().bind(tabTableTransposedSave.heightProperty());
     VBox.setVgrow(tabTableTransposedSave, Priority.ALWAYS);
     tabTableTransposedSave.resize(1200, 1500);
     tabTransposedTable.setContent(tabTableTransposedSave);
