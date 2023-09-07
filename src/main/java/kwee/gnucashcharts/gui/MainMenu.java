@@ -39,8 +39,8 @@ import kwee.gnucashcharts.main.Main;
 import kwee.gnucashcharts.main.UserSetting;
 import kwee.library.ApplicationMessages;
 import kwee.library.JarInfo;
+import kwee.library.FX.JavaFXLogHandler;
 import kwee.gnucashcharts.library.SubjectsColors;
-import kwee.gnucashcharts.library.JavaFXLogHandler;
 import kwee.gnucashcharts.library.TaartPuntData;
 
 public class MainMenu extends Application {
@@ -71,6 +71,13 @@ public class MainMenu extends Application {
 
   @Override
   public void start(Stage primaryStage) {
+    // Defaults
+    nrBars = m_param.get_NrBars();
+    m_Language = m_param.get_Language();
+    bundle.changeLanguage(m_param.get_Language());
+    m_Logdir = m_param.get_LogDir();
+    m_toDisk = m_param.is_toDisk();
+
     // Logger setup
     TextArea logTextArea = new TextArea();
     try {
@@ -81,10 +88,6 @@ public class MainMenu extends Application {
     } catch (IOException e1) {
       lOGGER.log(Level.INFO, e1.getMessage());
     }
-    // Defaults
-    nrBars = m_param.get_NrBars();
-    m_Language = m_param.get_Language();
-    bundle.changeLanguage(m_param.get_Language());
 
     // Menubar
     MenuBar menubar = doTheMenuBar(primaryStage);
@@ -268,9 +271,6 @@ public class MainMenu extends Application {
     });
     mnSettings.getItems().add(mntmLoglevel);
 
-    // Look and Feel
-    // Will not be implemented....
-
     // Language
     ToggleGroup toggleLanguagesGroup = new ToggleGroup();
     Set<String> langs = bundle.getTranslations();
@@ -304,36 +304,41 @@ public class MainMenu extends Application {
       File selectedDirectory = directoryChooser.showDialog(primaryStage);
 
       if (selectedDirectory != null) {
-        // The user selected a directory
-        String selectedPath = selectedDirectory.getAbsolutePath();
-        // Do something with the selected directory path
-        System.out.println("Selected Directory: " + selectedPath);
+        lOGGER.log(Level.INFO, bundle.getMessage("LogFolder", selectedDirectory.getAbsolutePath()));
+        m_Logdir = selectedDirectory.getAbsolutePath() + "/";
+        m_param.set_LogDir(m_Logdir);
+        m_param.set_toDisk(true);
+        m_toDisk = checkMenuItem.isSelected();
+        try {
+          MyLogger.setup(m_Level, m_Logdir, m_toDisk);
+        } catch (IOException es) {
+          lOGGER.log(Level.SEVERE, Class.class.getName() + ": " + es.toString());
+        }
       } else {
-        // No directory was selected
-        System.out.println("No directory selected.");
+        lOGGER.log(Level.INFO, bundle.getMessage("NoDirectorySelected"));
       }
-
     });
     mnSettings.getItems().add(checkMenuItem);
 
     // Stored preferences
+    MenuItem menuPreferences = new MenuItem("Preferences");
+    menuPreferences.setOnAction(e -> {
+      UserSetting showpref = new UserSetting();
+      showpref.showAllPreferences(true);
+    });
+    mnSettings.getItems().add(menuPreferences);
 
-    // Menu "?"
+    // Menu "?" and Help
     Menu questMenu = new Menu("?");
-
-    // About
-    MenuItem menuAbout = new MenuItem("About");
-
-    // Help
     MenuItem menuHelp = new MenuItem("Help");
     menuHelp.setOnAction(e -> {
       File helpFile = new File("help\\" + m_Language + "\\" + m_HelpFile);
-
       if (helpFile.exists()) {
         try {
           // Open the help file with the default viewer
           Desktop.getDesktop().open(helpFile);
         } catch (IOException e1) {
+          lOGGER.log(Level.INFO, e1.getMessage());
           e1.printStackTrace();
         }
       } else {
@@ -341,6 +346,13 @@ public class MainMenu extends Application {
       }
     });
     questMenu.getItems().add(menuHelp);
+
+    // About
+    MenuItem menuAbout = new MenuItem(bundle.getMessage("About"));
+    menuAbout.setOnAction(e -> {
+      // TODO
+
+    });
     questMenu.getItems().add(menuAbout);
 
     // MenuBar build up
@@ -348,6 +360,11 @@ public class MainMenu extends Application {
     return menuBar;
   }
 
+  /**
+   * Restart GUI for Language change purpose...
+   * 
+   * @param primaryStage Stage
+   */
   private void restartGUI(Stage primaryStage) {
     primaryStage.close();
     start(new Stage());

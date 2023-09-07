@@ -1,5 +1,6 @@
 package kwee.gnucashcharts.library;
 
+import java.awt.Desktop;
 import java.awt.Label;
 import java.awt.TextArea;
 import java.io.IOException;
@@ -55,9 +56,9 @@ public class AboutWindow extends Application {
   private void openDownloadLink(String owner, String repoName) {
     try {
       URI uri = new URI("https://github.com/" + owner + "/" + repoName + "/releases");
-      // Desktop.getDesktop().browse(uri);
-    } catch (URISyntaxException e) {
-//      LOGGER.log(Level.INFO, e.getMessage());
+      Desktop.getDesktop().browse(uri);
+    } catch (URISyntaxException | IOException e) {
+      // LOGGER.log(Level.INFO, e.getMessage());
       // e.printStackTrace();
     }
   }

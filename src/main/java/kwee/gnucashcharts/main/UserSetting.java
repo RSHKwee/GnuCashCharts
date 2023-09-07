@@ -6,13 +6,15 @@ import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import kwee.library.FX.ShowPreferences;
+
 /**
  * User setting persistence.
  * 
  * @author rshkw
  *
  */
-public class UserSetting {
+public class UserSetting extends ShowPreferences {
   private static final Logger LOGGER = Logger.getLogger(Class.class.getName());
   public static String NodePrefName = "kwee.gnucashcharts";
 
@@ -53,6 +55,7 @@ public class UserSetting {
    * Constructor Initialize settings
    */
   public UserSetting() {
+    super(NodePrefName);
     // Navigate to the preference node that stores the user setting
     pref = userPrefs.node(NodePrefName);
 
@@ -68,6 +71,10 @@ public class UserSetting {
 
     m_Level = pref.get(c_Level, c_LevelValue);
     m_LogDir = pref.get(c_LogDir, "");
+  }
+
+  public UserSetting(String nodePrefName2) {
+
   }
 
   public int get_NrBars() {
@@ -175,8 +182,8 @@ public class UserSetting {
   public void save() {
     try {
       pref.putBoolean(c_toDisk, m_toDisk);
-
       pref.putBoolean(c_ConfirmOnExit, m_ConfirmOnExit);
+
       pref.put(c_Level, m_Level);
       pref.put(c_LogDir, m_LogDir);
 
@@ -190,6 +197,33 @@ public class UserSetting {
     } catch (BackingStoreException e) {
       LOGGER.log(Level.INFO, e.getMessage());
     }
+  }
+
+  @SuppressWarnings("unused")
+  public boolean validateValue(String a_Param, String a_Value) {
+    boolean bstat = false;
+    if ((a_Param.equals(c_toDisk) || a_Param.equals(c_ConfirmOnExit))) {
+      if ((a_Value.equals("true")) || (a_Value.equals("false"))) {
+        bstat = true;
+      }
+    } else if (a_Param.equals(c_Level)) {
+      try {
+        Level a_Level = Level.parse(a_Value);
+        bstat = true;
+      } catch (Exception e) {
+        bstat = false;
+      }
+    } else if (a_Param.equals(c_NrBars)) {
+      try {
+        int bar = Integer.parseInt(a_Value);
+        bstat = true;
+      } catch (Exception e) {
+        bstat = false;
+      }
+    } else {
+      bstat = true;
+    }
+    return bstat;
   }
 
   public String print() {

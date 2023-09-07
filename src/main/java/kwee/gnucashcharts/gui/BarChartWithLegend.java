@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import javafx.stage.FileChooser;
@@ -20,6 +21,7 @@ import kwee.gnucashcharts.library.barchart.StackedBarChartScene;
 import kwee.gnucashcharts.library.gnuCashDb.SamengesteldeStaafData;
 import kwee.library.ApplicationMessages;
 import kwee.gnucashcharts.library.CreatePdf;
+import kwee.gnucashcharts.library.CreatePdf.c_PageSizeEnum;
 import kwee.logger.MyLogger;
 
 public class BarChartWithLegend {
@@ -57,12 +59,13 @@ public class BarChartWithLegend {
     tabTable.setContent(tabTableSave);
 
     VBox tabTableTransposedSave = new VBox(saveDialog(tabStage), m_barchartable.getVBoxTransposed());
-//    VBox tabTableTransposedSave = new VBox(m_barchartable.getVBoxTransposed());
+    VBox.setVgrow(tabTableTransposedSave, Priority.ALWAYS);
+    tabTableTransposedSave.resize(1200, 1500);
     tabTransposedTable.setContent(tabTableTransposedSave);
 
     // Create a Scene with the TabPane as the root
     tabPane.getTabs().addAll(tabDiagram, tabTable, tabTransposedTable);
-    Scene mainScene = new Scene(tabPane, 1200, 600);
+    Scene mainScene = new Scene(tabPane, 1200, 800);
 
     tabStage.setScene(mainScene);
     tabStage.show();
@@ -92,6 +95,9 @@ public class BarChartWithLegend {
           // l_Pdf.CreatePage(CreatePdf.c_PageSizeEnum.A2, title1);
           // l_Pdf.addTable(m_barchartable.getTable());
           l_Pdf.addImageTable(m_barchartable.getTableViewImage());
+
+          l_Pdf.CreatePage(c_PageSizeEnum.A4, title);
+          l_Pdf.addImageTable(m_barchartable.getTableTransposedViewImage());
 
           l_Pdf.SaveDocument();
           lOGGER.log(Level.INFO, bundle.getMessage("PDFGenerated", selectedFile.getAbsolutePath()));
