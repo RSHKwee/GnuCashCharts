@@ -39,6 +39,7 @@ import kwee.gnucashcharts.main.Main;
 import kwee.gnucashcharts.main.UserSetting;
 import kwee.library.ApplicationMessages;
 import kwee.library.JarInfo;
+import kwee.library.FX.AboutWindow;
 import kwee.library.FX.JavaFXLogHandler;
 import kwee.gnucashcharts.library.SubjectsColors;
 import kwee.gnucashcharts.library.TaartPuntData;
@@ -46,6 +47,9 @@ import kwee.gnucashcharts.library.TaartPuntData;
 public class MainMenu extends Application {
   private static final Logger lOGGER = MyLogger.getLogger();
   static String m_creationtime = Main.m_creationtime;
+  static final String c_CopyrightYear = "2023";
+  private static String c_reponame = "GNUCashCharts";
+
   public static UserSetting m_param = new UserSetting();
   private final String[] c_levels = { "OFF", "SEVERE", "WARNING", "INFO", "CONFIG", "FINE", "FINER", "FINEST", "ALL" };
 
@@ -351,7 +355,7 @@ public class MainMenu extends Application {
     MenuItem menuAbout = new MenuItem(bundle.getMessage("About"));
     menuAbout.setOnAction(e -> {
       // TODO
-
+      AboutWindow about = new AboutWindow(c_reponame, m_creationtime, c_CopyrightYear);
     });
     questMenu.getItems().add(menuAbout);
 

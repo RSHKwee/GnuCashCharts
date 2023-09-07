@@ -99,6 +99,9 @@ public class BarChartWithLegend {
           l_Pdf.CreatePage(c_PageSizeEnum.A4, title);
           l_Pdf.addImageTable(m_barchartable.getTableTransposedViewImage());
 
+          l_Pdf.CreatePage(c_PageSizeEnum.A4, title);
+          l_Pdf.addTable(m_barchartable.getTransposedTable());
+
           l_Pdf.SaveDocument();
           lOGGER.log(Level.INFO, bundle.getMessage("PDFGenerated", selectedFile.getAbsolutePath()));
           MainMenu.m_param.set_Pdf_file(selectedFile);

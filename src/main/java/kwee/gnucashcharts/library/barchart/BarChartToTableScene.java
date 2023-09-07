@@ -82,6 +82,10 @@ public class BarChartToTableScene {
     return m_EndPeriod;
   }
 
+  public TableView<String[]> getTransposedTable() {
+    return m_TransposedTableView;
+  }
+
   // Private functions
   /**
    * Create TableView with stackedBarChart as source.

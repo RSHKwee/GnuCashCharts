@@ -209,16 +209,16 @@ You can use these coordinates to position elements and set the page size when wo
         legendImageHeight);
   }
 
-  public void addTable(TableView<OwnTableCell[]> a_Table) throws IOException {
+  public void addTable(TableView<String[]> a_Table) throws IOException {
     // Iterate through TableView rows and columns
     contentStream.beginText();
-    for (OwnTableCell[] item : a_Table.getItems()) {
-      for (TableColumn<OwnTableCell[], ?> column : a_Table.getColumns()) {
+    for (String[] item : a_Table.getItems()) {
+      for (TableColumn<String[], ?> column : a_Table.getColumns()) {
         Object cellData = column.getCellData(item);
 
         // Add cellData to PDF
         contentStream.setFont(PDType1Font.HELVETICA, 8);
-        // contentStream.newLineAtOffset(50, 700); // Adjust the coordinates
+        contentStream.newLineAtOffset(50, 700); // Adjust the coordinates
         contentStream.showText(cellData.toString());
         contentStream.newLine();
       }
