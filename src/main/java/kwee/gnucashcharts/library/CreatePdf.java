@@ -16,7 +16,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.WritableImage;
-import kwee.gnucashcharts.library.barchart.OwnTableCell;
+
 import kwee.library.TimeStamp;
 // import kwee.logger.MyLogger;
 
@@ -213,15 +213,15 @@ You can use these coordinates to position elements and set the page size when wo
     // Iterate through TableView rows and columns
     contentStream.beginText();
     for (String[] item : a_Table.getItems()) {
+      contentStream.newLineAtOffset(50, 200); // Adjust the coordinates
       for (TableColumn<String[], ?> column : a_Table.getColumns()) {
         Object cellData = column.getCellData(item);
 
         // Add cellData to PDF
-        contentStream.setFont(PDType1Font.HELVETICA, 8);
-        contentStream.newLineAtOffset(50, 700); // Adjust the coordinates
+        contentStream.setFont(PDType1Font.HELVETICA, 10);
         contentStream.showText(cellData.toString());
-        contentStream.newLine();
       }
+      contentStream.newLine();
     }
     contentStream.endText();
   }
