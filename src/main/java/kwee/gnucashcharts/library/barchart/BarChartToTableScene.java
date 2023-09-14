@@ -10,7 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import javafx.scene.SnapshotParameters;
-import javafx.scene.chart.StackedBarChart;
+
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.chart.XYChart.Series;
@@ -22,11 +22,12 @@ import javafx.scene.layout.VBox;
 
 import kwee.gnucashcharts.library.FormatAmount;
 import kwee.library.ApplicationMessages;
+import kwee.library.FX.PatchedStackedBarChart;
 import kwee.logger.MyLogger;
 
 public class BarChartToTableScene {
   private static final Logger lOGGER = MyLogger.getLogger();
-  private StackedBarChart<String, Number> m_stackedBarChart;
+  private PatchedStackedBarChart<String, Number> m_stackedBarChart;
   private TableView<OwnTableCell[]> m_tableView = new TableView<>();
   private TableView<String[]> m_TransposedTableView = new TableView<>();
   private ApplicationMessages bundle = ApplicationMessages.getInstance();
@@ -41,7 +42,8 @@ public class BarChartToTableScene {
   private String[] y_Header;
 //  private MessageText m_Messages = new MessageText();
 
-  public BarChartToTableScene(StackedBarChart<String, Number> a_BarChart, SortedMap<String, Double> a_DateTotAmt) {
+  public BarChartToTableScene(PatchedStackedBarChart<String, Number> a_BarChart,
+      SortedMap<String, Double> a_DateTotAmt) {
     m_stackedBarChart = a_BarChart;
     m_DateTotAmt = a_DateTotAmt;
     toTable();

@@ -13,7 +13,7 @@ import kwee.gnucashcharts.library.TaartPuntData;
 
 public class SamengesteldeStaafData {
   /**
-   * Data struture in princip...
+   * Data structure in princip...
    * 
    * Enddate period, TaartPuntData: Map<String, SortedMap<String, Double>> Tag,
    * Map: (Account, Saldo)

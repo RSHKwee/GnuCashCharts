@@ -4,9 +4,9 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.StackedBarChart;
 import javafx.scene.chart.XYChart;
 import javafx.stage.Stage;
+import kwee.library.FX.PatchedStackedBarChart;
 
 public class StackedBarChartWithArrayData extends Application {
 
@@ -14,7 +14,7 @@ public class StackedBarChartWithArrayData extends Application {
   public void start(Stage primaryStage) {
     CategoryAxis xAxis = new CategoryAxis();
     NumberAxis yAxis = new NumberAxis();
-    StackedBarChart<String, Number> stackedBarChart = new StackedBarChart<>(xAxis, yAxis);
+    PatchedStackedBarChart<String, Number> stackedBarChart = new PatchedStackedBarChart<>(xAxis, yAxis);
 
     stackedBarChart.setTitle("Stacked Bar Chart Example");
     xAxis.setLabel("Category");
@@ -22,7 +22,7 @@ public class StackedBarChartWithArrayData extends Application {
 
     // Create an array of data
     String[] categories = { "A", "B", "C" };
-    int[][] dataArray = { { 10, 20, 30 }, { 15, 25, 35 } };
+    int[][] dataArray = { { 10, 20, 30 }, { 15, 25, 35 }, { -15, 8, 9 } };
 
     XYChart.Series<String, Number>[] seriesArray = new XYChart.Series[dataArray.length];
 

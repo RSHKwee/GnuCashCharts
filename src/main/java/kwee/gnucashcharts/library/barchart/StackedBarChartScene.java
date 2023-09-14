@@ -19,7 +19,6 @@ import javafx.scene.SnapshotParameters;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 
-import javafx.scene.chart.StackedBarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.WritableImage;
@@ -30,11 +29,12 @@ import javafx.scene.text.Text;
 import kwee.gnucashcharts.library.FormatAmount;
 import kwee.gnucashcharts.library.LocalDateAndAmount;
 import kwee.gnucashcharts.library.gnuCashDb.SamengesteldeStaafData;
+import kwee.library.FX.PatchedStackedBarChart;
 
 public class StackedBarChartScene {
   private SamengesteldeStaafData m_barData;
   private GridPane m_legendGrid;
-  private StackedBarChart<String, Number> m_BarChart;
+  private PatchedStackedBarChart<String, Number> m_BarChart;
   private String m_Tag = "";
   private SortedMap<String, Double> m_DateTotAmt = new TreeMap<String, Double>();
   private String m_StartPeriod = "";
@@ -54,7 +54,7 @@ public class StackedBarChartScene {
     createLegendGrid();
   }
 
-  public StackedBarChart<String, Number> getBarChart() {
+  public PatchedStackedBarChart<String, Number> getBarChart() {
     return m_BarChart;
   }
 
@@ -118,7 +118,7 @@ public class StackedBarChartScene {
   private void createBarChart() {
     CategoryAxis xAxis = new CategoryAxis();
     NumberAxis yAxis = new NumberAxis();
-    m_BarChart = new StackedBarChart<>(xAxis, yAxis);
+    m_BarChart = new PatchedStackedBarChart<>(xAxis, yAxis);
 
     m_BarChart.setTitle(m_Tag);
     xAxis.setLabel("Month");
