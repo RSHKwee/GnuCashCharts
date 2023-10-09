@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>kwee.GnuCashCharts</groupId>
-  <artifactId>GnuCashCharts</artifactId>
+  <artifactId>gnucashcharts</artifactId>
   <version>0.0.1.1</version>
   <packaging>jar</packaging>
 
@@ -119,7 +119,7 @@
           <descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>
-          <finalName>GnuCashCharts</finalName>
+          <finalName>gnucashcharts</finalName>
         </configuration>
       </plugin>
 	  <!-- Distribute readme.md v -->
@@ -166,8 +166,8 @@
              </goals>
              <configuration>
                <headerType>console</headerType>
-               <jar>target/GnuCashCharts-jar-with-dependencies.jar</jar>
-               <outfile>target/GnuCashCharts.exe</outfile>
+               <jar>target/gnucashcharts-jar-with-dependencies.jar</jar>
+               <outfile>target/gnucashcharts.exe</outfile>
                <downloadUrl>https://cdn.azul.com/zulu/bin/zulu17.40.19-ca-jdk17.0.6-win_x64.msi</downloadUrl>
                <classPath>
                  <mainClass>kwee.gnucashcharts.main.Main</mainClass>
@@ -186,7 +186,7 @@
                 <txtProductVersion>${project.version}</txtProductVersion>
                 <productName>${project.name}</productName>
                 <internalName>GnuCashCharts</internalName>
-                <originalFilename>GnuCashCharts.exe</originalFilename>
+                <originalFilename>gnucashcharts.exe</originalFilename>
               </versionInfo>
             </configuration>
           </execution>
@@ -206,7 +206,7 @@
             <configuration>
               <file>target/GnuCashCharts.exe</file>
               <name>ING OFX Converter</name>
-              <url>https://github.com/RSHKwee/GnuCashCharts</url>
+              <url>https://github.com/RSHKwee/gnucashcharts</url>
               <keystore>keystore.jks</keystore>
               <alias>RSHK</alias>
               <storepass>GW93ayi0j2CfeJx9VoSo</storepass>
