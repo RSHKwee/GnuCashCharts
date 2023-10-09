@@ -4,7 +4,7 @@
 
   <groupId>kwee.GnuCashCharts</groupId>
   <artifactId>GnuCashCharts</artifactId>
-  <version>0.0.1.0</version>
+  <version>0.0.1.1</version>
   <packaging>jar</packaging>
 
   <parent>
