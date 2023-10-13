@@ -2,8 +2,10 @@ package kwee.gnucashcharts.gui;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.logging.Logger;
+import java.util.Date;
 import java.util.logging.Level;
 
 import javafx.geometry.Insets;
@@ -52,14 +54,14 @@ public class BarChartWithLegend {
     tabStage.setTitle(title);
 
     // Set the panes as the content of the tabs
-    VBox tabDiagramSave = new VBox(m_BarChartDiagram.getVBox(), saveDialog(tabStage));
+    VBox tabDiagramSave = new VBox(m_BarChartDiagram.getVBox(), saveDialog(tabStage, "BarChart_" + tag));
     tabDiagram.setContent(tabDiagramSave);
 
-    VBox tabTableSave = new VBox(m_barchartable.getVBox(), saveDialog(tabStage));
+    VBox tabTableSave = new VBox(m_barchartable.getVBox(), saveDialog(tabStage, "BarChart_" + tag));
     tabTable.setContent(tabTableSave);
 
     VBox tabTableTransposed = new VBox(m_barchartable.getVBoxTransposed());
-    VBox tabTableTransposedSave = new VBox(saveDialog(tabStage), tabTableTransposed);
+    VBox tabTableTransposedSave = new VBox(saveDialog(tabStage, "BarChart_" + tag), tabTableTransposed);
     tabTableTransposed.prefHeightProperty().bind(tabTableTransposedSave.heightProperty());
     VBox.setVgrow(tabTableTransposed, Priority.ALWAYS);
     tabTableTransposed.resize(1000, 1500);
@@ -74,7 +76,7 @@ public class BarChartWithLegend {
     tabStage.show();
   }
 
-  private VBox saveDialog(Stage a_Stage) {
+  private VBox saveDialog(Stage a_Stage, String a_Filename) {
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle(bundle.getMessage("SaveFile"));
 
@@ -82,6 +84,7 @@ public class BarChartWithLegend {
     saveButton.setOnAction(e -> {
       FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(bundle.getMessage("PDFFiles"), "*.pdf");
       fileChooser.getExtensionFilters().add(extFilter);
+      fileChooser.setInitialFileName(a_Filename + CurrentDateStr() + ".pdf");
       if (!MainMenu.m_param.get_PdfFile().isBlank()) {
         File intFile = new File(MainMenu.m_param.get_PdfFile());
         String ldir = intFile.getParent();
@@ -102,7 +105,7 @@ public class BarChartWithLegend {
           l_Pdf.CreatePage(c_PageSizeEnum.A4, title);
           l_Pdf.addImageTable(m_barchartable.getTableTransposedViewImage());
 
-          l_Pdf.CreatePage(c_PageSizeEnum.A4, title);
+          l_Pdf.CreatePage(c_PageSizeEnum.A3, title);
           l_Pdf.addTable(m_barchartable.getTransposedTable());
 
           l_Pdf.SaveDocument();
@@ -118,5 +121,12 @@ public class BarChartWithLegend {
     saveFileLayout.setSpacing(10);
     VBox.setMargin(saveButton, new Insets(10, 10, 10, 10));
     return saveFileLayout;
+  }
+
+  private String CurrentDateStr() {
+    Date currentDate = new Date();
+    SimpleDateFormat dateFormat = new SimpleDateFormat("--dd-MM-yyyy");
+    String formattedDate = dateFormat.format(currentDate);
+    return formattedDate;
   }
 }

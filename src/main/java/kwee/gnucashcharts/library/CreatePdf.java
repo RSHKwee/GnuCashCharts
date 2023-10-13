@@ -73,20 +73,23 @@ You can use these coordinates to position elements and set the page size when wo
    * @formatter:on
    */
   public enum c_PageSizeEnum {
-    A2, A4
+    A2, A3, A4, A2P, A3P, A4P
   };
+
+  private float xMargin = 20;
+  private float yMargin = 1;
+
+  private float yRunning = -1;
 
   // X,Y coordinate for the title
   private float xTitle = 50; // Fixed
   private float yTitle = 520;
-  private float yTitle_Offset = 75;
+  private float yTitle_Offset = 30;
 
   // X,Y coordinate for the footer text
   private float xFooter = 700;
   private float yFooter = 10; // Fixed
   private float xFooter_Offset = 140;
-
-  private float xMargin = 20;
 
   // Position image
   private float xPosition = 20; // Fixed
@@ -133,26 +136,48 @@ You can use these coordinates to position elements and set the page size when wo
   public void CreatePage(c_PageSizeEnum a_PageSize, String aTitle) throws IOException {
     // Close a content stream for the page
     if (contentStream != null) {
-      // Close the content stream
       addFooter(contentStream, TimeStamp.getTimeStampNow());
       contentStream.close();
     }
 
     m_page = new PDPage();
     switch (a_PageSize) {
-    case A2:
+    case A2: // Landscape
+      pageWidth = PDRectangle.A2.getHeight();
+      pageHeight = PDRectangle.A2.getWidth();
+      calcTitleAndFooterCoord(pageWidth, pageHeight);
+      break;
+    case A3: // landscape
+      pageWidth = PDRectangle.A3.getHeight();
+      pageHeight = PDRectangle.A3.getWidth();
+      calcTitleAndFooterCoord(pageWidth, pageHeight);
+      break;
+    case A4: // Landscape
+      pageWidth = PDRectangle.A4.getHeight();
+      pageHeight = PDRectangle.A4.getWidth();
+      calcTitleAndFooterCoord(pageWidth, pageHeight);
+      break;
+    case A2P: // Portrait
       pageHeight = PDRectangle.A2.getHeight();
       pageWidth = PDRectangle.A2.getWidth();
-      calcTitleAndFooterCoord(pageHeight, pageWidth);
+      calcTitleAndFooterCoord(pageWidth, pageHeight);
       break;
-    case A4:
+    case A3P: // Portrait
+      pageHeight = PDRectangle.A3.getHeight();
+      pageWidth = PDRectangle.A3.getWidth();
+      calcTitleAndFooterCoord(pageWidth, pageHeight);
+      break;
+    case A4P: // Portrait
       pageHeight = PDRectangle.A4.getHeight();
       pageWidth = PDRectangle.A4.getWidth();
-      calcTitleAndFooterCoord(pageHeight, pageWidth);
+      calcTitleAndFooterCoord(pageWidth, pageHeight);
+      break;
     }
 
+    yRunning = -1;
+
     // Set the page dimensions for landscape orientation
-    m_page.setMediaBox(new PDRectangle(pageHeight, pageWidth));
+    m_page.setMediaBox(new PDRectangle(pageWidth, pageHeight));
     m_document.addPage(m_page);
 
     // Create a content stream for the page
@@ -172,13 +197,20 @@ You can use these coordinates to position elements and set the page size when wo
     BufferedImage ChartImage = SwingFXUtils.fromFXImage(aChartImage, null);
 
     // Convert the JavaFX image to PDF image
-    PDImageXObject pdfPieChartImage = LosslessFactory.createFromImage(m_document, ChartImage);
+    PDImageXObject pdfChartImage = LosslessFactory.createFromImage(m_document, ChartImage);
 
     // Draw the images on the page
     float scale = pageHeight / ChartImage.getWidth();
     float imageWidth = (ChartImage.getWidth() - (xMargin * 2)) * scale;
     float imageHeight = ChartImage.getHeight() * scale;
-    contentStream.drawImage(pdfPieChartImage, xPosition, yPositionDefault, imageWidth, imageHeight);
+
+    float xPos = (float) (((pageWidth - imageWidth) / 2.0) - xMargin);
+    if (yRunning < 0) {
+      yRunning = yTitle - imageHeight - yMargin;
+    } else {
+      yRunning = yRunning - imageHeight - yMargin;
+    }
+    contentStream.drawImage(pdfChartImage, xPos, yRunning, imageWidth, imageHeight);
   }
 
   /**
@@ -201,29 +233,74 @@ You can use these coordinates to position elements and set the page size when wo
     // Draw the images on the page
     float imageWidth = ChartImage.getWidth();
     float imageHeight = ChartImage.getHeight();
-    contentStream.drawImage(pdfPieChartImage, xPosition, yPosition, imageWidth, imageHeight);
+    float l_xpos = (float) (((pageWidth - imageWidth) / 2.0) - xMargin);
+    if (yRunning < 0) {
+      yRunning = (float) (yTitle - imageHeight - 2 * yMargin);
+    } else {
+      yRunning = yRunning - imageHeight - 2 * yMargin;
+    }
+    contentStream.drawImage(pdfPieChartImage, l_xpos, yRunning, imageWidth, imageHeight);
 
     float legendImageWidth = LegendImage.getWidth();
     float legendImageHeight = LegendImage.getHeight();
-    contentStream.drawImage(pdfLegendImage, xPositionForLegend, yPositionForLegend, legendImageWidth,
-        legendImageHeight);
+    l_xpos = xMargin;
+    yRunning = (float) (yRunning - legendImageHeight - 2 * yMargin);
+    contentStream.drawImage(pdfLegendImage, l_xpos, yRunning, legendImageWidth, legendImageHeight);
   }
 
+  /**
+   * 
+   * @param a_Table
+   * @throws IOException
+   */
   public void addTable(TableView<String[]> a_Table) throws IOException {
+    // Define table properties
+    float margin = 50;
+    float yStart = m_page.getMediaBox().getHeight() - margin;
+    float tableWidth = m_page.getMediaBox().getWidth() - 2 * margin;
+    float yPosition = yStart;
+    int rows = 5;
+    int cols = 9;
+    float rowHeight = 10f;
+    float tableHeight = rowHeight * rows;
+    float tableYBottom = yStart - tableHeight;
+
+    // Define cell properties
+    float tableXStart = margin;
+    float cellMargin = 4f;
+    float colWidth = tableWidth / (float) cols;
+    float cellWidth = colWidth - 1 * cellMargin;
+
     // Iterate through TableView rows and columns
     contentStream.beginText();
+    contentStream.newLineAtOffset(margin, yStart);
+    for (TableColumn<String[], ?> column : a_Table.getColumns()) {
+      contentStream.setFont(PDType1Font.HELVETICA, 8);
+      contentStream.showText(column.getText());
+    }
+    contentStream.newLine();
+    contentStream.endText();
+
+    int j = 1;
     for (String[] item : a_Table.getItems()) {
-      contentStream.newLineAtOffset(50, 200); // Adjust the coordinates
+      contentStream.beginText();
+      contentStream.newLineAtOffset(margin, 0); // Adjust the coordinates
+      int i = 0;
+      tableXStart = margin;
       for (TableColumn<String[], ?> column : a_Table.getColumns()) {
         Object cellData = column.getCellData(item);
-
+        float x = tableXStart + i * colWidth + cellMargin;
+        float y = yStart - rowHeight * j;
+        // contentStream.newLineAtOffset(x, y);
         // Add cellData to PDF
-        contentStream.setFont(PDType1Font.HELVETICA, 10);
+        contentStream.setFont(PDType1Font.HELVETICA, 8);
         contentStream.showText(cellData.toString());
+        i++;
       }
+      j++;
       contentStream.newLine();
+      contentStream.endText();
     }
-    contentStream.endText();
   }
 
   // Private functions
@@ -237,8 +314,7 @@ You can use these coordinates to position elements and set the page size when wo
   private void addTitle(PDPageContentStream contentStream, String text) throws IOException {
     contentStream.beginText();
     contentStream.setFont(PDType1Font.HELVETICA_BOLD, 18); // Choose your font
-
-    contentStream.newLineAtOffset(xTitle, yTitle); // Adjust the coordinates
+    contentStream.newLineAtOffset(xTitle, yTitle + 5); // Adjust the coordinates
     contentStream.showText(text);
     contentStream.endText();
   }

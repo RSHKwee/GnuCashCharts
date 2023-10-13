@@ -2,9 +2,11 @@ package kwee.gnucashcharts.gui;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Logger;
+import java.util.Date;
 import java.util.logging.Level;
 
 import javafx.geometry.Insets;
@@ -54,6 +56,7 @@ public class PieChartWithLegend {
     saveButton.setOnAction(e -> {
       FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(bundle.getMessage("PDFFiles"), "*.pdf");
       fileChooser.getExtensionFilters().add(extFilter);
+      fileChooser.setInitialFileName("PieChart_" + tag + CurrentDateStr() + ".pdf");
       if (!MainMenu.m_param.get_PdfFile().isBlank()) {
         File intFile = new File(MainMenu.m_param.get_PdfFile());
         String ldir = intFile.getParent();
@@ -86,5 +89,12 @@ public class PieChartWithLegend {
 
     // Show the stage (display the pie chart with the legend)
     piechartStage.show();
+  }
+
+  private String CurrentDateStr() {
+    Date currentDate = new Date();
+    SimpleDateFormat dateFormat = new SimpleDateFormat("--dd-MM-yyyy");
+    String formattedDate = dateFormat.format(currentDate);
+    return formattedDate;
   }
 }
