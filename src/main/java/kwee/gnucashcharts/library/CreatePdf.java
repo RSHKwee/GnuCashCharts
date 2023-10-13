@@ -2,7 +2,8 @@ package kwee.gnucashcharts.library;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-// import java.util.logging.Level;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -16,12 +17,12 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.WritableImage;
-
+import javafx.scene.text.Text;
 import kwee.library.TimeStamp;
-// import kwee.logger.MyLogger;
+import kwee.logger.MyLogger;
 
 public class CreatePdf {
-  // private static final Logger lOGGER = MyLogger.getLogger();
+  private static final Logger lOGGER = MyLogger.getLogger();
 
   /*
    * @formatter:off
@@ -254,52 +255,53 @@ You can use these coordinates to position elements and set the page size when wo
    * @throws IOException
    */
   public void addTable(TableView<String[]> a_Table) throws IOException {
-    // Define table properties
-    float margin = 50;
+    // Create a table in the PDF to mimic the TableView
+    float margin = 50; // Margin from the page edge
     float yStart = m_page.getMediaBox().getHeight() - margin;
     float tableWidth = m_page.getMediaBox().getWidth() - 2 * margin;
     float yPosition = yStart;
-    int rows = 5;
-    int cols = 9;
-    float rowHeight = 10f;
-    float tableHeight = rowHeight * rows;
-    float tableYBottom = yStart - tableHeight;
 
-    // Define cell properties
-    float tableXStart = margin;
-    float cellMargin = 4f;
-    float colWidth = tableWidth / (float) cols;
-    float cellWidth = colWidth - 1 * cellMargin;
+    int rows = a_Table.getItems().size();
+    int cols = a_Table.getColumns().size();
 
-    // Iterate through TableView rows and columns
-    contentStream.beginText();
-    contentStream.newLineAtOffset(margin, yStart);
-    for (TableColumn<String[], ?> column : a_Table.getColumns()) {
-      contentStream.setFont(PDType1Font.HELVETICA, 8);
-      contentStream.showText(column.getText());
-    }
-    contentStream.newLine();
-    contentStream.endText();
+//    float tableHeight = 20f * rows; // You may need to adjust this based on your data and font size
+    float rowHeight = 20f;
+    // float tableYLength = rowHeight * rows;
+    float tableXLength = tableWidth;
 
-    int j = 1;
-    for (String[] item : a_Table.getItems()) {
+    // Draw table headers
+    float yPositionHeader = yStart;
+
+    for (int j = 0; j < cols; j++) {
+      TableColumn<?, ?> column = a_Table.getColumns().get(j);
+      column.setCellFactory(new WrappableHeaderCellFactory<>());
+      double width = tableWidth / (cols + 2);
+      column.setPrefWidth(width);
+      Text tekst = new Text(column.getText());
+      double tekstwidth = tekst.getLayoutBounds().getWidth();
+      lOGGER.log(Level.INFO, column.getText() + "| Tekst width: " + Double.toString(tekstwidth) + "| Col width: "
+          + Double.toString(width));
+
+      contentStream.setFont(PDType1Font.HELVETICA_BOLD, 6);
       contentStream.beginText();
-      contentStream.newLineAtOffset(margin, 0); // Adjust the coordinates
-      int i = 0;
-      tableXStart = margin;
-      for (TableColumn<String[], ?> column : a_Table.getColumns()) {
-        Object cellData = column.getCellData(item);
-        float x = tableXStart + i * colWidth + cellMargin;
-        float y = yStart - rowHeight * j;
-        // contentStream.newLineAtOffset(x, y);
-        // Add cellData to PDF
-        contentStream.setFont(PDType1Font.HELVETICA, 8);
-        contentStream.showText(cellData.toString());
-        i++;
-      }
-      j++;
-      contentStream.newLine();
+      contentStream.newLineAtOffset(margin + j * (tableXLength / cols), yPositionHeader);
+      contentStream.showText(column.getText());
       contentStream.endText();
+    }
+
+    // Add data to the PDF table
+    for (int i = 0; i < rows; i++) {
+      yPosition -= rowHeight;
+      for (int j = 0; j < cols; j++) {
+        TableColumn<?, ?> column = a_Table.getColumns().get(j);
+        column.setCellFactory(new WrappableHeaderCellFactory<>());
+
+        contentStream.setFont(PDType1Font.HELVETICA, 10);
+        contentStream.beginText();
+        contentStream.newLineAtOffset(margin + j * (tableXLength / cols), yPosition);
+        contentStream.showText(column.getCellData(i).toString());
+        contentStream.endText();
+      }
     }
   }
 
