@@ -275,20 +275,35 @@ You can use these coordinates to position elements and set the page size when wo
     for (int j = 0; j < cols; j++) {
       TableColumn<?, ?> column = a_Table.getColumns().get(j);
       column.setCellFactory(new WrappableHeaderCellFactory<>());
-      double width = tableWidth / (cols + 2);
-      column.setPrefWidth(width);
+      double width = column.getWidth();
       Text tekst = new Text(column.getText());
       double tekstwidth = tekst.getLayoutBounds().getWidth();
-      lOGGER.log(Level.INFO, column.getText() + "| Tekst width: " + Double.toString(tekstwidth) + "| Col width: "
+      lOGGER.log(Level.FINE, column.getText() + "| Tekst width: " + Double.toString(tekstwidth) + "| Col width: "
           + Double.toString(width));
 
-      contentStream.setFont(PDType1Font.HELVETICA_BOLD, 6);
-      contentStream.beginText();
-      contentStream.newLineAtOffset(margin + j * (tableXLength / cols), yPositionHeader);
-      contentStream.showText(column.getText());
-      contentStream.endText();
+      contentStream.setFont(PDType1Font.HELVETICA_BOLD, 8);
+      if (tekstwidth > (tableXLength / cols)) {
+        String coltekst = column.getText();
+        String[] coltekstelm = coltekst.split(" ");
+        for (int k = 0; k < coltekstelm.length; k++) {
+          contentStream.beginText();
+          // contentStream.newLineAtOffset(margin + j * (tableXLength / cols),
+          // yPositionHeader);
+          contentStream.newLineAtOffset(margin + j * (tableXLength / cols), yPositionHeader - (k * 10));
+          contentStream.showText(coltekstelm[k]);
+          lOGGER.log(Level.INFO, coltekstelm[k] + "| X: " + Double.toString(margin + j * (tableXLength / cols))
+              + "| Y: " + Double.toString(yPositionHeader - (k * 10)));
+          contentStream.endText();
+        }
+      } else {
+        contentStream.beginText();
+        contentStream.newLineAtOffset(margin + j * (tableXLength / cols), yPositionHeader);
+        contentStream.showText(column.getText());
+        contentStream.endText();
+      }
     }
 
+    yPosition -= rowHeight;
     // Add data to the PDF table
     for (int i = 0; i < rows; i++) {
       yPosition -= rowHeight;
