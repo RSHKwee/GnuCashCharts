@@ -92,17 +92,6 @@ You can use these coordinates to position elements and set the page size when wo
   private float yFooter = 10; // Fixed
   private float xFooter_Offset = 140;
 
-  // Position image
-  private float xPosition = 20; // Fixed
-  private float yPosition = 110;
-  private float yPositionDefault = 110;
-  private float yPosition_Offset = 600;
-
-  // Position Legend
-  private float xPositionForLegend = 20; // Fixed
-  private float yPositionForLegend = 10;
-  private float yPositionForLegend_Offset = yPosition_Offset + 90;
-
   private float pageHeight = PDRectangle.A2.getHeight();
   private float pageWidth = PDRectangle.A2.getWidth();
 
@@ -256,21 +245,18 @@ You can use these coordinates to position elements and set the page size when wo
    */
   public void addTable(TableView<String[]> a_Table) throws IOException {
     // Create a table in the PDF to mimic the TableView
-    float margin = 50; // Margin from the page edge
-    float yStart = m_page.getMediaBox().getHeight() - margin;
-    float tableWidth = m_page.getMediaBox().getWidth() - 2 * margin;
-    float yPosition = yStart;
+    float yStart = m_page.getMediaBox().getHeight() - xMargin;
+    float tableWidth = m_page.getMediaBox().getWidth() - 2 * xMargin;
+    float rowHeight = 20f;
+    float yPosition = yStart - yTitle_Offset;
 
     int rows = a_Table.getItems().size();
     int cols = a_Table.getColumns().size();
 
-//    float tableHeight = 20f * rows; // You may need to adjust this based on your data and font size
-    float rowHeight = 20f;
-    // float tableYLength = rowHeight * rows;
     float tableXLength = tableWidth;
 
     // Draw table headers
-    float yPositionHeader = yStart;
+    float yPositionHeader = yPosition;
 
     for (int j = 0; j < cols; j++) {
       TableColumn<?, ?> column = a_Table.getColumns().get(j);
@@ -285,24 +271,31 @@ You can use these coordinates to position elements and set the page size when wo
       if (tekstwidth > (tableXLength / cols)) {
         String coltekst = column.getText();
         String[] coltekstelm = coltekst.split(" ");
+        if (coltekstelm.length > 2) {
+          coltekstelm[0] = coltekstelm[0] + " " + coltekstelm[1];
+          coltekstelm[1] = coltekstelm[2];
+          coltekstelm[2] = "";
+        }
         for (int k = 0; k < coltekstelm.length; k++) {
-          contentStream.beginText();
-          contentStream.newLineAtOffset(margin + j * (tableXLength / cols), yPositionHeader - (k * 10));
-          contentStream.showText(coltekstelm[k]);
-          contentStream.endText();
-          lOGGER.log(Level.FINE, coltekstelm[k] + "| X: " + Double.toString(margin + j * (tableXLength / cols))
-              + "| Y: " + Double.toString(yPositionHeader - (k * 10)));
+          if (!coltekstelm[k].isBlank()) {
+            contentStream.beginText();
+            contentStream.newLineAtOffset(xMargin + j * (tableXLength / cols), yPositionHeader - (k * 10));
+            contentStream.showText(coltekstelm[k]);
+            contentStream.endText();
+            lOGGER.log(Level.FINE, coltekstelm[k] + "| X: " + Double.toString(xMargin + j * (tableXLength / cols))
+                + "| Y: " + Double.toString(yPositionHeader - (k * 10)));
+          }
         }
       } else {
         contentStream.beginText();
-        contentStream.newLineAtOffset(margin + j * (tableXLength / cols), yPositionHeader);
+        contentStream.newLineAtOffset(xMargin + j * (tableXLength / cols), yPositionHeader);
         contentStream.showText(column.getText());
         contentStream.endText();
       }
     }
 
-    yPosition -= rowHeight;
     // Add data to the PDF table
+    yPosition -= rowHeight;
     for (int i = 0; i < rows; i++) {
       yPosition -= rowHeight;
       for (int j = 0; j < cols; j++) {
@@ -311,7 +304,7 @@ You can use these coordinates to position elements and set the page size when wo
 
         contentStream.setFont(PDType1Font.HELVETICA, 10);
         contentStream.beginText();
-        contentStream.newLineAtOffset(margin + j * (tableXLength / cols), yPosition);
+        contentStream.newLineAtOffset(xMargin + j * (tableXLength / cols), yPosition);
         contentStream.showText(column.getCellData(i).toString());
         contentStream.endText();
       }
@@ -357,19 +350,8 @@ You can use these coordinates to position elements and set the page size when wo
    * @param a_PageHeight Height of Page in points
    */
   private void calcTitleAndFooterCoord(float a_PageWidth, float a_PageHeight) {
-    // xTitle = 50;
     yTitle = a_PageHeight - yTitle_Offset;
-
     xFooter = a_PageWidth - xFooter_Offset;
-    // yFooter = 10;
-
-    // Position image
-    // xPosition = 0;
-    yPosition = a_PageHeight - yPosition_Offset;
-
-    // Position Legend
-    // xPositionForLegend = 20;
-    yPositionForLegend = a_PageHeight - yPositionForLegend_Offset;
   }
 
 }
