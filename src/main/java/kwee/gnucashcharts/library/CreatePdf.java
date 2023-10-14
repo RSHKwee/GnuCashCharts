@@ -287,13 +287,11 @@ You can use these coordinates to position elements and set the page size when wo
         String[] coltekstelm = coltekst.split(" ");
         for (int k = 0; k < coltekstelm.length; k++) {
           contentStream.beginText();
-          // contentStream.newLineAtOffset(margin + j * (tableXLength / cols),
-          // yPositionHeader);
           contentStream.newLineAtOffset(margin + j * (tableXLength / cols), yPositionHeader - (k * 10));
           contentStream.showText(coltekstelm[k]);
-          lOGGER.log(Level.INFO, coltekstelm[k] + "| X: " + Double.toString(margin + j * (tableXLength / cols))
-              + "| Y: " + Double.toString(yPositionHeader - (k * 10)));
           contentStream.endText();
+          lOGGER.log(Level.FINE, coltekstelm[k] + "| X: " + Double.toString(margin + j * (tableXLength / cols))
+              + "| Y: " + Double.toString(yPositionHeader - (k * 10)));
         }
       } else {
         contentStream.beginText();
