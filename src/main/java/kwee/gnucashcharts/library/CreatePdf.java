@@ -296,7 +296,7 @@ You can use these coordinates to position elements and set the page size when wo
 
     // Add data to the PDF table
     yPosition -= rowHeight;
-    for (int i = 0; i < rows; i++) {
+    for (int i = rows - 1; i >= 0; i--) {
       yPosition -= rowHeight;
       for (int j = 0; j < cols; j++) {
         TableColumn<?, ?> column = a_Table.getColumns().get(j);
