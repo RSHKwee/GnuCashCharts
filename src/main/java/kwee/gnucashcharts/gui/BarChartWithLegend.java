@@ -102,8 +102,8 @@ public class BarChartWithLegend {
           // l_Pdf.addTable(m_barchartable.getTable());
           l_Pdf.addImageTable(m_barchartable.getTableViewImage());
 
-          l_Pdf.CreatePage(c_PageSizeEnum.A4, title);
-          l_Pdf.addImageTable(m_barchartable.getTableTransposedViewImage());
+          // l_Pdf.CreatePage(c_PageSizeEnum.A4, title);
+          // l_Pdf.addImageTable(m_barchartable.getTableTransposedViewImage());
 
           l_Pdf.CreatePage(c_PageSizeEnum.A3, title);
           l_Pdf.addTable(m_barchartable.getTransposedTable());

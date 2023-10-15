@@ -88,6 +88,10 @@ public class BarChartToTableScene {
     return m_TransposedTableView;
   }
 
+  public TableView<OwnTableCell[]> getTable() {
+    return m_tableView;
+  }
+
   // Private functions
   /**
    * Create TableView with stackedBarChart as source.
