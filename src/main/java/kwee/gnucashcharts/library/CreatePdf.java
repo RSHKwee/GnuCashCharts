@@ -74,7 +74,7 @@ You can use these coordinates to position elements and set the page size when wo
    * @formatter:on
    */
   public enum c_PageSizeEnum {
-    A2, A3, A4, A2P, A3P, A4P
+    A0, A1, A2, A3, A4, A2P, A3P, A4P
   };
 
   private float xMargin = 20;
@@ -91,6 +91,7 @@ You can use these coordinates to position elements and set the page size when wo
   private float xFooter = 700;
   private float yFooter = 10; // Fixed
   private float xFooter_Offset = 140;
+  private float yFooter_Offset = 70; // Fixed
 
   private float pageHeight = PDRectangle.A2.getHeight();
   private float pageWidth = PDRectangle.A2.getWidth();
@@ -99,6 +100,9 @@ You can use these coordinates to position elements and set the page size when wo
   private PDDocument m_document;
   private PDPage m_page;
   private PDPageContentStream contentStream = null;
+
+  private c_PageSizeEnum CurrentPageSize;
+  private String CurrentTitle = "";
 
   /**
    * Constructor
@@ -132,6 +136,16 @@ You can use these coordinates to position elements and set the page size when wo
 
     m_page = new PDPage();
     switch (a_PageSize) {
+    case A0: // Landscape
+      pageWidth = PDRectangle.A0.getHeight();
+      pageHeight = PDRectangle.A0.getWidth();
+      calcTitleAndFooterCoord(pageWidth, pageHeight);
+      break;
+    case A1: // Landscape
+      pageWidth = PDRectangle.A1.getHeight();
+      pageHeight = PDRectangle.A1.getWidth();
+      calcTitleAndFooterCoord(pageWidth, pageHeight);
+      break;
     case A2: // Landscape
       pageWidth = PDRectangle.A2.getHeight();
       pageHeight = PDRectangle.A2.getWidth();
@@ -163,7 +177,8 @@ You can use these coordinates to position elements and set the page size when wo
       calcTitleAndFooterCoord(pageWidth, pageHeight);
       break;
     }
-
+    CurrentPageSize = a_PageSize;
+    CurrentTitle = aTitle;
     yRunning = -1;
 
     // Set the page dimensions for landscape orientation
@@ -243,20 +258,75 @@ You can use these coordinates to position elements and set the page size when wo
    * @param a_Table
    * @throws IOException
    */
-  public void addTable(TableView<String[]> a_Table) throws IOException {
+  public void addTable(TableView<String[]> a_Table, boolean a_sortdesc) throws IOException {
     // Create a table in the PDF to mimic the TableView
-    float yStart = m_page.getMediaBox().getHeight() - xMargin;
     float tableWidth = m_page.getMediaBox().getWidth() - 2 * xMargin;
     float rowHeight = 20f;
-    float yPosition = yStart - yTitle_Offset;
+    // yRunning = yStart - yTitle_Offset;
 
     int rows = a_Table.getItems().size();
     int cols = a_Table.getColumns().size();
 
     float tableXLength = tableWidth;
+    addTableHeader(a_Table);
+
+    // Add data to the PDF table
+    yRunning -= rowHeight;
+    if (a_sortdesc) {
+      for (int i = rows - 1; i >= 0; i--) {
+        yRunning -= rowHeight;
+        if (yRunning < yFooter_Offset) {
+          // New page
+          CreatePage(CurrentPageSize, CurrentTitle);
+          addTableHeader(a_Table);
+          yRunning -= rowHeight;
+          yRunning -= rowHeight;
+        }
+        for (int j = 0; j < cols; j++) {
+          TableColumn<?, ?> column = a_Table.getColumns().get(j);
+          column.setCellFactory(new WrappableHeaderCellFactory<>());
+
+          contentStream.setFont(PDType1Font.HELVETICA, 10);
+          contentStream.beginText();
+          contentStream.newLineAtOffset(xMargin + j * (tableXLength / cols), yRunning);
+          contentStream.showText(column.getCellData(i).toString());
+          contentStream.endText();
+        }
+      }
+    } else {
+      for (int i = 0; i < rows; i++) {
+        yRunning -= rowHeight;
+        if (yRunning < yFooter_Offset) {
+          // New page
+          CreatePage(CurrentPageSize, CurrentTitle);
+          addTableHeader(a_Table);
+          yRunning -= rowHeight;
+          yRunning -= rowHeight;
+        }
+        for (int j = 0; j < cols; j++) {
+          TableColumn<?, ?> column = a_Table.getColumns().get(j);
+          column.setCellFactory(new WrappableHeaderCellFactory<>());
+
+          contentStream.setFont(PDType1Font.HELVETICA, 10);
+          contentStream.beginText();
+          contentStream.newLineAtOffset(xMargin + j * (tableXLength / cols), yRunning);
+          contentStream.showText(column.getCellData(i).toString());
+          contentStream.endText();
+        }
+      }
+    }
+  }
+
+  // Private functions
+  private void addTableHeader(TableView<String[]> a_Table) throws IOException {
+    int cols = a_Table.getColumns().size();
+    float tableWidth = m_page.getMediaBox().getWidth() - 2 * xMargin;
+    float tableXLength = tableWidth;
+    float yStart = m_page.getMediaBox().getHeight() - yTitle_Offset;
+    yRunning = yStart - yTitle_Offset;
 
     // Draw table headers
-    float yPositionHeader = yPosition;
+    float yPositionHeader = yRunning;
 
     for (int j = 0; j < cols; j++) {
       TableColumn<?, ?> column = a_Table.getColumns().get(j);
@@ -294,24 +364,8 @@ You can use these coordinates to position elements and set the page size when wo
       }
     }
 
-    // Add data to the PDF table
-    yPosition -= rowHeight;
-    for (int i = rows - 1; i >= 0; i--) {
-      yPosition -= rowHeight;
-      for (int j = 0; j < cols; j++) {
-        TableColumn<?, ?> column = a_Table.getColumns().get(j);
-        column.setCellFactory(new WrappableHeaderCellFactory<>());
-
-        contentStream.setFont(PDType1Font.HELVETICA, 10);
-        contentStream.beginText();
-        contentStream.newLineAtOffset(xMargin + j * (tableXLength / cols), yPosition);
-        contentStream.showText(column.getCellData(i).toString());
-        contentStream.endText();
-      }
-    }
   }
 
-  // Private functions
   /**
    * Add title to Page
    * 

@@ -64,13 +64,13 @@ public class BarChartWithLegend {
     VBox tabTableTransposedSave = new VBox(saveDialog(tabStage, "BarChart_" + tag), tabTableTransposed);
     tabTableTransposed.prefHeightProperty().bind(tabTableTransposedSave.heightProperty());
     VBox.setVgrow(tabTableTransposed, Priority.ALWAYS);
-    tabTableTransposed.resize(1000, 1500);
-    tabTableTransposedSave.resize(1200, 1500);
+    tabTableTransposed.resize(1000, 500);
+    tabTableTransposedSave.resize(1200, 500);
     tabTransposedTable.setContent(tabTableTransposedSave);
 
     // Create a Scene with the TabPane as the root
     tabPane.getTabs().addAll(tabDiagram, tabTable, tabTransposedTable);
-    Scene mainScene = new Scene(tabPane, 1200, 800);
+    Scene mainScene = new Scene(tabPane, 1200, 500);
 
     tabStage.setScene(mainScene);
     tabStage.show();
@@ -93,28 +93,35 @@ public class BarChartWithLegend {
       // Show save file dialog
       File selectedFile = fileChooser.showSaveDialog(a_Stage);
       if (selectedFile != null) {
+        CreatePdf l_Pdf = new CreatePdf(selectedFile.getAbsolutePath());
         try {
-          CreatePdf l_Pdf = new CreatePdf(selectedFile.getAbsolutePath());
           l_Pdf.CreatePage(CreatePdf.c_PageSizeEnum.A2, title);
           l_Pdf.addImageAndLegend(m_BarChartDiagram.getBarChartImage(), m_BarChartDiagram.getLegendImage());
-
-          // l_Pdf.CreatePage(CreatePdf.c_PageSizeEnum.A2, title1);
-          // l_Pdf.addTable(m_barchartable.getTable());
           l_Pdf.addImageTable(m_barchartable.getTableViewImage());
-
-          // l_Pdf.CreatePage(c_PageSizeEnum.A4, title);
-          // l_Pdf.addImageTable(m_barchartable.getTableTransposedViewImage());
-
-          l_Pdf.CreatePage(c_PageSizeEnum.A3, title);
-          l_Pdf.addTable(m_barchartable.getTransposedTable());
-
-          l_Pdf.SaveDocument();
-          lOGGER.log(Level.INFO, bundle.getMessage("PDFGenerated", selectedFile.getAbsolutePath()));
-          MainMenu.m_param.set_Pdf_file(selectedFile);
-          MainMenu.m_param.save();
         } catch (IOException e1) {
-          lOGGER.log(Level.INFO, e1.getMessage());
+          lOGGER.log(Level.INFO, "PDF BarChartImage: " + e1.getMessage());
         }
+        try {
+          l_Pdf.CreatePage(c_PageSizeEnum.A0, title);
+          l_Pdf.addTable(m_barchartable.getTable(), false);
+        } catch (IOException e1) {
+          lOGGER.log(Level.INFO, "PDF Table: " + e1.getMessage());
+        }
+        try {
+          l_Pdf.CreatePage(c_PageSizeEnum.A3, title);
+          l_Pdf.addTable(m_barchartable.getTransposedTable(), true);
+        } catch (IOException e1) {
+          lOGGER.log(Level.INFO, "PDF Transposed: " + e1.getMessage());
+        }
+        try {
+          l_Pdf.SaveDocument();
+        } catch (IOException e1) {
+          lOGGER.log(Level.INFO, "PDF Save: " + e1.getMessage());
+        }
+        lOGGER.log(Level.INFO, bundle.getMessage("PDFGenerated", selectedFile.getAbsolutePath()));
+        MainMenu.m_param.set_Pdf_file(selectedFile);
+        MainMenu.m_param.save();
+
       }
     });
     VBox saveFileLayout = new VBox(saveButton);

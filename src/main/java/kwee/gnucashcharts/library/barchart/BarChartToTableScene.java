@@ -29,6 +29,7 @@ public class BarChartToTableScene {
   private static final Logger lOGGER = MyLogger.getLogger();
   private PatchedStackedBarChart<String, Number> m_stackedBarChart;
   private TableView<OwnTableCell[]> m_tableView = new TableView<>();
+  private TableView<String[]> m_tableViewString = new TableView<>();
   private TableView<String[]> m_TransposedTableView = new TableView<>();
   private ApplicationMessages bundle = ApplicationMessages.getInstance();
 
@@ -37,6 +38,7 @@ public class BarChartToTableScene {
   private String m_StartPeriod = "";
   private String m_EndPeriod = "";
   private String[][] m_Table;
+  private String[][] m_TableStr;
   private String[][] m_TableTranspose;
   private String[] x_Header;
   private String[] y_Header;
@@ -47,6 +49,7 @@ public class BarChartToTableScene {
     m_stackedBarChart = a_BarChart;
     m_DateTotAmt = a_DateTotAmt;
     toTable();
+    toTableStr();
     transposeTable();
   }
 
@@ -88,8 +91,8 @@ public class BarChartToTableScene {
     return m_TransposedTableView;
   }
 
-  public TableView<OwnTableCell[]> getTable() {
-    return m_tableView;
+  public TableView<String[]> getTable() {
+    return m_tableViewString;
   }
 
   // Private functions
@@ -157,12 +160,80 @@ public class BarChartToTableScene {
     m_tableView.setItems(data);
   }
 
+  /**
+   * 
+   */
+  private void toTableStr() {
+    ObservableList<Series<String, Number>> series1 = m_stackedBarChart.getData();
+    ObservableList<Data<String, Number>> data1 = series1.get(0).getData();
+    m_NumberColomns = data1.size() + 1;
+
+    m_TableStr = new String[(series1.size() + 1)][m_NumberColomns];
+    x_Header = new String[series1.size() + 1];
+    y_Header = new String[m_NumberColomns];
+
+    int x = 0;
+    int y = 0;
+    for (XYChart.Series<String, Number> series : m_stackedBarChart.getData()) {
+      x_Header[x] = series.getName();
+      y = 0;
+      for (XYChart.Data<String, Number> data : series.getData()) {
+        if (y == 0) {
+          m_TableStr[x][y] = series.getName();
+          y_Header[y] = "Account";
+          y++;
+        }
+        String l_xlab = data.getXValue();
+        y_Header[y] = l_xlab;
+        double l_amt = (double) data.getYValue();
+        m_Table[x][y] = FormatAmount.formatAmount(l_amt);
+        y++;
+      }
+      x++;
+    }
+    m_StartPeriod = y_Header[1];
+    m_EndPeriod = y_Header[m_NumberColomns - 1];
+
+    // Add Totals
+    for (int i = 0; i < m_NumberColomns; i++) {
+      if (i == 0) {
+        m_TableStr[x][i] = "Total:";
+      } else {
+        double l_amt = m_DateTotAmt.get(y_Header[i]);
+        m_TableStr[x][i] = FormatAmount.formatAmount(l_amt);
+      }
+    }
+
+    // Populate the ObservableList with your String[][] data
+    ObservableList<String[]> data = FXCollections.observableArrayList();
+    for (String[] row : m_TableStr) {
+      data.add(row);
+    }
+
+    // Inside your JavaFX application class
+    for (int i = 0; i < m_Table[0].length; i++) {
+      TableColumn<String[], String> column = new TableColumn<>(y_Header[i]);
+      final int columnIndex = i;
+      column.setCellValueFactory(param -> new SimpleStringProperty(param.getValue()[columnIndex]));
+      if (i != 0) {
+        column.setStyle("-fx-alignment: CENTER-RIGHT;-fx-font-size: 9px;");
+      }
+      m_tableViewString.getColumns().add(column);
+    }
+    m_tableViewString.setItems(data);
+
+    ObservableList<String[]> dataStr = FXCollections.observableArrayList();
+    for (String[] row : m_Table) {
+      dataStr.add(row);
+    }
+    m_tableViewString.setItems(dataStr);
+  }
+
   private void transposeTable() {
     ObservableList<Series<String, Number>> series1 = m_stackedBarChart.getData();
     m_TableTranspose = new String[m_NumberColomns][(series1.size() + 1)];
 
     String[] lx_Header = y_Header;
-
     String[] ly_HeaderNew = new String[x_Header.length + 1];
 
     ly_HeaderNew[0] = bundle.getMessage("DateLabel");
