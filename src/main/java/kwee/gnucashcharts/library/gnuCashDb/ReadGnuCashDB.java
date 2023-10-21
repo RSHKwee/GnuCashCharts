@@ -80,7 +80,15 @@ public class ReadGnuCashDB {
         }
         String sBalance = account.getBalance(a_Date).toString().replace(".", ",");
         //String tmp = account.getBalanceFormated(); // tbv debug
-        String l_regel = String.join(";",formattedLocalDate, account.getName(), account.getDescription(), sBalance, "", l_notes);
+        String rootAcc = "";
+        Collection<GnucashAccount> accs = account.getChildren();
+        String accsString = accs.toString();
+        try {
+          rootAcc = account.getParentAccount().getName();
+         } catch (Exception e){
+           // Do nothing
+         }
+        String l_regel = String.join(";",formattedLocalDate, account.getName(), account.getDescription(), sBalance, "", l_notes, rootAcc, accsString);
         m_Regels.add(l_regel);
       }
     } catch (Exception e) {

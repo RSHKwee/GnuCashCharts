@@ -106,19 +106,28 @@ public class PieChartScene {
 
   private void createPieChart(Map<String, Double> taartpuntdata) {
     lOGGER.log(Level.FINE, "#Taartpunt data: " + taartpuntdata.size());
-    m_pieChartData = new PieChart.Data[taartpuntdata.size()];
+    PieChart.Data[] l_pieChartData = new PieChart.Data[taartpuntdata.size()];
     m_total_amount = 0.0;
     m_Teller = 0;
 
     Set<String> keys = taartpuntdata.keySet();
     keys.forEach(key -> {
-      m_pieChartData[m_Teller] = new PieChart.Data(key, taartpuntdata.get(key));
-      double l_amt = m_pieChartData[m_Teller].getPieValue();
-      m_total_amount = m_total_amount + l_amt;
+      double ll_amt = taartpuntdata.get(key);
+      if (ll_amt > 0) {
+        l_pieChartData[m_Teller] = new PieChart.Data(key, taartpuntdata.get(key));
+        double l_amt = l_pieChartData[m_Teller].getPieValue();
+        m_total_amount = m_total_amount + l_amt;
 
-      lOGGER.log(Level.FINE, "i:" + m_Teller + " Key:" + key + " value:" + m_pieChartData[m_Teller].getPieValue());
-      m_Teller++;
+        lOGGER.log(Level.FINE, "i:" + m_Teller + " Key:" + key + " value:" + l_pieChartData[m_Teller].getPieValue());
+        m_Teller++;
+      }
     });
+
+    m_pieChartData = new PieChart.Data[m_Teller];
+    for (int i = 0; i < m_Teller; i++) {
+      m_pieChartData[i] = l_pieChartData[i];
+    }
+
     // Create the pie chart and add the data slices to it
     m_PieChart = new PieChart();
     m_PieChart.getData().addAll(m_pieChartData);

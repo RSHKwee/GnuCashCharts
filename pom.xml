@@ -20,6 +20,7 @@
     <maven.compiler.release>11</maven.compiler.release>
     <javafx.version>20</javafx.version>
     <javafx.maven.plugin.version>0.0.6</javafx.maven.plugin.version>
+    <slf4j.version>1.7.36</slf4j.version>
   </properties>
 
   <dependencies>
@@ -78,15 +79,14 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.32</version> <!-- Use the latest version -->
+      <version>${slf4j.version}</version> <!-- Use the latest version -->
     </dependency>
-    <!-- SLF4J JDK14 bridge -->
+    <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
     <dependency>
       <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-jdk14</artifactId>
-      <version>1.7.32</version> <!-- Use the same version as SLF4J API -->
-    </dependency>
-
+      <artifactId>slf4j-simple</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency> 
   </dependencies>
   
   <build>

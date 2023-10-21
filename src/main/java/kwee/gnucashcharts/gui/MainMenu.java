@@ -33,6 +33,8 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import kwee.logger.LoggerPrintErrStream;
+import kwee.logger.LoggerPrintOutStream;
 import kwee.logger.MyLogger;
 
 import kwee.gnucashcharts.main.Main;
@@ -75,6 +77,10 @@ public class MainMenu extends Application {
 
   @Override
   public void start(Stage primaryStage) {
+    // Redirect Out- and Error stream to Logger
+    LoggerPrintOutStream.redirectOutStreamToLogger(lOGGER, Level.WARNING);
+    LoggerPrintErrStream.redirectErrorStreamToLogger(lOGGER, Level.WARNING);
+
     // Defaults
     nrBars = m_param.get_NrBars();
     m_Language = m_param.get_Language();

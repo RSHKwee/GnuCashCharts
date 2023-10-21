@@ -54,14 +54,15 @@ public class BarChartToTableScene {
   }
 
   public VBox getVBox() {
-    return new VBox(m_tableView);
+//    return new VBox(m_tableView);
+    return new VBox(m_tableViewString);
   }
 
   public WritableImage getTableViewImage() {
     // Convert the BarChart to a WritableImage
     SnapshotParameters params = new SnapshotParameters();
     params.setDepthBuffer(true);
-    WritableImage tableViewImage = m_tableView.snapshot(null, null);
+    WritableImage tableViewImage = m_tableViewString.snapshot(null, null);
     return tableViewImage;
   }
 
