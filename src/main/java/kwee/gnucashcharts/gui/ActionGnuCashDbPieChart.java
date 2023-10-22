@@ -18,7 +18,7 @@ public class ActionGnuCashDbPieChart {
   private ApplicationMessages bundle = ApplicationMessages.getInstance();
 
   public ActionGnuCashDbPieChart(File a_SelectedFile, LocalDate a_Date) {
-    lOGGER.log(Level.INFO, bundle.getMessage("SelectedSubject", a_SelectedFile.getAbsolutePath()));
+    lOGGER.log(Level.INFO, bundle.getMessage("SelectedFile", a_SelectedFile.getAbsolutePath()));
     MainMenu.m_param.set_InputFile(a_SelectedFile.getAbsoluteFile());
     MainMenu.m_param.save();
 

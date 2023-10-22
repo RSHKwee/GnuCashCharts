@@ -139,7 +139,7 @@ public class MainMenu extends Application {
         }
 
         l_file.setText(selectedFile.getAbsolutePath());
-        l_tag.setText(bundle.getMessage("SelectSubject"));
+        l_tag.setText(bundle.getMessage("SelectedFile"));
 
         Set<String> tags = m_pieData.getTags();
         ObservableList<String> observableList;
