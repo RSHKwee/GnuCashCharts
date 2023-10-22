@@ -360,7 +360,7 @@ public class MainMenu extends Application {
     // About
     MenuItem menuAbout = new MenuItem(bundle.getMessage("About"));
     menuAbout.setOnAction(e -> {
-      // TODO
+      @SuppressWarnings("unused")
       AboutWindow about = new AboutWindow(c_reponame, m_creationtime, c_CopyrightYear);
     });
     questMenu.getItems().add(menuAbout);
