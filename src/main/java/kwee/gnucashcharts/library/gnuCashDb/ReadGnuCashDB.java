@@ -8,8 +8,10 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
-import org.gnucash.write.impl.GnucashFileWritingImpl;
+import org.gnucash.read.impl.GnucashFileImpl;
+import org.gnucash.read.impl.GnucashPriceDBImpl;
 
 import kwee.logger.MyLogger;
 
@@ -63,23 +65,37 @@ public class ReadGnuCashDB {
    * @param a_Date Date
    */
   private void readGnuCash (File a_SelectedFile, LocalDate a_Date) {
-    GnucashFileWritingImpl gnucashFile;
+    GnucashFileImpl gnucashFile;
     lOGGER.log(Level.FINE, "readGnuCash Date: " + a_Date);
     
     DateTimeFormatter lformatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     String formattedLocalDate = a_Date.format(lformatter);
 
     try {
-      gnucashFile = new GnucashFileWritingImpl(a_SelectedFile);
+      gnucashFile = new GnucashFileImpl(a_SelectedFile);
 
       Collection<GnucashAccount> accounts = gnucashFile.getAccounts();
+      GnucashPriceDBImpl pricedb = new GnucashPriceDBImpl(gnucashFile);
+      
       for (GnucashAccount account : accounts) {
         String l_notes = "";
+        FixedPointNumber fBalance = account.getBalance(a_Date);
+        
         if (account.getUserDefinedAttribute("notes") != null) {
           l_notes = account.getUserDefinedAttribute("notes");
+          lOGGER.log(Level.FINE, "notes : " + l_notes);
         }
-        String sBalance = account.getBalance(a_Date).toString().replace(".", ",");
+        String atype = account.getType();
+        if (atype.equals(GnucashAccount.TYPE_STOCK)) {
+        	FixedPointNumber cmdPrice = pricedb.getPrice(account.getCurrencyID(), a_Date);
+          fBalance = fBalance.multiply(cmdPrice);
+          lOGGER.log(Level.FINE, "Account currence ID: " + account.getCurrencyID());  
+        }
+        
+        String sBalance = fBalance.toString().replace(".", ",");
         //String tmp = account.getBalanceFormated(); // tbv debug
+        lOGGER.log(Level.FINE, " Account: " + account.getName() + " / Balance: " + sBalance + " / type: " + account.getType() );
+       
         String rootAcc = "";
         Collection<GnucashAccount> accs = account.getChildren();
         String accsString = accs.toString();
@@ -87,11 +103,13 @@ public class ReadGnuCashDB {
           rootAcc = account.getParentAccount().getName();
          } catch (Exception e){
            // Do nothing
+             lOGGER.log(Level.FINE, e.getMessage());
          }
         String l_regel = String.join(";",formattedLocalDate, account.getName(), account.getDescription(), sBalance, "", l_notes, rootAcc, accsString);
         m_Regels.add(l_regel);
       }
     } catch (Exception e) {
+    	e.printStackTrace();
       lOGGER.log(Level.INFO, e.getMessage());
     }
   }

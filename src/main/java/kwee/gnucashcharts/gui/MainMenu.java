@@ -66,6 +66,7 @@ public class MainMenu extends Application {
   private int nrBars = c_NrBars;
 
   private Level m_Level = Level.INFO;
+//  private Level m_Level = Level.FINE;
   private String m_Logdir = "c:\\";
   private boolean m_toDisk = false;
 
