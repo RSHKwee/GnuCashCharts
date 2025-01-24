@@ -1,5 +1,8 @@
 package kwee.gnucashcharts.gui;
 
+/**
+ * 
+ */
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +26,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioMenuItem;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
@@ -75,6 +79,7 @@ public class MainMenu extends Application {
   private File m_SelectedFile;
   private SubjectsColors m_SubjColors;
   private LocalDate m_Date = LocalDate.now();
+  private boolean m_Diff = false;
 
   @Override
   public void start(Stage primaryStage) {
@@ -111,6 +116,7 @@ public class MainMenu extends Application {
     TextField integerField = new TextField(Integer.toString(nrBars));
     DatePicker datePicker = new DatePicker();
     Button buttonBarchart = new Button(bundle.getMessage("OpenBarChart"));
+    CheckBox checkDiff = new CheckBox(bundle.getMessage("Difference"));
 
     comboTagBox.setDisable(true);
     buttonPiechart.setDisable(true);
@@ -200,15 +206,26 @@ public class MainMenu extends Application {
       lOGGER.log(Level.INFO, bundle.getMessage("SelectedDate", selectedDate));
     });
 
+    checkDiff.setOnAction(event -> {
+      if (checkDiff.isSelected()) {
+        m_Diff = true;
+        checkDiff.setText(bundle.getMessage("DiffMode"));
+      } else {
+        m_Diff = false;
+        checkDiff.setText(bundle.getMessage("NoDiffMode"));
+      }
+
+    });
+
     BarChartWithLegend barwindow = new BarChartWithLegend();
     buttonBarchart.setOnAction(e -> {
-      barwindow.openTabsWindow(m_SelectedFile, m_tag, nrBars, m_Date);
+      barwindow.openTabsWindow(m_SelectedFile, m_tag, nrBars, m_Date, m_Diff); // Knop toevoeven
     });
 
     // Do the layout
     HBox openFileLayout = new HBox(openFileButton, l_file);
     HBox selectOptionLayout = new HBox(endDateLabel, datePicker, comboTagBox, l_tag);
-    HBox buttonPiechartLayout = new HBox(buttonPiechart);
+    HBox buttonPiechartLayout = new HBox(buttonPiechart, checkDiff);
     HBox buttonBarchartLayout = new HBox(nrBarsLabel, integerField, buttonBarchart);
 
     openFileLayout.setSpacing(10);
@@ -223,6 +240,7 @@ public class MainMenu extends Application {
     HBox.setMargin(l_tag, new Insets(10, 10, 10, 10));
 
     HBox.setMargin(buttonPiechart, new Insets(10, 10, 10, 10));
+    HBox.setMargin(checkDiff, new Insets(10, 10, 10, 10));
 
     HBox.setMargin(buttonBarchart, new Insets(10, 10, 10, 10));
     HBox.setMargin(nrBarsLabel, new Insets(10, 10, 10, 10));

@@ -4,7 +4,7 @@
 
   <groupId>kwee.GnuCashCharts</groupId>
   <artifactId>gnucashcharts</artifactId>
-  <version>0.0.1.1</version>
+  <version>0.0.1.2</version>
   <packaging>jar</packaging>
   <name>GnuCashCharts</name>
  
@@ -15,7 +15,7 @@
   <parent>
 	<groupId>kwee</groupId>
 	<artifactId>aggregator</artifactId>
-	<version>1.1.0.0</version>
+	<version>1.1.0.1</version>
 	<relativePath>..\\pom.xml</relativePath>
   </parent>
 
@@ -80,10 +80,10 @@
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <version>${slf4j.version}</version>
-    </dependency> 
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <version>${log4j-slf4j-impl.version}</version> <!-- Gebruik de nieuwste versie -->
+    </dependency>
   </dependencies>
   
   <build>
@@ -165,7 +165,7 @@
                   <filtering>true</filtering>
                 </resource>
               </resources>
-              <encoding>UTF-8</encoding>
+              <encoding>${project.build.sourceEncoding}</encoding>
             </configuration>
           </execution>        
         </executions>

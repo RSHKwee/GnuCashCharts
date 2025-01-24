@@ -8,6 +8,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import kwee.gnucashcharts.library.DetermineDeltas;
 import kwee.gnucashcharts.library.LocalDateAndAmount;
 import kwee.gnucashcharts.library.TaartPuntData;
 
@@ -15,8 +16,7 @@ public class SamengesteldeStaafData {
   /**
    * Data structure in princip...
    * 
-   * Enddate period, TaartPuntData: Map<String, SortedMap<String, Double>> Tag,
-   * Map: (Account, Saldo)
+   * Enddate period, TaartPuntData: Map<String, SortedMap<String, Double>> Tag, Map: (Account, Saldo)
    * 
    * Enddate, Map:(Tag, Map:(Account, Saldo))
    */
@@ -28,7 +28,9 @@ public class SamengesteldeStaafData {
    * Tag, Map:(Account, Map:(Enddate, Saldo))
    */
   private Map<String, SortedMap<String, LocalDateAndAmount>> m_Series = new TreeMap<String, SortedMap<String, LocalDateAndAmount>>();
+
   private boolean m_first = true;
+  private boolean b_delta = false;
 
   public SamengesteldeStaafData() {
   }
@@ -38,6 +40,14 @@ public class SamengesteldeStaafData {
       m_Kolommen.put(a_Date, a_TaartPuntData);
     } else {
       // TODO mergen TaartPuntData....
+    }
+  }
+
+  public void CalcDeltas() {
+    DetermineDeltas delta = new DetermineDeltas(m_Kolommen);
+    if (!b_delta) {
+      m_Kolommen = new TreeMap<LocalDate, TaartPuntData>(delta.getDeltas());
+      b_delta = true;
     }
   }
 

@@ -54,7 +54,10 @@ public class ActionGnuCshDbStackedBarChart {
     }
   }
 
-  public SamengesteldeStaafData getData() {
+  public SamengesteldeStaafData getData(boolean a_delta) {
+    if (a_delta) {
+      barData.CalcDeltas();
+    }
     return barData;
   }
 

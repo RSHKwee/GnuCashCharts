@@ -73,4 +73,14 @@ public class TaartPuntDataImpl implements TaartPuntData {
     return la_subjects;
   }
 
+  @Override
+  public Map<String, SortedMap<String, Double>> getm_Tags() {
+    return m_Tags;
+  }
+
+  @Override
+  public void putPieSlices(String a_Tag, SortedMap<String, Double> a_Slice) {
+    m_Tags.put(a_Tag, a_Slice);
+  }
+
 }

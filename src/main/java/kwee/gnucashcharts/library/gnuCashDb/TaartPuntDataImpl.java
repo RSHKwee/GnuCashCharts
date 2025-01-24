@@ -27,6 +27,14 @@ public class TaartPuntDataImpl implements TaartPuntData {
   public TaartPuntDataImpl() {
   }
 
+  public TaartPuntDataImpl(TaartPuntData a_data) {
+    m_Tags = new TreeMap<String, SortedMap<String, Double>>(a_data.getm_Tags());
+  }
+
+  public Map<String, SortedMap<String, Double>> getm_Tags() {
+    return m_Tags;
+  }
+
   @Override
   public void putData(ArrayList<String> a_Regels) {
     a_Regels.forEach(regel -> {
@@ -77,6 +85,12 @@ public class TaartPuntDataImpl implements TaartPuntData {
     }
     return l_Slices;
   }
+
+  @Override
+  public void putPieSlices(String a_Tag, SortedMap<String, Double> a_Slice) {
+    m_Tags.put(a_Tag, a_Slice);
+  }
+
 
   @Override
   public ArrayList<String> getSubjects(String a_Tag) {

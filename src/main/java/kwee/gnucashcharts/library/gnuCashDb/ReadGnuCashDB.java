@@ -101,10 +101,10 @@ public class ReadGnuCashDB {
         String accsString = accs.toString();
         try {
           rootAcc = account.getParentAccount().getName();
-         } catch (Exception e){
-           // Do nothing
-             lOGGER.log(Level.FINE, e.getMessage());
-         }
+        } catch (Exception e){
+          // Do nothing
+          lOGGER.log(Level.FINE, e.getMessage());
+        }
         String l_regel = String.join(";",formattedLocalDate, account.getName(), account.getDescription(), sBalance, "", l_notes, rootAcc, accsString);
         m_Regels.add(l_regel);
       }

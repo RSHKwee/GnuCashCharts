@@ -34,10 +34,11 @@ public class BarChartWithLegend {
   private ApplicationMessages bundle = ApplicationMessages.getInstance();
 //  private MessageText m_Messages = new MessageText();
 
-  public void openTabsWindow(File inpFile, String tag, int a_NrBars, LocalDate a_Date) {
+  public void openTabsWindow(File inpFile, String tag, int a_NrBars, LocalDate a_Date, boolean a_Diff) {
     // Initialize
     ActionGnuCshDbStackedBarChart l_barchart = new ActionGnuCshDbStackedBarChart(inpFile, a_NrBars, a_Date);
-    SamengesteldeStaafData a_barData = l_barchart.getData();
+
+    SamengesteldeStaafData a_barData = l_barchart.getData(a_Diff);
     m_BarChartDiagram = new StackedBarChartScene(a_barData, tag);
     m_barchartable = new BarChartToTableScene(m_BarChartDiagram.getBarChart(), m_BarChartDiagram.getCombinedTotals());
 
