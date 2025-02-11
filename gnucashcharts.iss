@@ -4,6 +4,7 @@
 #define MyAppVersion GetVersionNumbersString('target\gnucashcharts.exe')
 #define MyAppExeName "gnucashcharts.exe"
 #define MyIconFile "src\main\resources\gnucashLogo.ico"
+#define MyJavaMinVersion = 22
 
 [Setup]
 AppName={#MyAppName}
