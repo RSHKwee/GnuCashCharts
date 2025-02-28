@@ -53,7 +53,7 @@ import kwee.gnucashcharts.library.TaartPuntData;
 public class MainMenu extends Application {
   private static final Logger lOGGER = MyLogger.getLogger();
   static String m_creationtime = Main.m_creationtime;
-  static final String c_CopyrightYear = "2023";
+  static final String c_CopyrightYear = "2025";
   private static String c_reponame = "GNUCashCharts";
 
   public static UserSetting m_param = new UserSetting();
