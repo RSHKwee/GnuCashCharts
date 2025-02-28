@@ -137,12 +137,56 @@
           <finalName>gnucashcharts</finalName>
         </configuration>
       </plugin>
-	  <!-- Distribute readme.md v -->
+      
+      <!-- Distribute tools v -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <version>${maven-resources-plugin.version}</version>
         <executions>
+          <execution>
+            <id>CopyToolsIng</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.basedir}\BuildTools</outputDirectory>
+              <resources>                                        
+                <resource>
+                  <directory>..\BuildTools</directory>
+                  <includes>
+                    <include>HelpChm.cmd</include>
+                    <include>innosetup.cmd</include>
+                  </includes>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+              <encoding>${project.build.sourceEncoding}</encoding>
+            </configuration>
+          </execution>     
+          <execution>
+            <id>CopyToolsIng2</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.basedir}</outputDirectory>
+              <resources>                                        
+                <resource>
+                  <directory>..\BuildTools</directory>
+                  <includes>
+                    <include>Library.iss</include>
+                  </includes>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+              <encoding>${project.build.sourceEncoding}</encoding>
+            </configuration>
+          </execution>     
+      
+	      <!-- Distribute readme.md v -->
           <execution>
             <id>readme-md</id>
             <phase>process-resources</phase>
@@ -244,13 +288,14 @@
               <goal>exec</goal>
             </goals>          
             <configuration>
-              <executable>innosetup.cmd</executable>
+              <executable>BuildTools\innosetup.cmd</executable>
               <workingDirectory>...</workingDirectory>
               <arguments>
                 <argument>gnucashcharts.iss</argument>
               </arguments>
             </configuration>
           </execution>
+<!--    
           <execution>
             <id>innoSetupNoJre</id>
             <phase>package</phase>
@@ -265,7 +310,7 @@
               </arguments>
             </configuration>
           </execution>
- 		  <!--
+
           <execution>
             <id>innoSetupJreDown</id>
             <phase>package</phase>
@@ -283,7 +328,24 @@
           -->
         </executions>
       </plugin>
-
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>${maven-antrun-pluginversion}</version>
+        <executions>
+          <execution>
+            <phase>install</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+              <configuration>
+                <target>
+                  <delete dir="${project.basedir}\BuildTools"/>
+                  <delete file="${project.basedir}\Library.iss"/>   
+                </target>
+              </configuration>
+           </execution>
+        </executions>
+      </plugin>
     </plugins>
     <!--    </pluginManagement> -->
   </build>
