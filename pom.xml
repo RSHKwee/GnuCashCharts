@@ -236,7 +236,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>${exec-maven-plugin.version}</version>
         <executions>
-		  <!--
+
           <execution>
             <id>innoSetup</id>
             <phase>package</phase>
@@ -265,6 +265,7 @@
               </arguments>
             </configuration>
           </execution>
+ 		  <!--
           <execution>
             <id>innoSetupJreDown</id>
             <phase>package</phase>
