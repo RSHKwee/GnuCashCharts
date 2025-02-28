@@ -4,7 +4,7 @@
 
   <groupId>kwee</groupId>
   <artifactId>gnucashcharts</artifactId>
-  <version>0.0.1.2</version>
+  <version>0.0.1.3</version>
   <packaging>jar</packaging>
   <name>GnuCashCharts</name>
 
@@ -283,7 +283,7 @@
 
           <execution>
             <id>innoSetup</id>
-            <phase>package</phase>
+            <phase>install</phase>
            <goals>
               <goal>exec</goal>
             </goals>          

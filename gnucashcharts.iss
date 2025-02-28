@@ -1,5 +1,7 @@
 ; -- gnucashcharts.iss --
 ;
+#include "Library.iss"
+
 #define MyAppName "gnucashcharts"
 #define MyAppVersion GetVersionNumbersString('target\gnucashcharts.exe')
 #define MyAppExeName "gnucashcharts.exe"
@@ -7,6 +9,9 @@
 #define MyJavaMinVersion = 22
 
 [Setup]
+SetupLogging=yes
+PrivilegesRequired=poweruser
+
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher=RSH Kwee
@@ -42,12 +47,18 @@ Name: "{commonstartup}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{userdesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Code]
+const
+  MyJavaMinVersion = {#MyJavaMinVersion};
+
 var
   FinishedInstall: Boolean;
 
 function InitializeSetup(): Boolean;
 begin
   Log('InitializeSetup called');
+  G_JavaMinVersion := MyJavaMinVersion;
+  jreNotChecked := true;
+  L_jreNotPresent := true;
   Result := true;
 end;
 
@@ -113,10 +124,3 @@ begin
   Log('PrepareToInstall() called');
   Result := '';
 end;
-
-function MyConst(Param: String): String;
-begin
-  Log('MyConst(''' + Param + ''') called');
-  Result := ExpandConstant('{autopf}');
-end;
-
