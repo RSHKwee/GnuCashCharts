@@ -20,20 +20,25 @@ public class ActionGnuCshDbStackedBarChart {
   private SamengesteldeStaafData barData = new SamengesteldeStaafData();
   private File m_SelectedFile;
   private ApplicationMessages bundle = ApplicationMessages.getInstance();
+  private ReadGnuCashDB m_gnucashdbtable;
 
   /**
    * 
    * @param a_SelectedFile GnuCash file
-   * @param a_nrBars       Number of Bars, the bars are a month apart.
-   * @param a_Date         Enddate period
    */
-  public ActionGnuCshDbStackedBarChart(File a_SelectedFile, int a_nrBars, LocalDate a_Date) {
+  public ActionGnuCshDbStackedBarChart(File a_SelectedFile) {
+    m_SelectedFile = a_SelectedFile;
+    MainMenu.m_param.set_InputFile(a_SelectedFile.getAbsoluteFile());
+    MainMenu.m_param.save();
+
+    m_gnucashdbtable = new ReadGnuCashDB(m_SelectedFile);
+  }
+
+  public SamengesteldeStaafData getData(int a_nrBars, LocalDate a_Date, boolean a_delta) {
     lOGGER.log(Level.INFO,
-        bundle.getMessage("BarChartSelections", a_SelectedFile.getAbsolutePath(), Integer.toString(a_nrBars)));
+        bundle.getMessage("BarChartSelections", m_SelectedFile.getAbsolutePath(), Integer.toString(a_nrBars)));
     try {
       m_NrBars = a_nrBars;
-      m_SelectedFile = a_SelectedFile;
-      MainMenu.m_param.set_InputFile(a_SelectedFile.getAbsoluteFile());
       MainMenu.m_param.save();
 
       addData(a_Date);
@@ -52,9 +57,7 @@ public class ActionGnuCshDbStackedBarChart {
     } catch (Exception e) {
       lOGGER.log(Level.INFO, e.getMessage());
     }
-  }
 
-  public SamengesteldeStaafData getData(boolean a_delta) {
     if (a_delta) {
       barData.CalcDeltas();
     }
@@ -63,8 +66,7 @@ public class ActionGnuCshDbStackedBarChart {
 
   // Local Functions
   private void addData(LocalDate a_Date) {
-    ReadGnuCashDB gnucashdbtable = new ReadGnuCashDB(m_SelectedFile, a_Date);
-    ArrayList<String> regels = gnucashdbtable.getRegels();
+    ArrayList<String> regels = m_gnucashdbtable.getRegels(a_Date);
     TaartPuntData pieData = new TaartPuntDataImpl();
     pieData.putData(regels);
 

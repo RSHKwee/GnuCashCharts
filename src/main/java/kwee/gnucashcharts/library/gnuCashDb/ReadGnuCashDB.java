@@ -1,6 +1,7 @@
 package kwee.gnucashcharts.library.gnuCashDb;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -17,7 +18,10 @@ import kwee.logger.MyLogger;
 
 public class ReadGnuCashDB {
   private static final Logger lOGGER = MyLogger.getLogger();
-  private ArrayList<String> m_Regels = new ArrayList<String>();
+  // private ArrayList<String> m_Regels = new ArrayList<String>();
+  private GnucashFileImpl m_gnucashFile;
+  private Collection<GnucashAccount> m_accounts;
+  private GnucashPriceDBImpl m_pricedb;
 
   /**
    * Read GnuCash file and return content as CSV-format
@@ -34,50 +38,37 @@ public class ReadGnuCashDB {
    * @param a_SelectedFile GnuCash file
    */
   public ReadGnuCashDB(File a_SelectedFile) {
-    LocalDate l_Date = LocalDate.now();
-    readGnuCash(a_SelectedFile, l_Date);
-  }
-  
-  /**
-   * Read GnuCash file and return content as CSV-format
-   * 
-   * @param a_SelectedFile GnuCash file
-   * @param a_Date Sadi on given date
-   */
-  public ReadGnuCashDB(File a_SelectedFile, LocalDate a_Date) {
-    readGnuCash(a_SelectedFile, a_Date);
+    readGnuCashFile(a_SelectedFile);
   }
   
   /**
    * Get content GnuCashFile in CSV format.
    * 
+   * @param a_Date Sadi on given date
    * @return Result in csv format
    */
-  public ArrayList<String> getRegels() {
-    return m_Regels;
-  }
+  public ArrayList<String> getRegels(LocalDate a_Date) {
+    ArrayList<String> l_Regels = new ArrayList<String>();
+    l_Regels = filterGnuCash(a_Date);    
+    return l_Regels;
+  } 
   
   // Private functions
   /**
-   * Read GnuCash file
+   * Filter transaction for given date
    * 
-   * @param a_SelectedFile GnuCash File
    * @param a_Date Date
+   * @return 
    */
-  private void readGnuCash (File a_SelectedFile, LocalDate a_Date) {
-    GnucashFileImpl gnucashFile;
-    lOGGER.log(Level.FINE, "readGnuCash Date: " + a_Date);
+  private ArrayList<String> filterGnuCash (LocalDate a_Date) {
+    ArrayList<String> l_Regels = new ArrayList<String>();
+    lOGGER.log(Level.FINE, "filterGnuCash Date: " + a_Date);
     
     DateTimeFormatter lformatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     String formattedLocalDate = a_Date.format(lformatter);
 
     try {
-      gnucashFile = new GnucashFileImpl(a_SelectedFile);
-
-      Collection<GnucashAccount> accounts = gnucashFile.getAccounts();
-      GnucashPriceDBImpl pricedb = new GnucashPriceDBImpl(gnucashFile);
-      
-      for (GnucashAccount account : accounts) {
+      for (GnucashAccount account : m_accounts) {
         String l_notes = "";
         FixedPointNumber fBalance = account.getBalance(a_Date);
         
@@ -85,15 +76,16 @@ public class ReadGnuCashDB {
           l_notes = account.getUserDefinedAttribute("notes");
           lOGGER.log(Level.FINE, "notes : " + l_notes);
         }
+        
+        // Stock convert number shares to amount
         String atype = account.getType();
-        if (atype.equals(GnucashAccount.TYPE_STOCK)) {
-        	FixedPointNumber cmdPrice = pricedb.getPrice(account.getCurrencyID(), a_Date);
+        if (atype.equals(GnucashAccount.TYPE_STOCK) || atype.equals(GnucashAccount.TYPE_MUTUAL) ) {
+        	FixedPointNumber cmdPrice = m_pricedb.getPrice(account.getCurrencyID(), a_Date);
           fBalance = fBalance.multiply(cmdPrice);
           lOGGER.log(Level.FINE, "Account currence ID: " + account.getCurrencyID());  
         }
         
         String sBalance = fBalance.toString().replace(".", ",");
-        //String tmp = account.getBalanceFormated(); // tbv debug
         lOGGER.log(Level.FINE, " Account: " + account.getName() + " / Balance: " + sBalance + " / type: " + account.getType() );
        
         String rootAcc = "";
@@ -106,11 +98,30 @@ public class ReadGnuCashDB {
           lOGGER.log(Level.FINE, e.getMessage());
         }
         String l_regel = String.join(";",formattedLocalDate, account.getName(), account.getDescription(), sBalance, "", l_notes, rootAcc, accsString);
-        m_Regels.add(l_regel);
+        l_Regels.add(l_regel);
       }
     } catch (Exception e) {
     	e.printStackTrace();
       lOGGER.log(Level.INFO, e.getMessage());
     }
+    return l_Regels;
   }
+  
+  /**
+   * Read GnuCash file
+   * 
+   * @param a_SelectedFile GnuCash File
+   */ 
+  private void readGnuCashFile (File a_SelectedFile) {
+    try {
+      m_gnucashFile = new GnucashFileImpl(a_SelectedFile);
+      m_accounts = m_gnucashFile.getAccounts();
+
+      m_pricedb = new GnucashPriceDBImpl(m_gnucashFile);
+    } catch (IOException e) {
+      e.printStackTrace();
+      lOGGER.log(Level.INFO, e.getMessage());
+    }    
+  }  
+  
 }

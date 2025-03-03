@@ -36,9 +36,9 @@ public class BarChartWithLegend {
 
   public void openTabsWindow(File inpFile, String tag, int a_NrBars, LocalDate a_Date, boolean a_Diff) {
     // Initialize
-    ActionGnuCshDbStackedBarChart l_barchart = new ActionGnuCshDbStackedBarChart(inpFile, a_NrBars, a_Date);
+    ActionGnuCshDbStackedBarChart l_barchart = new ActionGnuCshDbStackedBarChart(inpFile);
 
-    SamengesteldeStaafData a_barData = l_barchart.getData(a_Diff);
+    SamengesteldeStaafData a_barData = l_barchart.getData(a_NrBars, a_Date, a_Diff);
     m_BarChartDiagram = new StackedBarChartScene(a_barData, tag);
     m_barchartable = new BarChartToTableScene(m_BarChartDiagram.getBarChart(), m_BarChartDiagram.getCombinedTotals());
 
@@ -82,7 +82,7 @@ public class BarChartWithLegend {
     fileChooser.setTitle(bundle.getMessage("SaveFile"));
 
     Button saveButton = new Button(bundle.getMessage("PDFCreate"));
-    saveButton.setOnAction(e -> {
+    saveButton.setOnAction(_ -> {
       FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(bundle.getMessage("PDFFiles"), "*.pdf");
       fileChooser.getExtensionFilters().add(extFilter);
       fileChooser.setInitialFileName(a_Filename + CurrentDateStr() + ".pdf");

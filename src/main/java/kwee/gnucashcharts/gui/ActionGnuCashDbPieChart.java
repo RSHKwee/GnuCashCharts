@@ -16,20 +16,21 @@ public class ActionGnuCashDbPieChart {
   private static final Logger lOGGER = MyLogger.getLogger();
   private TaartPuntData pieData;
   private ApplicationMessages bundle = ApplicationMessages.getInstance();
+  private ReadGnuCashDB m_gnucashdbtable;
 
-  public ActionGnuCashDbPieChart(File a_SelectedFile, LocalDate a_Date) {
+  public ActionGnuCashDbPieChart(File a_SelectedFile) {
     lOGGER.log(Level.INFO, bundle.getMessage("SelectedFile", a_SelectedFile.getAbsolutePath()));
     MainMenu.m_param.set_InputFile(a_SelectedFile.getAbsoluteFile());
     MainMenu.m_param.save();
 
-    ReadGnuCashDB gnucashdbtable = new ReadGnuCashDB(a_SelectedFile, a_Date);
-    ArrayList<String> regels = gnucashdbtable.getRegels();
+    m_gnucashdbtable = new ReadGnuCashDB(a_SelectedFile);
+  }
+
+  public TaartPuntData getData(LocalDate a_Date) {
+    ArrayList<String> regels = m_gnucashdbtable.getRegels(a_Date);
 
     pieData = new TaartPuntDataImpl();
     pieData.putData(regels);
-  }
-
-  public TaartPuntData getData() {
     return pieData;
   }
 }

@@ -76,10 +76,12 @@ public class MainMenu extends Application {
 
   private String m_tag = "";
   private TaartPuntData m_pieData;
-  private File m_SelectedFile;
   private SubjectsColors m_SubjColors;
   private LocalDate m_Date = LocalDate.now();
   private boolean m_Diff = false;
+
+  private File m_SelectedFile;
+  private ActionGnuCashDbPieChart m_pieSelect;
 
   @Override
   public void start(Stage primaryStage) {
@@ -128,7 +130,7 @@ public class MainMenu extends Application {
     Label l_tag = new Label(bundle.getMessage("SelectSubject"));
 
     Button openFileButton = new Button(bundle.getMessage("OpenFile"));
-    openFileButton.setOnAction(e -> {
+    openFileButton.setOnAction(_ -> {
       if (!m_param.get_InputFile().isBlank()) {
         File intFile = new File(m_param.get_InputFile());
         String ldir = intFile.getParent();
@@ -141,8 +143,8 @@ public class MainMenu extends Application {
           ActionHTMLPieChart pieSelect = new ActionHTMLPieChart(selectedFile);
           m_pieData = pieSelect.getData();
         } else {
-          ActionGnuCashDbPieChart pieSelect = new ActionGnuCashDbPieChart(selectedFile, m_Date);
-          m_pieData = pieSelect.getData();
+          m_pieSelect = new ActionGnuCashDbPieChart(selectedFile);
+          m_pieData = m_pieSelect.getData(m_Date);
         }
 
         l_file.setText(selectedFile.getAbsolutePath());
@@ -161,7 +163,7 @@ public class MainMenu extends Application {
       }
     });
 
-    comboTagBox.setOnAction(e -> {
+    comboTagBox.setOnAction(_ -> {
       String selectedOption = comboTagBox.getValue();
       if (selectedOption != null) {
         lOGGER.log(Level.INFO, bundle.getMessage("SelectedSubject", selectedOption));
@@ -180,14 +182,13 @@ public class MainMenu extends Application {
     });
 
     PieChartWithLegend piwindow = new PieChartWithLegend();
-    buttonPiechart.setOnAction(e -> {
-      ActionGnuCashDbPieChart pieSelect = new ActionGnuCashDbPieChart(m_SelectedFile, m_Date);
-      m_pieData = pieSelect.getData();
+    buttonPiechart.setOnAction(_ -> {
+      m_pieData = m_pieSelect.getData(m_Date);
       piwindow.openPieChartWindow(m_pieData, m_tag, m_SubjColors, m_Date);
     });
 
     Label nrBarsLabel = new Label(bundle.getMessage("MonthLab"));
-    integerField.setOnAction(e -> {
+    integerField.setOnAction(_ -> {
       try {
         int integerValue = Integer.parseInt(integerField.getText());
         nrBars = integerValue;
@@ -200,13 +201,13 @@ public class MainMenu extends Application {
     });
 
     Label endDateLabel = new Label(bundle.getMessage("DateLabel"));
-    datePicker.setOnAction(event -> {
+    datePicker.setOnAction(_ -> {
       LocalDate selectedDate = datePicker.getValue();
       m_Date = selectedDate;
       lOGGER.log(Level.INFO, bundle.getMessage("SelectedDate", selectedDate));
     });
 
-    checkDiff.setOnAction(event -> {
+    checkDiff.setOnAction(_ -> {
       if (checkDiff.isSelected()) {
         m_Diff = true;
         checkDiff.setText(bundle.getMessage("DiffMode"));
@@ -218,7 +219,7 @@ public class MainMenu extends Application {
     });
 
     BarChartWithLegend barwindow = new BarChartWithLegend();
-    buttonBarchart.setOnAction(e -> {
+    buttonBarchart.setOnAction(_ -> {
       barwindow.openTabsWindow(m_SelectedFile, m_tag, nrBars, m_Date, m_Diff); // Knop toevoeven
     });
 
@@ -287,7 +288,7 @@ public class MainMenu extends Application {
       loglevelitems[il] = new RadioMenuItem(c_levels[il]);
       toggleGroup.getToggles().add(loglevelitems[il]);
       mntmLoglevel.getItems().add(loglevelitems[il]);
-      loglevelitems[il].setOnAction(e -> {
+      loglevelitems[il].setOnAction(_ -> {
         m_Level = Level.parse(level.toUpperCase());
         m_param.set_Level(m_Level);
         MyLogger.changeLogLevel(m_Level);
@@ -310,7 +311,7 @@ public class MainMenu extends Application {
       mnLanguages[il] = new RadioMenuItem(language);
       toggleLanguagesGroup.getToggles().add(mnLanguages[il]);
       mntmLanguages.getItems().add(mnLanguages[il]);
-      mnLanguages[il].setOnAction(e -> {
+      mnLanguages[il].setOnAction(_ -> {
         lOGGER.log(Level.INFO, language + " Selected");
         m_Language = language;
         m_param.set_Language(m_Language);
@@ -327,7 +328,7 @@ public class MainMenu extends Application {
 
     // Logfiles
     CheckMenuItem checkMenuItem = new CheckMenuItem("Logfiles");
-    checkMenuItem.setOnAction(e -> {
+    checkMenuItem.setOnAction(_ -> {
       DirectoryChooser directoryChooser = new DirectoryChooser();
       directoryChooser.setTitle("Output Directory");
       File selectedDirectory = directoryChooser.showDialog(primaryStage);
@@ -351,7 +352,7 @@ public class MainMenu extends Application {
 
     // Stored preferences
     MenuItem menuPreferences = new MenuItem("Preferences");
-    menuPreferences.setOnAction(e -> {
+    menuPreferences.setOnAction(_ -> {
       UserSetting showpref = new UserSetting();
       showpref.showAllPreferences(true);
     });
@@ -360,7 +361,7 @@ public class MainMenu extends Application {
     // Menu "?" and Help
     Menu questMenu = new Menu("?");
     MenuItem menuHelp = new MenuItem("Help");
-    menuHelp.setOnAction(e -> {
+    menuHelp.setOnAction(_ -> {
       File helpFile = new File("help\\" + m_Language + "\\" + m_HelpFile);
       if (helpFile.exists()) {
         try {
@@ -378,7 +379,7 @@ public class MainMenu extends Application {
 
     // About
     MenuItem menuAbout = new MenuItem(bundle.getMessage("About"));
-    menuAbout.setOnAction(e -> {
+    menuAbout.setOnAction(_ -> {
       @SuppressWarnings("unused")
       AboutWindow about = new AboutWindow(c_reponame, m_creationtime, c_CopyrightYear);
     });
