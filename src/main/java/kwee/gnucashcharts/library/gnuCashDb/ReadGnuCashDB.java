@@ -22,6 +22,7 @@ public class ReadGnuCashDB {
   private GnucashFileImpl m_gnucashFile;
   private Collection<GnucashAccount> m_accounts;
   private GnucashPriceDBImpl m_pricedb;
+  private File m_FileName;
 
   /**
    * Read GnuCash file and return content as CSV-format
@@ -38,7 +39,12 @@ public class ReadGnuCashDB {
    * @param a_SelectedFile GnuCash file
    */
   public ReadGnuCashDB(File a_SelectedFile) {
+    m_FileName = a_SelectedFile;
     readGnuCashFile(a_SelectedFile);
+  }
+  
+  public File getFile() {
+    return m_FileName;
   }
   
   /**

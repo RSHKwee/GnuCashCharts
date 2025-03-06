@@ -80,6 +80,13 @@
       <artifactId>log4j-slf4j-impl</artifactId>
       <version>${log4j-slf4j-impl.version}</version> <!-- Gebruik de nieuwste versie -->
     </dependency>
+
+    <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>1.4.14</version>  <!-- Gebruik de nieuwste versie -->
+    </dependency>
+
   </dependencies>
   
   <build>
@@ -184,8 +191,9 @@
               </resources>
               <encoding>${project.build.sourceEncoding}</encoding>
             </configuration>
-          </execution>     
-      
+          </execution>
+          
+      	  <!-- readme.md ^ -->
 	      <!-- Distribute readme.md v -->
           <execution>
             <id>readme-md</id>
@@ -210,7 +218,7 @@
           </execution>        
         </executions>
       </plugin>		
-	  <!-- readme.md ^ -->
+
 	  <!-- LAUNCH4J create executable v -->      
       <plugin>
          <groupId>com.akathist.maven.plugins.launch4j</groupId>

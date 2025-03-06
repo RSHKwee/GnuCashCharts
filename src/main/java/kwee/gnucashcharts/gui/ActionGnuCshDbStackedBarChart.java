@@ -17,7 +17,7 @@ import kwee.logger.MyLogger;
 public class ActionGnuCshDbStackedBarChart {
   private static final Logger lOGGER = MyLogger.getLogger();
   private int m_NrBars = 6;
-  private SamengesteldeStaafData barData = new SamengesteldeStaafData();
+  private SamengesteldeStaafData barData;
   private File m_SelectedFile;
   private ApplicationMessages bundle = ApplicationMessages.getInstance();
   private ReadGnuCashDB m_gnucashdbtable;
@@ -26,12 +26,12 @@ public class ActionGnuCshDbStackedBarChart {
    * 
    * @param a_SelectedFile GnuCash file
    */
-  public ActionGnuCshDbStackedBarChart(File a_SelectedFile) {
-    m_SelectedFile = a_SelectedFile;
-    MainMenu.m_param.set_InputFile(a_SelectedFile.getAbsoluteFile());
+  public ActionGnuCshDbStackedBarChart(ReadGnuCashDB a_SelectedFile) {
+    m_SelectedFile = a_SelectedFile.getFile();
+    MainMenu.m_param.set_InputFile(a_SelectedFile.getFile().getAbsoluteFile());
     MainMenu.m_param.save();
 
-    m_gnucashdbtable = new ReadGnuCashDB(m_SelectedFile);
+    m_gnucashdbtable = a_SelectedFile;
   }
 
   public SamengesteldeStaafData getData(int a_nrBars, LocalDate a_Date, boolean a_delta) {
@@ -40,6 +40,7 @@ public class ActionGnuCshDbStackedBarChart {
     try {
       m_NrBars = a_nrBars;
       MainMenu.m_param.save();
+      barData = new SamengesteldeStaafData();
 
       addData(a_Date);
       int year = a_Date.getYear();

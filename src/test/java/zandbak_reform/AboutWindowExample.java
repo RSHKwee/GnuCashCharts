@@ -16,9 +16,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import kwee.library.Githubchecker;
+import kwee.logger.MyLogger;
 
 public class AboutWindowExample extends Application {
-  private static final Logger LOGGER = Logger.getLogger(Class.class.getName());
+  private static final Logger LOGGER = MyLogger.getLogger();
 
   private String c_Owner = "rshkwee";
   private Label titleLabel;

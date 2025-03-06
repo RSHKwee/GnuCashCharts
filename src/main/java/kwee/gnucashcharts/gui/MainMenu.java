@@ -33,6 +33,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -49,11 +50,12 @@ import kwee.library.FX.AboutWindow;
 import kwee.library.FX.JavaFXLogHandler;
 import kwee.gnucashcharts.library.SubjectsColors;
 import kwee.gnucashcharts.library.TaartPuntData;
+import kwee.gnucashcharts.library.gnuCashDb.ReadGnuCashDB;
 
 public class MainMenu extends Application {
   private static final Logger lOGGER = MyLogger.getLogger();
   static String m_creationtime = Main.m_creationtime;
-  static final String c_CopyrightYear = "2025";
+  static final String c_CopyrightYear = Main.c_CopyrightYear;
   private static String c_reponame = "GNUCashCharts";
 
   public static UserSetting m_param = new UserSetting();
@@ -82,6 +84,8 @@ public class MainMenu extends Application {
 
   private File m_SelectedFile;
   private ActionGnuCashDbPieChart m_pieSelect;
+  private BarChartWithLegend m_barwindow = null;
+  private ReadGnuCashDB m_gnucashdbtable;
 
   @Override
   public void start(Stage primaryStage) {
@@ -98,6 +102,7 @@ public class MainMenu extends Application {
 
     // Logger setup
     TextArea logTextArea = new TextArea();
+    logTextArea.setFont(new Font("Arial", 12));
     try {
       MyLogger.setup(m_Level, m_Logdir, m_toDisk);
 
@@ -143,7 +148,9 @@ public class MainMenu extends Application {
           ActionHTMLPieChart pieSelect = new ActionHTMLPieChart(selectedFile);
           m_pieData = pieSelect.getData();
         } else {
-          m_pieSelect = new ActionGnuCashDbPieChart(selectedFile);
+          m_gnucashdbtable = new ReadGnuCashDB(m_SelectedFile);
+          m_pieSelect = new ActionGnuCashDbPieChart(m_gnucashdbtable);
+          m_barwindow = new BarChartWithLegend(m_gnucashdbtable);
           m_pieData = m_pieSelect.getData(m_Date);
         }
 
@@ -188,15 +195,17 @@ public class MainMenu extends Application {
     });
 
     Label nrBarsLabel = new Label(bundle.getMessage("MonthLab"));
-    integerField.setOnAction(_ -> {
-      try {
-        int integerValue = Integer.parseInt(integerField.getText());
-        nrBars = integerValue;
-        m_param.set_NrBars(nrBars);
-        m_param.save();
-        lOGGER.log(Level.INFO, bundle.getMessage("NrOfMonth", nrBars));
-      } catch (NumberFormatException ex) {
-        lOGGER.log(Level.INFO, bundle.getMessage("InvInpInt"));
+    integerField.focusedProperty().addListener((_, _, isNowFocused) -> {
+      if (!isNowFocused) { // Wanneer de focus verloren gaat
+        try {
+          int value = Integer.parseInt(integerField.getText());
+          nrBars = value;
+          m_param.set_NrBars(nrBars);
+          m_param.save();
+          lOGGER.log(Level.INFO, bundle.getMessage("NrOfMonth", nrBars));
+        } catch (NumberFormatException e) {
+          lOGGER.log(Level.INFO, bundle.getMessage("InvInpInt"));
+        }
       }
     });
 
@@ -218,9 +227,8 @@ public class MainMenu extends Application {
 
     });
 
-    BarChartWithLegend barwindow = new BarChartWithLegend();
     buttonBarchart.setOnAction(_ -> {
-      barwindow.openTabsWindow(m_SelectedFile, m_tag, nrBars, m_Date, m_Diff); // Knop toevoeven
+      m_barwindow.openTabsWindow(m_tag, nrBars, m_Date, m_Diff); // Knop toevoeven
     });
 
     // Do the layout
@@ -257,10 +265,10 @@ public class MainMenu extends Application {
 
     Scene scene = new Scene(root, 700, 375);
     primaryStage.setScene(scene);
-    primaryStage.setTitle(bundle.getMessage("Title", m_creationtime));
+    primaryStage.setTitle(bundle.getMessage("Title", m_creationtime, c_CopyrightYear));
     primaryStage.show();
 
-    lOGGER.log(Level.INFO, bundle.getMessage("Title", m_creationtime));
+    lOGGER.log(Level.INFO, bundle.getMessage("Title", m_creationtime, c_CopyrightYear));
   }
 
   // Menubar

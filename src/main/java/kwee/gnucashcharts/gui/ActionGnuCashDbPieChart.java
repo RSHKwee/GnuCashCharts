@@ -1,9 +1,9 @@
 package kwee.gnucashcharts.gui;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.logging.Level;
+//import java.util.logging.Logger;
 import java.util.logging.Logger;
 
 import kwee.gnucashcharts.library.TaartPuntData;
@@ -18,12 +18,12 @@ public class ActionGnuCashDbPieChart {
   private ApplicationMessages bundle = ApplicationMessages.getInstance();
   private ReadGnuCashDB m_gnucashdbtable;
 
-  public ActionGnuCashDbPieChart(File a_SelectedFile) {
-    lOGGER.log(Level.INFO, bundle.getMessage("SelectedFile", a_SelectedFile.getAbsolutePath()));
-    MainMenu.m_param.set_InputFile(a_SelectedFile.getAbsoluteFile());
+  public ActionGnuCashDbPieChart(ReadGnuCashDB a_SelectedFile) {
+    lOGGER.log(Level.INFO, bundle.getMessage("SelectedFile", a_SelectedFile.getFile().getAbsolutePath()));
+    MainMenu.m_param.set_InputFile(a_SelectedFile.getFile().getAbsoluteFile());
     MainMenu.m_param.save();
 
-    m_gnucashdbtable = new ReadGnuCashDB(a_SelectedFile);
+    m_gnucashdbtable = a_SelectedFile;
   }
 
   public TaartPuntData getData(LocalDate a_Date) {

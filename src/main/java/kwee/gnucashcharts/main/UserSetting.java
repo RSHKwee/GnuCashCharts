@@ -7,6 +7,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import kwee.library.FX.ShowPreferences;
+import kwee.logger.MyLogger;
 
 /**
  * User setting persistence.
@@ -15,7 +16,7 @@ import kwee.library.FX.ShowPreferences;
  *
  */
 public class UserSetting extends ShowPreferences {
-  private static final Logger LOGGER = Logger.getLogger(Class.class.getName());
+  private static final Logger LOGGER = MyLogger.getLogger();
   public static String NodePrefName = "kwee.gnucashcharts";
 
   private String c_Level = "Level";

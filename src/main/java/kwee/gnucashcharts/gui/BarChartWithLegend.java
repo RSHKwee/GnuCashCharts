@@ -18,13 +18,16 @@ import javafx.scene.layout.VBox;
 
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
 import kwee.gnucashcharts.library.barchart.BarChartToTableScene;
 import kwee.gnucashcharts.library.barchart.StackedBarChartScene;
-import kwee.gnucashcharts.library.gnuCashDb.SamengesteldeStaafData;
-import kwee.library.ApplicationMessages;
 import kwee.gnucashcharts.library.CreatePdf;
 import kwee.gnucashcharts.library.CreatePdf.c_PageSizeEnum;
+import kwee.gnucashcharts.library.gnuCashDb.ReadGnuCashDB;
+import kwee.gnucashcharts.library.gnuCashDb.SamengesteldeStaafData;
+
 import kwee.logger.MyLogger;
+import kwee.library.ApplicationMessages;
 
 public class BarChartWithLegend {
   private static final Logger lOGGER = MyLogger.getLogger();
@@ -33,12 +36,20 @@ public class BarChartWithLegend {
   private BarChartToTableScene m_barchartable;
   private ApplicationMessages bundle = ApplicationMessages.getInstance();
 //  private MessageText m_Messages = new MessageText();
+  ActionGnuCshDbStackedBarChart m_barchart;
 
-  public void openTabsWindow(File inpFile, String tag, int a_NrBars, LocalDate a_Date, boolean a_Diff) {
+  public BarChartWithLegend() {
     // Initialize
-    ActionGnuCshDbStackedBarChart l_barchart = new ActionGnuCshDbStackedBarChart(inpFile);
+    m_barchart = null;
+  }
 
-    SamengesteldeStaafData a_barData = l_barchart.getData(a_NrBars, a_Date, a_Diff);
+  public BarChartWithLegend(ReadGnuCashDB inpFile) {
+    // Initialize
+    m_barchart = new ActionGnuCshDbStackedBarChart(inpFile);
+  }
+
+  public void openTabsWindow(String tag, int a_NrBars, LocalDate a_Date, boolean a_Diff) {
+    SamengesteldeStaafData a_barData = m_barchart.getData(a_NrBars, a_Date, a_Diff);
     m_BarChartDiagram = new StackedBarChartScene(a_barData, tag);
     m_barchartable = new BarChartToTableScene(m_BarChartDiagram.getBarChart(), m_BarChartDiagram.getCombinedTotals());
 
