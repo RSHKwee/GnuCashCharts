@@ -21,6 +21,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.VBox;
 
 import kwee.gnucashcharts.library.FormatAmount;
+import kwee.gnucashcharts.library.MessageConstants;
 import kwee.library.ApplicationMessages;
 import kwee.library.FX.PatchedStackedBarChart;
 import kwee.logger.MyLogger;
@@ -237,10 +238,10 @@ public class BarChartToTableScene {
     String[] lx_Header = y_Header;
     String[] ly_HeaderNew = new String[x_Header.length + 1];
 
-    ly_HeaderNew[0] = bundle.getMessage("DateLabel");
+    ly_HeaderNew[0] = bundle.getMessage(MessageConstants.C_DateLabel);
     System.arraycopy(x_Header, 0, ly_HeaderNew, 1, x_Header.length);
     String[] ly_Header = ly_HeaderNew;
-    ly_Header[ly_HeaderNew.length - 1] = bundle.getMessage("Total");
+    ly_Header[ly_HeaderNew.length - 1] = bundle.getMessage(MessageConstants.C_Total);
 
     for (int x = 0; x < (series1.size() + 1); x++) {
       for (int y = 0; y < m_NumberColomns; y++) {

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import kwee.gnucashcharts.library.MessageConstants;
 import kwee.gnucashcharts.library.TaartPuntData;
 import kwee.gnucashcharts.library.gnuCashDb.TaartPuntDataImpl;
 import kwee.library.ApplicationMessages;
@@ -35,8 +36,8 @@ public class ActionGnuCshDbStackedBarChart {
   }
 
   public SamengesteldeStaafData getData(int a_nrBars, LocalDate a_Date, boolean a_delta) {
-    lOGGER.log(Level.INFO,
-        bundle.getMessage("BarChartSelections", m_SelectedFile.getAbsolutePath(), Integer.toString(a_nrBars)));
+    lOGGER.log(Level.INFO, bundle.getMessage(MessageConstants.C_BarChartSelections, m_SelectedFile.getAbsolutePath(),
+        Integer.toString(a_nrBars)));
     try {
       m_NrBars = a_nrBars;
       MainMenu.m_param.save();

@@ -16,6 +16,8 @@
   </parent>
 
   <properties>
+    <project.description>GnuCashGraphs</project.description>
+
     <gnucash-api.version>1.1.0-SNAPSHOT</gnucash-api.version> 
   </properties>
 
@@ -97,12 +99,11 @@
       </resource>
     </resources>   
 
-    <!--  <pluginManagement> -->
     <plugins> 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>${maven-enforcer-plugin.version}</version> <!-- Gebruik een geschikte versie van de plugin -->
+        <version>${maven-enforcer-plugin.version}</version>
         <executions>
           <execution>
             <id>enforce-maven-version</id>
@@ -202,7 +203,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.basedir}/target</outputDirectory>
+              <outputDirectory>${project.build.directory}</outputDirectory>
               <resources>                                        
                 <resource>
                   <directory>.</directory>
@@ -233,27 +234,26 @@
              </goals>
              <configuration>
                <headerType>console</headerType>
-               <jar>target/gnucashcharts-jar-with-dependencies.jar</jar>
-               <outfile>target/gnucashcharts.exe</outfile>
-               <downloadUrl>https://cdn.azul.com/zulu/bin/zulu17.40.19-ca-jdk17.0.6-win_x64.msi</downloadUrl>
+               <jar>${project.build.directory}/gnucashcharts-jar-with-dependencies.jar</jar>
+               <outfile>${project.build.directory}/gnucashcharts.exe</outfile>
+               <downloadUrl>https://cdn.azul.com/zulu/bin/zulu22.32.21-ca-crac-jdk22.0.2-win_x64.zip</downloadUrl>
                <classPath>
                  <mainClass>kwee.gnucashcharts.main.Main</mainClass>
               </classPath>
               <jre>
-                <bundledJre64Bit>true</bundledJre64Bit>
 	            <path>%java_home%</path>
-                <bundledJreAsFallback>true</bundledJreAsFallback>
               </jre>
               <versionInfo>
                 <fileVersion>${project.version}</fileVersion>
                 <txtFileVersion>${project.version}</txtFileVersion>
                 <fileDescription>${project.name}</fileDescription>
-                <copyright>C</copyright>
+                <copyright>Copyright © 2025</copyright>
                 <productVersion>${project.version}</productVersion>
                 <txtProductVersion>${project.version}</txtProductVersion>
                 <productName>${project.name}</productName>
                 <internalName>GnuCashCharts</internalName>
                 <originalFilename>gnucashcharts.exe</originalFilename>
+                <companyName>Prive RK</companyName>
               </versionInfo>
             </configuration>
           </execution>
@@ -271,7 +271,7 @@
               <goal>sign</goal>
             </goals>
             <configuration>
-              <file>target/GnuCashCharts.exe</file>
+              <file>${project.build.directory}/GnuCashCharts.exe</file>
               <name>ING OFX Converter</name>
               <url>https://github.com/RSHKwee/gnucashcharts</url>
               <keystore>keystore.jks</keystore>
@@ -282,13 +282,12 @@
         </executions>
       </plugin>
 	  <!-- Sign executable ^ -->
-       <!-- Windows installers v -->
+      <!-- Windows installers v -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>${exec-maven-plugin.version}</version>
         <executions>
-
           <execution>
             <id>innoSetup</id>
             <phase>install</phase>
@@ -303,37 +302,6 @@
               </arguments>
             </configuration>
           </execution>
-<!--    
-          <execution>
-            <id>innoSetupNoJre</id>
-            <phase>package</phase>
-           <goals>
-              <goal>exec</goal>
-            </goals>          
-            <configuration>
-              <executable>innosetup.cmd</executable>
-              <workingDirectory>...</workingDirectory>
-              <arguments>
-                <argument>gnucashcharts_jre.iss</argument>
-              </arguments>
-            </configuration>
-          </execution>
-
-          <execution>
-            <id>innoSetupJreDown</id>
-            <phase>package</phase>
-           <goals>
-              <goal>exec</goal>
-            </goals>          
-            <configuration>
-              <executable>innosetup.cmd</executable>
-              <workingDirectory>...</workingDirectory>
-              <arguments>
-                <argument>gnucashcharts_JreDownload.iss</argument>
-              </arguments>
-            </configuration>
-          </execution>         
-          -->
         </executions>
       </plugin>
       <plugin>
@@ -355,7 +323,6 @@
         </executions>
       </plugin>
     </plugins>
-    <!--    </pluginManagement> -->
   </build>
   
   <distributionManagement>

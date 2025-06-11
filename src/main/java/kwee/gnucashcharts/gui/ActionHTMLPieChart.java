@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import kwee.gnucashcharts.library.MessageConstants;
 import kwee.gnucashcharts.library.TaartPuntData;
 import kwee.gnucashcharts.library.html.ReadHTMLTable;
 import kwee.gnucashcharts.library.html.TaartPuntDataImpl;
@@ -17,7 +18,7 @@ public class ActionHTMLPieChart {
   private ApplicationMessages bundle = ApplicationMessages.getInstance();
 
   public ActionHTMLPieChart(File a_SelectedFile) {
-    lOGGER.log(Level.INFO, bundle.getMessage("SelectedFile", a_SelectedFile.getAbsolutePath()));
+    lOGGER.log(Level.INFO, bundle.getMessage(MessageConstants.C_SelectedFile, a_SelectedFile.getAbsolutePath()));
     MainMenu.m_param.set_InputFile(a_SelectedFile.getAbsoluteFile());
     MainMenu.m_param.save();
 

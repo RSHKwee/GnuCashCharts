@@ -6,6 +6,7 @@ import java.util.logging.Level;
 //import java.util.logging.Logger;
 import java.util.logging.Logger;
 
+import kwee.gnucashcharts.library.MessageConstants;
 import kwee.gnucashcharts.library.TaartPuntData;
 import kwee.gnucashcharts.library.gnuCashDb.ReadGnuCashDB;
 import kwee.gnucashcharts.library.gnuCashDb.TaartPuntDataImpl;
@@ -19,7 +20,8 @@ public class ActionGnuCashDbPieChart {
   private ReadGnuCashDB m_gnucashdbtable;
 
   public ActionGnuCashDbPieChart(ReadGnuCashDB a_SelectedFile) {
-    lOGGER.log(Level.INFO, bundle.getMessage("SelectedFile", a_SelectedFile.getFile().getAbsolutePath()));
+    lOGGER.log(Level.INFO,
+        bundle.getMessage(MessageConstants.C_SelectedFile, a_SelectedFile.getFile().getAbsolutePath()));
     MainMenu.m_param.set_InputFile(a_SelectedFile.getFile().getAbsoluteFile());
     MainMenu.m_param.save();
 

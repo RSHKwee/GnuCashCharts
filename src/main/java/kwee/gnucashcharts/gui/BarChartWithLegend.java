@@ -23,6 +23,7 @@ import kwee.gnucashcharts.library.barchart.BarChartToTableScene;
 import kwee.gnucashcharts.library.barchart.StackedBarChartScene;
 import kwee.gnucashcharts.library.CreatePdf;
 import kwee.gnucashcharts.library.CreatePdf.c_PageSizeEnum;
+import kwee.gnucashcharts.library.MessageConstants;
 import kwee.gnucashcharts.library.gnuCashDb.ReadGnuCashDB;
 import kwee.gnucashcharts.library.gnuCashDb.SamengesteldeStaafData;
 
@@ -54,12 +55,13 @@ public class BarChartWithLegend {
     m_barchartable = new BarChartToTableScene(m_BarChartDiagram.getBarChart(), m_BarChartDiagram.getCombinedTotals());
 
     // Layout
-    title = bundle.getMessage("BarchartTable", tag, m_barchartable.get_StartPeriod(), m_barchartable.get_EndPeriod());
+    title = bundle.getMessage(MessageConstants.C_BarchartTable, tag, m_barchartable.get_StartPeriod(),
+        m_barchartable.get_EndPeriod());
 
     TabPane tabPane = new TabPane();
-    Tab tabDiagram = new Tab(bundle.getMessage("Diagram"));
-    Tab tabTable = new Tab(bundle.getMessage("Table"));
-    Tab tabTransposedTable = new Tab(bundle.getMessage("TableTransposed"));
+    Tab tabDiagram = new Tab(bundle.getMessage(MessageConstants.C_Diagram));
+    Tab tabTable = new Tab(bundle.getMessage(MessageConstants.C_Table));
+    Tab tabTransposedTable = new Tab(bundle.getMessage(MessageConstants.C_TableTransposed));
 
     // Set the main scene on the primaryStage
     Stage tabStage = new Stage();
@@ -90,11 +92,12 @@ public class BarChartWithLegend {
 
   private VBox saveDialog(Stage a_Stage, String a_Filename) {
     FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle(bundle.getMessage("SaveFile"));
+    fileChooser.setTitle(bundle.getMessage(MessageConstants.C_SaveFile));
 
-    Button saveButton = new Button(bundle.getMessage("PDFCreate"));
+    Button saveButton = new Button(bundle.getMessage(MessageConstants.C_PDFCreate));
     saveButton.setOnAction(_ -> {
-      FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(bundle.getMessage("PDFFiles"), "*.pdf");
+      FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
+          bundle.getMessage(MessageConstants.C_PDFFiles), "*.pdf");
       fileChooser.getExtensionFilters().add(extFilter);
       fileChooser.setInitialFileName(a_Filename + CurrentDateStr() + ".pdf");
       if (!MainMenu.m_param.get_PdfFile().isBlank()) {
@@ -130,7 +133,7 @@ public class BarChartWithLegend {
         } catch (IOException e1) {
           lOGGER.log(Level.INFO, "PDF Save: " + e1.getMessage());
         }
-        lOGGER.log(Level.INFO, bundle.getMessage("PDFGenerated", selectedFile.getAbsolutePath()));
+        lOGGER.log(Level.INFO, bundle.getMessage(MessageConstants.C_PDFGenerated, selectedFile.getAbsolutePath()));
         MainMenu.m_param.set_Pdf_file(selectedFile);
         MainMenu.m_param.save();
 

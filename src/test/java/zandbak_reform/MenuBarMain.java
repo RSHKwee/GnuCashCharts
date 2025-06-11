@@ -15,6 +15,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import kwee.gnucashcharts.library.MessageConstants;
 import kwee.library.ApplicationMessages;
 import kwee.logger.MyLogger;
 
@@ -146,7 +147,7 @@ public class MenuBarMain extends Application {
           e1.printStackTrace();
         }
       } else {
-        lOGGER.log(Level.INFO, bundle.getMessage("HelpFileNotFound", helpFile.getAbsolutePath()));
+        lOGGER.log(Level.INFO, bundle.getMessage(MessageConstants.C_HelpFileNotFound, helpFile.getAbsolutePath()));
       }
     });
     questMenu.getItems().add(menuHelp);

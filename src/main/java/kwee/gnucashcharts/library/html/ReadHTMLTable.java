@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ public class ReadHTMLTable {
       try {
         // From an URL
         m_content = fetchHTML(a_location);
-      } catch (IOException e1) {
+      } catch (IOException | URISyntaxException e1) {
         lOGGER.log(Level.INFO, e.getMessage());
       }
       lOGGER.log(Level.INFO, e.getMessage());
@@ -47,8 +49,7 @@ public class ReadHTMLTable {
   /**
    * Parse table information on page.
    * 
-   * @return Table, first row is Header then in each row data as a String,
-   *         semicolon delimited
+   * @return Table, first row is Header then in each row data as a String, semicolon delimited
    */
   public ArrayList<String> parseHTMLpage() {
     ArrayList<String> dataregels = new ArrayList<String>();
@@ -112,8 +113,10 @@ public class ReadHTMLTable {
    * 
    * @return Page content as String
    */
-  private String fetchHTML(String url) throws IOException {
-    URL website = new URL(url);
+  private String fetchHTML(String url) throws IOException, URISyntaxException {
+    URI uri = new URI(url);
+    URL website = uri.toURL();
+
     HttpURLConnection connection = (HttpURLConnection) website.openConnection();
     connection.setRequestMethod("GET");
 

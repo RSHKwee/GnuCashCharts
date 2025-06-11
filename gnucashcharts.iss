@@ -12,11 +12,21 @@
 SetupLogging=yes
 PrivilegesRequired=poweruser
 
+AllowNoIcons=yes
+AllowRootDirectory=yes
+AllowUNCPath=no
+CreateAppDir=yes
+DisableStartupPrompt=yes
+
+Compression=lzma2/ultra64
+SolidCompression=yes
+
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher=RSH Kwee
 AppPublisherURL=https://github.com/RSHKwee/gnucashcharts/releases
 AppContact=rsh.kwee@gmail.com
+
 WizardStyle=modern
 DisableWelcomePage=no
 DefaultDirName={code:MyConst}\{#MyAppName}
@@ -26,11 +36,10 @@ InfoBeforeFile=readme.md
 OutputDir=target
 OutputBaseFilename={#MyAppName}_v{#MyAppVersion}_setup
 UninstallFilesDir={app}\uninst
+
 ; Tell Windows Explorer to reload the environment
 ChangesEnvironment=yes
 ; SetupIconFile={#MyIconFile}
-; SetupLogging=yes
-; PrivilegesRequired=poweruser
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; \
