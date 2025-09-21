@@ -19,6 +19,7 @@
     <project.description>GnuCashGraphs</project.description>
 
     <gnucash-api.version>1.1.0-SNAPSHOT</gnucash-api.version> 
+    <ch-qos-logback.version>1.4.14</ch-qos-logback.version>
   </properties>
 
   <dependencies>
@@ -86,7 +87,7 @@
     <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <version>1.4.14</version>  <!-- Gebruik de nieuwste versie -->
+        <version>${ch-qos-logback.version}</version>  <!-- Gebruik de nieuwste versie -->
     </dependency>
 
   </dependencies>
