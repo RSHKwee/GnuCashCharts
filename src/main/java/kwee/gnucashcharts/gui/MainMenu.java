@@ -92,9 +92,12 @@ public class MainMenu extends Application {
   @Override
   public void start(Stage primaryStage) {
     // Redirect Out- and Error stream to Logger
-    LoggerPrintOutStream.redirectOutStreamToLogger(lOGGER, Level.WARNING);
-    LoggerPrintErrStream.redirectErrorStreamToLogger(lOGGER, Level.WARNING);
+    try {
+      LoggerPrintOutStream.redirectOutStreamToLogger(lOGGER, Level.WARNING);
+      LoggerPrintErrStream.redirectErrorStreamToLogger(lOGGER, Level.WARNING);
+    } catch (Exception e) {
 
+    }
     // Defaults
     nrBars = m_param.get_NrBars();
 

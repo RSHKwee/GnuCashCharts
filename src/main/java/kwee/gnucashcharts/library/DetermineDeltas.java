@@ -37,7 +37,7 @@ public class DetermineDeltas {
 
   public Map<LocalDate, TaartPuntData> getDeltas() {
     if (!b_calculated) {
-      lOGGER.log(Level.INFO, bundle.getMessage("CalcDiff"));
+      lOGGER.log(Level.INFO, bundle.getMessage("app.CalcDiff"));
       calcDeltas();
     }
     return m_KolomDelta;
