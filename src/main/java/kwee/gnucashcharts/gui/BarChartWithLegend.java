@@ -25,6 +25,7 @@ import kwee.gnucashcharts.library.CreatePdf;
 import kwee.gnucashcharts.library.CreatePdf.c_PageSizeEnum;
 import kwee.gnucashcharts.library.MessageConstants;
 import kwee.gnucashcharts.library.gnuCashDb.ReadGnuCashDB;
+import kwee.gnucashcharts.library.gnuCashDb.ReadGnuCashMultiDB;
 import kwee.gnucashcharts.library.gnuCashDb.SamengesteldeStaafData;
 
 import kwee.logger.MyLogger;
@@ -47,6 +48,11 @@ public class BarChartWithLegend {
   public BarChartWithLegend(ReadGnuCashDB inpFile) {
     // Initialize
     m_barchart = new ActionGnuCshDbStackedBarChart(inpFile);
+  }
+
+  public BarChartWithLegend(ReadGnuCashMultiDB inpDBs) {
+    // Initialize
+    m_barchart = new ActionGnuCshDbStackedBarChart(inpDBs);
   }
 
   public void openTabsWindow(String tag, int a_NrBars, LocalDate a_Date, boolean a_Diff) {

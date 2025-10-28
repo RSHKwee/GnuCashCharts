@@ -19,7 +19,9 @@ public class ActionHTMLPieChart {
 
   public ActionHTMLPieChart(File a_SelectedFile) {
     lOGGER.log(Level.INFO, bundle.getMessage(MessageConstants.C_SelectedFile, a_SelectedFile.getAbsolutePath()));
-    MainMenu.m_param.set_InputFile(a_SelectedFile.getAbsoluteFile());
+    File[] ll_files = new File[0];
+    ll_files[0] = a_SelectedFile.getAbsoluteFile();
+    MainMenu.m_param.set_InputFiles(ll_files);
     MainMenu.m_param.save();
 
     ReadHTMLTable htmltable = new ReadHTMLTable(a_SelectedFile.getAbsolutePath());

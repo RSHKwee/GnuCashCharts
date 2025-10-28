@@ -11,6 +11,7 @@ import kwee.gnucashcharts.library.TaartPuntData;
 import kwee.gnucashcharts.library.gnuCashDb.TaartPuntDataImpl;
 import kwee.library.ApplicationMessages;
 import kwee.gnucashcharts.library.gnuCashDb.ReadGnuCashDB;
+import kwee.gnucashcharts.library.gnuCashDb.ReadGnuCashMultiDB;
 import kwee.gnucashcharts.library.gnuCashDb.SamengesteldeStaafData;
 
 import kwee.logger.MyLogger;
@@ -19,25 +20,39 @@ public class ActionGnuCshDbStackedBarChart {
   private static final Logger lOGGER = MyLogger.getLogger();
   private int m_NrBars = 6;
   private SamengesteldeStaafData barData;
-  private File m_SelectedFile;
+  private String m_SelectedFiles;
   private ApplicationMessages bundle = ApplicationMessages.getInstance();
-  private ReadGnuCashDB m_gnucashdbtable;
+  private ReadGnuCashMultiDB m_gnucashdbtables;
 
   /**
    * 
    * @param a_SelectedFile GnuCash file
    */
-  public ActionGnuCshDbStackedBarChart(ReadGnuCashDB a_SelectedFile) {
-    m_SelectedFile = a_SelectedFile.getFile();
-    MainMenu.m_param.set_InputFile(a_SelectedFile.getFile().getAbsoluteFile());
+  public ActionGnuCshDbStackedBarChart(ReadGnuCashDB a_SelectedDB) {
+    m_SelectedFiles = a_SelectedDB.getFile().getName();
+    File[] l_files = new File[0];
+    l_files[0] = a_SelectedDB.getFile();
+    MainMenu.m_param.set_InputFiles(l_files);
     MainMenu.m_param.save();
 
-    m_gnucashdbtable = a_SelectedFile;
+    m_gnucashdbtables.addGnuCashDB(a_SelectedDB);
+  }
+
+  public ActionGnuCshDbStackedBarChart(ReadGnuCashMultiDB a_SelectedDBs) {
+    File[] l_files = a_SelectedDBs.getFiles().toArray(new File[0]);
+    m_SelectedFiles = "";
+    a_SelectedDBs.getFiles().forEach(ll_file -> {
+      m_SelectedFiles = m_SelectedFiles + " " + ll_file.getName();
+    });
+    MainMenu.m_param.set_InputFiles(l_files);
+    MainMenu.m_param.save();
+
+    m_gnucashdbtables = new ReadGnuCashMultiDB(a_SelectedDBs);
   }
 
   public SamengesteldeStaafData getData(int a_nrBars, LocalDate a_Date, boolean a_delta) {
-    lOGGER.log(Level.INFO, bundle.getMessage(MessageConstants.C_BarChartSelections, m_SelectedFile.getAbsolutePath(),
-        Integer.toString(a_nrBars)));
+    lOGGER.log(Level.INFO,
+        bundle.getMessage(MessageConstants.C_BarChartSelections, m_SelectedFiles, Integer.toString(a_nrBars)));
     try {
       m_NrBars = a_nrBars;
       MainMenu.m_param.save();
@@ -68,7 +83,7 @@ public class ActionGnuCshDbStackedBarChart {
 
   // Local Functions
   private void addData(LocalDate a_Date) {
-    ArrayList<String> regels = m_gnucashdbtable.getRegels(a_Date);
+    ArrayList<String> regels = m_gnucashdbtables.getRegels(a_Date);
     TaartPuntData pieData = new TaartPuntDataImpl();
     pieData.putData(regels);
 

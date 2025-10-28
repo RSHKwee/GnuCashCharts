@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -52,7 +53,7 @@ import kwee.gnucashcharts.library.MessageConstants;
 import kwee.gnucashcharts.library.SetLibMessagesBundle;
 import kwee.gnucashcharts.library.SubjectsColors;
 import kwee.gnucashcharts.library.TaartPuntData;
-import kwee.gnucashcharts.library.gnuCashDb.ReadGnuCashDB;
+import kwee.gnucashcharts.library.gnuCashDb.ReadGnuCashMultiDB;
 
 public class MainMenu extends Application {
   private static final Logger lOGGER = MyLogger.getLogger();
@@ -77,16 +78,19 @@ public class MainMenu extends Application {
   private String m_Logdir = "c:\\";
   private boolean m_toDisk = false;
 
+  private File[] m_InpFiles = null;
   private String m_tag = "";
   private TaartPuntData m_pieData;
   private SubjectsColors m_SubjColors;
   private LocalDate m_Date = LocalDate.now();
   private boolean m_Diff = false;
 
-  private File m_SelectedFile;
+  private List<File> m_SelectedFiles;
+  private String m_FileTagTxt = "";
+
   private ActionGnuCashDbPieChart m_pieSelect;
   private BarChartWithLegend m_barwindow = null;
-  private ReadGnuCashDB m_gnucashdbtable;
+  private ReadGnuCashMultiDB m_gnucashdbtables;
   private SetLibMessagesBundle m_SetLibMessagesBundle = new SetLibMessagesBundle();
 
   @Override
@@ -149,26 +153,43 @@ public class MainMenu extends Application {
 
     Button openFileButton = new Button(bundle.getMessage(MessageConstants.C_OpenFile));
     openFileButton.setOnAction(_ -> {
-      if (!m_param.get_InputFile().isBlank()) {
-        File intFile = new File(m_param.get_InputFile());
-        String ldir = intFile.getParent();
+      if (m_param.get_InputFiles().length == 0) {
+        File[] intFiles = m_param.get_InputFiles();
+        String ldir = intFiles[0].getParent();
         inpFileChooser.setInitialDirectory(new File(ldir));
       }
-      File selectedFile = inpFileChooser.showOpenDialog(primaryStage);
-      if (selectedFile != null) {
-        m_SelectedFile = selectedFile;
-        if (selectedFile.getAbsolutePath().toLowerCase().contains(".html")) {
-          ActionHTMLPieChart pieSelect = new ActionHTMLPieChart(selectedFile);
-          m_pieData = pieSelect.getData();
-        } else {
-          m_gnucashdbtable = new ReadGnuCashDB(m_SelectedFile);
-          m_pieSelect = new ActionGnuCashDbPieChart(m_gnucashdbtable);
-          m_barwindow = new BarChartWithLegend(m_gnucashdbtable);
-          m_pieData = m_pieSelect.getData(m_Date);
+      // File selectedFile = inpFileChooser.showOpenDialog(primaryStage);
+      FileChooser fileChooser = new FileChooser();
+      fileChooser.setTitle("Select Multiple Files");
+      // Set initial directory from preferences
+      String lastDirectory = m_param.get_InitialDirectory();
+      if (lastDirectory != null) {
+        File dir = new File(lastDirectory);
+        if (dir.exists() && dir.isDirectory()) {
+          fileChooser.setInitialDirectory(dir);
         }
+      }
+      List<File> selectedFiles = fileChooser.showOpenMultipleDialog(primaryStage);
+      if (selectedFiles != null && !selectedFiles.isEmpty()) {
+        // Save the directory of the first selected file
+        File firstFile = selectedFiles.get(0);
+        File directory = firstFile.getParentFile();
+        if (directory != null && directory.exists()) {
+          m_param.set_InitialDirectory(directory.getAbsolutePath());
+        }
+        m_SelectedFiles = selectedFiles;
+        l_file.setText("Processing.....");
 
-        l_file.setText(selectedFile.getAbsolutePath());
-        l_tag.setText(bundle.getMessage(MessageConstants.C_SelectedFile));
+        m_gnucashdbtables = new ReadGnuCashMultiDB(m_SelectedFiles);
+        m_pieSelect = new ActionGnuCashDbPieChart(m_gnucashdbtables);
+        m_barwindow = new BarChartWithLegend(m_gnucashdbtables);
+        m_pieData = m_pieSelect.getData(m_Date);
+
+        m_FileTagTxt = "";
+        selectedFiles.forEach(ll_file -> {
+          m_FileTagTxt = m_FileTagTxt + " " + ll_file.getName();
+        });
+        l_file.setText(m_FileTagTxt);
 
         Set<String> tags = m_pieData.getTags();
         ObservableList<String> observableList;
@@ -177,8 +198,9 @@ public class MainMenu extends Application {
 
         comboTagBox.setDisable(false);
         datePicker.setDisable(false);
+        l_tag.setText(bundle.getMessage(MessageConstants.C_SelectedSubject, ""));
 
-        m_param.set_InputFile(selectedFile);
+        m_param.set_InputFiles(m_InpFiles);
         m_param.save();
       }
     });
@@ -237,7 +259,6 @@ public class MainMenu extends Application {
         m_Diff = false;
         checkDiff.setText(bundle.getMessage(MessageConstants.C_NoDiffMode));
       }
-
     });
 
     buttonBarchart.setOnAction(_ -> {
@@ -247,8 +268,8 @@ public class MainMenu extends Application {
     // Do the layout
     HBox openFileLayout = new HBox(openFileButton, l_file);
     HBox selectOptionLayout = new HBox(endDateLabel, datePicker, comboTagBox, l_tag);
-    HBox buttonPiechartLayout = new HBox(buttonPiechart, checkDiff);
-    HBox buttonBarchartLayout = new HBox(nrBarsLabel, integerField, buttonBarchart);
+    HBox buttonPiechartLayout = new HBox(buttonPiechart);
+    HBox buttonBarchartLayout = new HBox(nrBarsLabel, integerField, checkDiff, buttonBarchart);
 
     openFileLayout.setSpacing(10);
     selectOptionLayout.setSpacing(10);

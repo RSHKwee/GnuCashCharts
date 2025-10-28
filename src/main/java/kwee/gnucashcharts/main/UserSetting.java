@@ -27,17 +27,17 @@ public class UserSetting extends ShowPreferences {
   private String c_LogDir = "LogDir";
   private String c_LookAndFeel = "LookAndFeel";
   private String c_LookAndFeelVal = "Nimbus";
-  private String c_InputFile = "InputFile";
+  private String c_InputFiles = "InputFiles";
   private String c_Pdf_File = "PdfFile";
   private String c_Tag = "Tag";
   private String c_NrBars = "NrBars";
   private String c_Language = "Language";
+  private String c_InitialDirectory = "InitialDirectory";
 
   private String m_Level = c_LevelValue;
   private String m_LookAndFeel;
 
   private String m_OutputFolder = "";
-  private File[] m_CsvFiles = null;
   private String m_LogDir = "";
 
   private boolean m_ConfirmOnExit = false;
@@ -45,9 +45,10 @@ public class UserSetting extends ShowPreferences {
 
   private String m_Tag = "";
   private int m_NrBars = 12;
-  private String m_InputFile = "";
+  private File[] m_InputFiles = null;
   private String m_PdfFile = "";
   private String m_Language = "nl";
+  private String m_InitialDirectory = "";
 
   private Preferences pref;
   private Preferences userPrefs = Preferences.userRoot();
@@ -64,18 +65,17 @@ public class UserSetting extends ShowPreferences {
     m_ConfirmOnExit = pref.getBoolean(c_ConfirmOnExit, false);
     m_LookAndFeel = pref.get(c_LookAndFeel, c_LookAndFeelVal);
 
-    m_InputFile = pref.get(c_InputFile, "");
+    String l_InputFiles = pref.get(c_InputFiles, "");
+    m_InputFiles = StringToFiles(l_InputFiles);
+
     m_Tag = pref.get(c_Tag, "");
     m_PdfFile = pref.get(c_Pdf_File, "");
     m_NrBars = pref.getInt(c_NrBars, 12);
     m_Language = pref.get(c_Language, "nl");
+    m_InitialDirectory = pref.get(c_InitialDirectory, "");
 
     m_Level = pref.get(c_Level, c_LevelValue);
     m_LogDir = pref.get(c_LogDir, "");
-  }
-
-  public UserSetting(String nodePrefName2) {
-
   }
 
   public int get_NrBars() {
@@ -90,16 +90,12 @@ public class UserSetting extends ShowPreferences {
     return this.m_LogDir;
   }
 
-  public void set_LogDir(String m_LogDir) {
-    this.m_LogDir = m_LogDir;
-  }
-
   public String get_OutputFolder() {
     return m_OutputFolder;
   }
 
-  public File[] get_CsvFiles() {
-    return this.m_CsvFiles;
+  public String get_InitialDirectory() {
+    return m_InitialDirectory;
   }
 
   public String get_Language() {
@@ -122,8 +118,8 @@ public class UserSetting extends ShowPreferences {
     return this.m_Tag;
   }
 
-  public String get_InputFile() {
-    return this.m_InputFile;
+  public File[] get_InputFiles() {
+    return this.m_InputFiles;
   }
 
   public boolean is_toDisk() {
@@ -157,6 +153,14 @@ public class UserSetting extends ShowPreferences {
     this.m_Language = m_Language;
   }
 
+  public void set_LogDir(String m_LogDir) {
+    this.m_LogDir = m_LogDir;
+  }
+
+  public void set_InitialDirectory(String m_InitialDirectory) {
+    this.m_InitialDirectory = m_InitialDirectory;
+  }
+
   public void set_Level(Level a_Level) {
     pref.put(c_Level, a_Level.toString());
     this.m_Level = a_Level.toString();
@@ -172,9 +176,9 @@ public class UserSetting extends ShowPreferences {
     this.m_ConfirmOnExit = a_ConfirmOnExit;
   }
 
-  public void set_InputFile(File a_InputFile) {
-    pref.put(c_InputFile, a_InputFile.getAbsolutePath());
-    this.m_InputFile = a_InputFile.getAbsolutePath();
+  public void set_InputFiles(File[] a_InputFiles) {
+    pref.put(c_InputFiles, FilesToString(a_InputFiles));
+    this.m_InputFiles = a_InputFiles;
   }
 
   /**
@@ -192,7 +196,9 @@ public class UserSetting extends ShowPreferences {
       pref.put(c_Pdf_File, m_PdfFile);
       pref.put(c_Tag, m_Tag);
       pref.putInt(c_NrBars, m_NrBars);
-      pref.put(c_InputFile, m_InputFile);
+      pref.put(c_InputFiles, FilesToString(m_InputFiles));
+
+      pref.put(c_InitialDirectory, m_InitialDirectory);
 
       pref.flush();
     } catch (BackingStoreException e) {
@@ -235,13 +241,50 @@ public class UserSetting extends ShowPreferences {
 
     l_line = l_line + c_LookAndFeel + ": " + m_LookAndFeel + "\n";
     l_line = l_line + c_Pdf_File + ": " + m_PdfFile + "\n";
-    l_line = l_line + c_InputFile + ": " + m_InputFile + "\n";
+    l_line = l_line + c_InputFiles + ": " + FilesToString(m_InputFiles) + "\n";
     l_line = l_line + c_Tag + ": " + m_Tag + "\n";
     l_line = l_line + c_NrBars + ": " + m_NrBars + "\n";
+    l_line = l_line + c_InitialDirectory + ": " + m_InitialDirectory + "\n";
 
     l_line = l_line + c_Level + ": " + m_Level + "\n";
     l_line = l_line + c_LogDir + ": " + m_LogDir + "\n";
 
     return l_line;
+  }
+
+  // Local functions to convert File to String and vice versa
+  private String c_StringDelim = ";";
+
+  /**
+   * Convert list of Files to String for storage.
+   * 
+   * @param a_Files List of Files
+   * @return String
+   */
+  private String FilesToString(File[] a_Files) {
+    String l_files = "";
+    if (a_Files != null) {
+      for (int i = 0; i < a_Files.length; i++) {
+        l_files = l_files + a_Files[i].getAbsolutePath() + c_StringDelim;
+      }
+    }
+    return l_files;
+  }
+
+  /**
+   * Convert String to Files.
+   * 
+   * @param a_Files String with list of Files.
+   * @return List of Files
+   */
+  private File[] StringToFiles(String a_Files) {
+    String[] ls_files = a_Files.split(c_StringDelim);
+    File[] l_files = new File[ls_files.length];
+
+    for (int i = 0; i < ls_files.length; i++) {
+      File ll_file = new File(ls_files[i]);
+      l_files[i] = ll_file;
+    }
+    return l_files;
   }
 }
