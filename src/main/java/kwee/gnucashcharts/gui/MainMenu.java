@@ -78,7 +78,6 @@ public class MainMenu extends Application {
   private String m_Logdir = "c:\\";
   private boolean m_toDisk = false;
 
-  private File[] m_InpFiles = null;
   private String m_tag = "";
   private TaartPuntData m_pieData;
   private SubjectsColors m_SubjColors;
@@ -153,10 +152,13 @@ public class MainMenu extends Application {
 
     Button openFileButton = new Button(bundle.getMessage(MessageConstants.C_OpenFile));
     openFileButton.setOnAction(_ -> {
-      if (m_param.get_InputFiles().length == 0) {
-        File[] intFiles = m_param.get_InputFiles();
-        String ldir = intFiles[0].getParent();
-        inpFileChooser.setInitialDirectory(new File(ldir));
+      File[] l_files = m_param.get_InputFiles();
+      if (l_files != null) {
+        if (m_param.get_InputFiles().length == 0) {
+          File[] intFiles = m_param.get_InputFiles();
+          String ldir = intFiles[0].getParent();
+          inpFileChooser.setInitialDirectory(new File(ldir));
+        }
       }
       // File selectedFile = inpFileChooser.showOpenDialog(primaryStage);
       FileChooser fileChooser = new FileChooser();
@@ -178,6 +180,7 @@ public class MainMenu extends Application {
           m_param.set_InitialDirectory(directory.getAbsolutePath());
         }
         m_SelectedFiles = selectedFiles;
+
         l_file.setText("Processing.....");
 
         m_gnucashdbtables = new ReadGnuCashMultiDB(m_SelectedFiles);
@@ -200,7 +203,8 @@ public class MainMenu extends Application {
         datePicker.setDisable(false);
         l_tag.setText(bundle.getMessage(MessageConstants.C_SelectedSubject, ""));
 
-        m_param.set_InputFiles(m_InpFiles);
+        File[] l_fileArr = m_SelectedFiles.toArray(new File[0]);
+        m_param.set_InputFiles(l_fileArr);
         m_param.save();
       }
     });
