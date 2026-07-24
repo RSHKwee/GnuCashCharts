@@ -10,7 +10,8 @@ import org.gnucash.read.impl.GnucashPriceDBImpl;
 
 public class OverzichtPrices {
   // BEGIN Example data -- adapt to your needs
-  private static String gcshFileName = "G:\\Users\\René\\SynologyDrive\\Administraties\\Prive_RK.gnucash";
+//  private static String gcshFileName = "G:\\Users\\René\\SynologyDrive\\Administraties\\Prive_RK.gnucash";
+  private static String gcshFileName = "D:\\Users\\René\\SynologyDrive\\Documenten\\Administraties\\Prive_RK.gnucash";
   // END Example data
 
   public static void main(String[] args) {
