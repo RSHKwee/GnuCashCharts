@@ -33,14 +33,23 @@ public class AccountDetails {
   public AccountDetails() {
     this.m_RootAccount = "";
     this.m_ChildAccounts = "";
-    this.m_RootAccount = "";
-    this.m_ChildAccounts = "";
     this.m_LocalDate = null;
     this.m_AccountNr = "";
     this.m_AccountName = "";
     this.m_Amount = null;
     this.m_Saldo = null;
     this.m_Remark = "";
+  }
+
+  public AccountDetails(AccountDetails accdet) {
+    this.m_RootAccount = accdet.get_RootAccount();
+    this.m_ChildAccounts = accdet.get_ChildAccounts();
+    this.m_LocalDate = accdet.getLocalDate();
+    this.m_AccountNr = accdet.get_AccountNr();
+    this.m_AccountName = accdet.get_AccountName();
+    this.m_Amount = accdet.get_Amount();
+    this.m_Saldo = accdet.get_Saldo();
+    this.m_Remark = accdet.get_Remark();
   }
 
   // Getters
