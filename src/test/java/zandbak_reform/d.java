@@ -6,6 +6,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -13,6 +14,7 @@ import javafx.scene.control.TableView;
 public class d {
   void Aap(TableView<String[]> tableView) throws IOException {
     // Your JavaFX TableView setup and data here
+    PDType1Font font = new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
 
     // Create a new PDF document
     PDDocument document = new PDDocument();
@@ -38,7 +40,7 @@ public class d {
     // Draw table headers
     float yPositionHeader = yStart;
     for (TableColumn<String[], ?> column : tableView.getColumns()) {
-      contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+      contentStream.setFont(font, 12);
       contentStream.beginText();
       contentStream.newLineAtOffset(margin, yPositionHeader);
       contentStream.showText(column.getText());
@@ -51,7 +53,7 @@ public class d {
       yPosition -= rowHeight;
       for (int j = 0; j < cols; j++) {
         TableColumn<?, ?> column = tableView.getColumns().get(j);
-        contentStream.setFont(PDType1Font.HELVETICA, 12);
+        contentStream.setFont(font, 12);
         contentStream.beginText();
         contentStream.newLineAtOffset(margin + j * (tableXLength / cols), yPosition);
         contentStream.showText(column.getCellData(i).toString());

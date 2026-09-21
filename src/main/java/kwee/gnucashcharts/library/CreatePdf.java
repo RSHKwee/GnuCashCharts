@@ -10,6 +10,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
@@ -18,6 +19,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.text.Text;
+
 import kwee.library.TimeStamp;
 import kwee.logger.MyLogger;
 
@@ -103,6 +105,7 @@ You can use these coordinates to position elements and set the page size when wo
 
   private c_PageSizeEnum CurrentPageSize;
   private String CurrentTitle = "";
+  private PDType1Font font = new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
 
   /**
    * Constructor
@@ -240,7 +243,7 @@ You can use these coordinates to position elements and set the page size when wo
     float imageHeight = ChartImage.getHeight();
     float l_xpos = (float) (((pageWidth - imageWidth) / 2.0) - xMargin);
     if (yRunning < 0) {
-      yRunning = (float) (yTitle - imageHeight - 2 * yMargin);
+      yRunning = yTitle - imageHeight - 2 * yMargin;
     } else {
       yRunning = yRunning - imageHeight - 2 * yMargin;
     }
@@ -249,7 +252,7 @@ You can use these coordinates to position elements and set the page size when wo
     float legendImageWidth = LegendImage.getWidth();
     float legendImageHeight = LegendImage.getHeight();
     l_xpos = xMargin;
-    yRunning = (float) (yRunning - legendImageHeight - 2 * yMargin);
+    yRunning = yRunning - legendImageHeight - 2 * yMargin;
     contentStream.drawImage(pdfLegendImage, l_xpos, yRunning, legendImageWidth, legendImageHeight);
   }
 
@@ -286,7 +289,7 @@ You can use these coordinates to position elements and set the page size when wo
           TableColumn<?, ?> column = a_Table.getColumns().get(j);
           column.setCellFactory(new WrappableHeaderCellFactory<>());
 
-          contentStream.setFont(PDType1Font.HELVETICA, 10);
+          contentStream.setFont(font, 10);
           contentStream.beginText();
           contentStream.newLineAtOffset(xMargin + j * (tableXLength / cols), yRunning);
           contentStream.showText(column.getCellData(i).toString());
@@ -307,7 +310,7 @@ You can use these coordinates to position elements and set the page size when wo
           TableColumn<?, ?> column = a_Table.getColumns().get(j);
           column.setCellFactory(new WrappableHeaderCellFactory<>());
 
-          contentStream.setFont(PDType1Font.HELVETICA, 10);
+          contentStream.setFont(font, 10);
           contentStream.beginText();
           contentStream.newLineAtOffset(xMargin + j * (tableXLength / cols), yRunning);
           contentStream.showText(column.getCellData(i).toString());
@@ -337,7 +340,7 @@ You can use these coordinates to position elements and set the page size when wo
       lOGGER.log(Level.FINE, column.getText() + "| Tekst width: " + Double.toString(tekstwidth) + "| Col width: "
           + Double.toString(width));
 
-      contentStream.setFont(PDType1Font.HELVETICA_BOLD, 8);
+      contentStream.setFont(font, 8);
       if (tekstwidth > (tableXLength / cols)) {
         String coltekst = column.getText();
         String[] coltekstelm = coltekst.split(" ");
@@ -375,7 +378,7 @@ You can use these coordinates to position elements and set the page size when wo
    */
   private void addTitle(PDPageContentStream contentStream, String text) throws IOException {
     contentStream.beginText();
-    contentStream.setFont(PDType1Font.HELVETICA_BOLD, 18); // Choose your font
+    contentStream.setFont(font, 18); // Choose your font
     contentStream.newLineAtOffset(xTitle, yTitle + 5); // Adjust the coordinates
     contentStream.showText(text);
     contentStream.endText();
@@ -390,7 +393,7 @@ You can use these coordinates to position elements and set the page size when wo
    */
   private void addFooter(PDPageContentStream contentStream, String text) throws IOException {
     contentStream.beginText();
-    contentStream.setFont(PDType1Font.HELVETICA, 10);
+    contentStream.setFont(font, 10);
 
     contentStream.newLineAtOffset(xFooter, yFooter);
     contentStream.showText(text);

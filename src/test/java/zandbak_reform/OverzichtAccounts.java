@@ -31,13 +31,13 @@ public class OverzichtAccounts {
     accDets.forEach(acc -> {
       System.out.println(acc.print());
     });
-
-    System.out.println("==============");
-    ArrayList<String> Regels = rGnuCsh.getRegels(toDay);
-    Regels.forEach(regel -> {
-      System.out.println(regel);
-    });
-
+    if (false) {
+      System.out.println("==============");
+      ArrayList<String> Regels = rGnuCsh.getRegels(toDay);
+      Regels.forEach(regel -> {
+        System.out.println(regel);
+      });
+    }
     if (false) {
       GnucashFileImpl gcshFile = null;
       try {

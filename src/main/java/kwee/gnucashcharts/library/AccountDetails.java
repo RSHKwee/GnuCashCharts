@@ -4,9 +4,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import org.gnucash.numbers.FixedPointNumber;
+import org.gnucash.read.GnucashAccount;
 
 public class AccountDetails {
-  private String m_RootAccount;
+  private GnucashAccount m_RootAccount;
   private String m_ChildAccounts;
   private LocalDate m_LocalDate;
   private String m_AccountNr;
@@ -14,6 +15,7 @@ public class AccountDetails {
   private FixedPointNumber m_Amount;
   private FixedPointNumber m_Saldo;
   private String m_Remark;
+  private FixedPointNumber m_TotSaldo;
 
   // Private constructor voor de Builder
   private AccountDetails(Builder builder) {
@@ -25,20 +27,22 @@ public class AccountDetails {
     this.m_Amount = builder.amount;
     this.m_Saldo = builder.saldo;
     this.m_Remark = builder.remark;
+    this.m_TotSaldo = builder.totSaldo;
   }
 
   /**
    * Default constructor
    */
   public AccountDetails() {
-    this.m_RootAccount = "";
+    this.m_RootAccount = null;
     this.m_ChildAccounts = "";
     this.m_LocalDate = null;
     this.m_AccountNr = "";
     this.m_AccountName = "";
-    this.m_Amount = null;
-    this.m_Saldo = null;
+    this.m_Amount = new FixedPointNumber("0.0");
+    this.m_Saldo = new FixedPointNumber("0.0");
     this.m_Remark = "";
+    this.m_TotSaldo = new FixedPointNumber("0.0");
   }
 
   public AccountDetails(AccountDetails accdet) {
@@ -50,6 +54,7 @@ public class AccountDetails {
     this.m_Amount = accdet.get_Amount();
     this.m_Saldo = accdet.get_Saldo();
     this.m_Remark = accdet.get_Remark();
+    this.m_TotSaldo = accdet.get_TotSaldo();
   }
 
   // Getters
@@ -83,7 +88,11 @@ public class AccountDetails {
     return m_Remark;
   }
 
-  public String get_RootAccount() {
+  public FixedPointNumber get_TotSaldo() {
+    return m_TotSaldo;
+  }
+
+  public GnucashAccount get_RootAccount() {
     return m_RootAccount;
   }
 
@@ -121,11 +130,15 @@ public class AccountDetails {
     this.m_Saldo = m_Saldo;
   }
 
+  public void set_TotSaldo(FixedPointNumber m_totSaldo) {
+    this.m_TotSaldo = m_totSaldo;
+  }
+
   public void set_Remark(String m_Remark) {
     this.m_Remark = m_Remark;
   }
 
-  public void set_RootAccount(String m_RootAccount) {
+  public void set_RootAccount(GnucashAccount m_RootAccount) {
     this.m_RootAccount = m_RootAccount;
   }
 
@@ -143,26 +156,28 @@ public class AccountDetails {
     regel = regel + " | Amount: " + m_Amount.toPlainString().replace(".", ",");
     regel = regel + " | Saldo: " + m_Saldo.toPlainString().replace(".", ",");
     regel = regel + " | Remark: " + m_Remark;
+    regel = regel + " | TotSaldo: " + m_TotSaldo.toPlainString().replace(".", ",");
     return regel;
   }
 
   // Builder Class
   public static class Builder {
-    private String rootAccount = "";
+    private GnucashAccount rootAccount;
     private String childAccounts = "";
     private LocalDate localDate;
     private String accountNr = "";
     private String accountName = "";
-    private FixedPointNumber amount = new FixedPointNumber("0.0");;
-    private FixedPointNumber saldo = new FixedPointNumber("0.0");;
+    private FixedPointNumber amount = new FixedPointNumber("0.0");
+    private FixedPointNumber saldo = new FixedPointNumber("0.0");
     private String remark = "";
+    private FixedPointNumber totSaldo = new FixedPointNumber("0.0");
 
     public Builder() {
       // Default constructor
     }
 
-    public Builder rootAccount(String rootAccount) {
-      this.rootAccount = notNull(rootAccount);
+    public Builder rootAccount(GnucashAccount rootAccount) {
+      this.rootAccount = rootAccount;
       return this;
     }
 
@@ -198,6 +213,11 @@ public class AccountDetails {
 
     public Builder remark(String remark) {
       this.remark = notNull(remark);
+      return this;
+    }
+
+    public Builder totSaldo(FixedPointNumber totSaldo) {
+      this.totSaldo = totSaldo;
       return this;
     }
 

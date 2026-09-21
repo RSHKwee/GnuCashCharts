@@ -6,8 +6,11 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 
 public class TableExample {
+  private static PDType1Font font = new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
+
   public static void main(String[] args) {
     try {
       PDDocument document = new PDDocument();
@@ -30,11 +33,11 @@ public class TableExample {
       // Define cell properties
       float tableXStart = margin;
       float cellMargin = 4f;
-      float colWidth = tableWidth / (float) cols;
+      float colWidth = tableWidth / cols;
       float cellWidth = colWidth - 1 * cellMargin;
 
       // Draw table headers
-      contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+      contentStream.setFont(font, 12);
       for (int i = 0; i < cols; i++) {
         float x = tableXStart + i * colWidth + cellMargin;
         float y = yStart - rowHeight;
@@ -45,10 +48,15 @@ public class TableExample {
       }
 
       // Draw table rows and values
-      contentStream.setFont(PDType1Font.HELVETICA, 12);
+      contentStream.setFont(font, 12);
       for (int i = 0; i < rows; i++) {
         yPosition -= rowHeight;
-        contentStream.drawLine(tableXStart, yPosition, tableXStart + tableWidth, yPosition);
+        contentStream.moveTo(margin, yPosition);
+        contentStream.lineTo(margin + tableWidth, yPosition);
+        contentStream.stroke();
+
+        // contentStream.drawLine(tableXStart, yPosition, tableXStart + tableWidth,
+        // yPosition);
         for (int j = 0; j < cols; j++) {
           float x = tableXStart + j * colWidth + cellMargin;
           contentStream.beginText();

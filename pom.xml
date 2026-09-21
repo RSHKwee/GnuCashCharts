@@ -17,9 +17,6 @@
 
   <properties>
     <project.description>GnuCashGraphs</project.description>
-
-    <gnucash-api.version>1.1.0-SNAPSHOT</gnucash-api.version> 
-    <ch-qos-logback.version>1.4.14</ch-qos-logback.version>
   </properties>
 
   <dependencies>

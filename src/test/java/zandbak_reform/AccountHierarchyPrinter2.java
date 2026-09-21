@@ -4,6 +4,8 @@ import java.io.File;
 import java.time.LocalDate;
 import java.util.*;
 
+import org.gnucash.numbers.FixedPointNumber;
+
 import kwee.gnucashcharts.library.AccountDetails;
 import kwee.gnucashcharts.library.gnuCashDb.ReadGnuCashDB;
 
@@ -31,13 +33,21 @@ public class AccountHierarchyPrinter2 {
     // Vind alle top-level accounts (parent is leeg)
     List<AccountDetails> topLevelAccounts = new ArrayList<>();
     for (AccountDetails acc : accounts.values()) {
-      if (acc.get_RootAccount() == null || acc.get_RootAccount().isEmpty()) {
-        topLevelAccounts.add(acc);
+      if (acc != null) {
+        if (acc.get_RootAccount() != null) {
+          if (acc.get_RootAccount().getName() == null) {
+            topLevelAccounts.add(acc);
+          } else {
+            if (acc.get_RootAccount().getName().isEmpty()) {
+              topLevelAccounts.add(acc);
+            }
+          }
+        }
       }
     }
 
     // Sorteer top-level accounts (optioneel)
-    // topLevelAccounts.sort(Comparator.comparing(a -> accounts. ));
+    // topLevelAccounts.sort(Comparator.comparing(a -> a));
 
     // Print elk top-level account en zijn children
     for (AccountDetails top : topLevelAccounts) {
@@ -47,13 +57,15 @@ public class AccountHierarchyPrinter2 {
 
   private static void printAccount(Map<String, AccountDetails> accounts, AccountDetails account, int indentLevel) {
     // Print indentatie
+    // if (!account.get_TotSaldo().equals(new FixedPointNumber("0.0"))) {
     StringBuilder indent = new StringBuilder();
     for (int i = 0; i < indentLevel; i++) {
-      indent.append("| ");
+      indent.append("  ");
     }
-    System.out.println(
-        indent + "|- " + account.get_AccountName() + " " + account.get_Saldo().toPlainString().replace(".", ","));
-
+    System.out.println(indent + "  " + account.get_AccountNr() + "; " + account.get_AccountName() + " "
+        + account.get_Saldo().toPlainString().replace(".", ",") + " TotSaldo: "
+        + account.get_TotSaldo().toPlainString().replace(".", ","));
+    // }
     // Vind alle children van dit account
     List<AccountDetails> children = new ArrayList<>();
     for (AccountDetails acc : accounts.values()) {
@@ -71,4 +83,5 @@ public class AccountHierarchyPrinter2 {
       printAccount(accounts, child, indentLevel + 1);
     }
   }
+
 }
