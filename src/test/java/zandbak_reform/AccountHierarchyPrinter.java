@@ -32,7 +32,7 @@ public class AccountHierarchyPrinter {
     ArrayList<AccountDetails> accDets = rGnuCsh.getAccDets(toDay);
 
     accDets.forEach(acc -> {
-      Accounts.put(acc.get_AccountName(), new SubAcc(acc.get_AccountName(), acc.get_RootAccount()));
+      Accounts.put(acc.get_AccountName(), new SubAcc(acc.get_AccountName(), acc.get_RootAccount().getName()));
     });
 
     // Print de hiërarchie
