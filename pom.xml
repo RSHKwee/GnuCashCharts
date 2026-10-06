@@ -90,7 +90,6 @@
         <artifactId>logback-classic</artifactId>
         <version>${ch-qos-logback.version}</version>  <!-- Gebruik de nieuwste versie -->
     </dependency>
-
   </dependencies>
   
   <build>
@@ -188,8 +187,9 @@
                   <directory>..\BuildTools</directory>
                   <includes>
                     <include>Library.iss</include>
-                  </includes>
-                  <filtering>true</filtering>
+                    <include>keystore.jks</include>
+                 </includes>
+                  <filtering>false</filtering>
                 </resource>
               </resources>
               <encoding>${project.build.sourceEncoding}</encoding>
@@ -238,7 +238,7 @@
                <headerType>console</headerType>
                <jar>${project.build.directory}/gnucashcharts-jar-with-dependencies.jar</jar>
                <outfile>${project.build.directory}/gnucashcharts.exe</outfile>
-               <downloadUrl>https://cdn.azul.com/zulu/bin/zulu22.32.21-ca-crac-jdk22.0.2-win_x64.zip</downloadUrl>
+               <downloadUrl>${downloadUrl.jre}</downloadUrl>
                <classPath>
                  <mainClass>kwee.gnucashcharts.main.Main</mainClass>
               </classPath>
@@ -249,13 +249,13 @@
                 <fileVersion>${project.version}</fileVersion>
                 <txtFileVersion>${project.version}</txtFileVersion>
                 <fileDescription>${project.name}</fileDescription>
-                <copyright>Copyright © 2025</copyright>
+                <copyright>${project.copyright.text}</copyright>
                 <productVersion>${project.version}</productVersion>
                 <txtProductVersion>${project.version}</txtProductVersion>
                 <productName>${project.name}</productName>
                 <internalName>GnuCashCharts</internalName>
                 <originalFilename>gnucashcharts.exe</originalFilename>
-                <companyName>Prive RK</companyName>
+                <companyName>${companyName}</companyName>
               </versionInfo>
             </configuration>
           </execution>
@@ -278,11 +278,32 @@
               <url>https://github.com/RSHKwee/gnucashcharts</url>
               <keystore>keystore.jks</keystore>
               <alias>RSHK</alias>
-              <storepass>GW93ayi0j2CfeJx9VoSo</storepass>
+              <storepass>${keystore.password}</storepass>
             </configuration>
           </execution>
         </executions>
       </plugin>
+	  <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jarsigner-plugin</artifactId>
+        <version>${maven-jarsigner-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>sign</id>
+            <phase>package</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+            <configuration>
+              <file>${project.build.directory}/gnucashcharts-jar-with-dependencies.jar</file>
+			  <keystore>keystore.jks</keystore>
+              <alias>RSHK</alias>
+              <storepass>${keystore.password}</storepass>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>	  
+	  
 	  <!-- Sign executable ^ -->
       <!-- Windows installers v -->
       <plugin>
@@ -319,6 +340,7 @@
                 <target>
                   <delete dir="${project.basedir}\BuildTools"/>
                   <delete file="${project.basedir}\Library.iss"/>   
+                  <delete file="${project.basedir}\keystore.jks"/>   
                 </target>
               </configuration>
            </execution>
