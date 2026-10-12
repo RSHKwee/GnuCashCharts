@@ -5,8 +5,9 @@
   <groupId>kwee</groupId>
   <artifactId>gnucashcharts</artifactId>
   <version>${revision}</version>
-  <packaging>jar</packaging>
   <name>GnuCashCharts</name>
+  <description>GnuCashGraphs</description>
+  <packaging>jar</packaging>
 
   <parent>
 	<groupId>kwee</groupId>
@@ -14,10 +15,6 @@
 	<version>${revision}</version>
 	<relativePath>..\\pom.xml</relativePath>
   </parent>
-
-  <properties>
-    <project.description>GnuCashGraphs</project.description>
-  </properties>
 
   <dependencies>
  	<dependency>
