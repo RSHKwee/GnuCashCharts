@@ -46,6 +46,7 @@ import kwee.logger.MyLogger;
 import kwee.gnucashcharts.main.Main;
 import kwee.gnucashcharts.main.UserSetting;
 import kwee.library.ApplicationMessages;
+import kwee.library.ChmOpener;
 import kwee.library.JarInfo;
 import kwee.library.FX.AboutWindow;
 import kwee.library.FX.JavaFXLogHandler;
@@ -412,14 +413,12 @@ public class MainMenu extends Application {
       File helpFile = new File("help\\" + m_Language + "\\" + m_HelpFile);
       if (helpFile.exists()) {
         try {
-          // Open the help file with the default viewer
-          Desktop.getDesktop().open(helpFile);
-        } catch (IOException e1) {
+          ChmOpener.openChm(helpFile);
+        } catch (Exception e1) {
           lOGGER.log(Level.INFO, e1.getMessage());
-          e1.printStackTrace();
         }
       } else {
-        lOGGER.log(Level.INFO, bundle.getMessage(MessageConstants.C_HelpFileNotFound, helpFile.getAbsolutePath()));
+        lOGGER.log(Level.INFO, bundle.getMessage("HelpFileNotFound", helpFile.getAbsolutePath()));
       }
     });
     questMenu.getItems().add(menuHelp);
