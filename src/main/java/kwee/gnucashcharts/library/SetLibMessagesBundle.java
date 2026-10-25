@@ -1,6 +1,8 @@
 package kwee.gnucashcharts.library;
 
-import org.gnucash.messages.ApplicationMessages;
+import kwee.library.ApplicationMessages;
+
+// import org.gnucash.messages.ApplicationMessages;
 
 /**
  * Change Language for GnuCashApi

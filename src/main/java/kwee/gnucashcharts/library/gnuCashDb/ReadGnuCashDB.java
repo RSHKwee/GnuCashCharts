@@ -2,17 +2,23 @@ package kwee.gnucashcharts.library.gnuCashDb;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.file.Path;
 import java.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.GnucashAccount;
-import org.gnucash.read.impl.GnucashFileImpl;
-import org.gnucash.read.impl.GnucashPriceDBImpl;
+import com.druvu.acc.api.AccStore;
+import com.druvu.acc.api.entity.Account;
+import com.druvu.acc.api.entity.Amount;
+import com.druvu.acc.api.entity.CommodityId;
+import com.druvu.acc.api.entity.Price;
+import com.druvu.acc.api.service.AccountService;
 
 import kwee.gnucashcharts.library.AccountDetails;
 import kwee.logger.MyLogger;
@@ -20,12 +26,12 @@ import kwee.logger.MyLogger;
 public class ReadGnuCashDB {
   private static final Logger lOGGER = MyLogger.getLogger();
   // private ArrayList<String> m_Regels = new ArrayList<String>();
-  private GnucashFileImpl m_gnucashFile;
-  private Collection<GnucashAccount> m_accounts;
-  private GnucashPriceDBImpl m_pricedb;
+  // private FileImpl m_gnucashFile;
+  private Collection<Account> m_accounts;
+//  private GnucashPriceDBImpl m_pricedb;
   private File m_FileName;
 
-  public record Result(FixedPointNumber amount, FixedPointNumber balance) {
+  public record Result(Amount amount, Amount balance) {
   }
 
   /**
@@ -81,13 +87,13 @@ public class ReadGnuCashDB {
     lOGGER.log(Level.FINE, "filterGnuCash Date: " + a_Date);
 
     try {
-      for (GnucashAccount account : m_accounts) {
+      for (Account account : m_accounts) {
         AccountDetails l_accdet = Account2AccountDetails(a_Date, account);      
-        String sAmnt = l_accdet.get_Amount().toPlainString().replace(".", ",");
-        String sSaldo = l_accdet.get_Saldo().toPlainString().replace(".", ",");
+        String sAmnt = l_accdet.get_Amount().toString().replace(".", ",");
+        String sSaldo = l_accdet.get_Saldo().toString().replace(".", ",");
         String sRootAccount = "";
         try {
-          sRootAccount = l_accdet.get_RootAccount().getName();
+          sRootAccount = l_accdet.get_RootAccount().name();
         } catch (Exception e) {
           sRootAccount = "";
         }
@@ -140,15 +146,15 @@ public class ReadGnuCashDB {
    * @param account
    * @return AccountDetails
    */
-  FixedPointNumber totSaldo = new FixedPointNumber("0.0");
+  Amount totSaldo; 
 
-  private AccountDetails Account2AccountDetails (LocalDate a_Date, GnucashAccount account) {
-    String l_notes = "";
-    FixedPointNumber fBalance = account.getBalance(a_Date);
-    FixedPointNumber fAmount = new FixedPointNumber("0.0");
+  private AccountDetails Account2AccountDetails (LocalDate a_Date, Account account) {
+    Optional<String> l_notes;
+    Amount fBalance = account.getBalance(a_Date);
+    Amount fAmount = new Amount(BigDecimal.ZERO, CommodityId.EUR);
     
-    if (account.getUserDefinedAttribute("notes") != null) {
-      l_notes = account.getUserDefinedAttribute("notes");
+    if (account.notes() != null) {
+      l_notes = account.notes();
       lOGGER.log(Level.FINE, "notes : " + l_notes);
     }
     
@@ -166,15 +172,15 @@ public class ReadGnuCashDB {
       lOGGER.log(Level.FINE, "Account currence ID: " + account.getCurrencyID());  
     }
    */
-    GnucashAccount rootAcc = null;
-    Collection<GnucashAccount> accs = account.getChildren();
+    Account rootAcc = null;
+    Collection<Account> accs = account.getChildren();
     String accsString = accs.toString();
     
     try {
       totSaldo = new FixedPointNumber("0.0");
       accs.forEach(acc->{
         Result r2 = getStockBalance(a_Date, acc);
-        FixedPointNumber fBalance2 = r2.balance;
+        Amount fBalance2 = r2.balance;
         totSaldo.add(fBalance2);
       });
       if (totSaldo.equals(new FixedPointNumber("0.0"))) {
@@ -183,7 +189,7 @@ public class ReadGnuCashDB {
     } catch (Exception e){
       // Do nothing
       lOGGER.log(Level.FINE, e.getMessage());
-      if (totSaldo.equals(new FixedPointNumber("0.0"))) {
+      if (totSaldo.equals(new Amount("0.0"))) {
         totSaldo = fBalance;
       }
     }
@@ -197,8 +203,8 @@ public class ReadGnuCashDB {
     
     AccountDetails l_accdet = new AccountDetails.Builder()
         .localDate(a_Date)
-        .accountName(account.getName())
-        .accountNr(account.getDescription())
+        .accountName(account.name())
+        .accountNr(account.id())
         .saldo(fBalance)
         .amount(fAmount)
         .remark(l_notes)
@@ -216,6 +222,12 @@ public class ReadGnuCashDB {
    * @param a_SelectedFile GnuCash File
    */ 
   private void readGnuCashFile (File a_SelectedFile) {
+    Path l_file = a_SelectedFile.toPath();
+    AccStore store = AccStore.load(l_file);
+    final AccountService accountService = AccountService.create(store, "Root Account");
+List<Price> a = store.prices();
+m_accounts = store.accounts();
+
     try {
       m_gnucashFile = new GnucashFileImpl(a_SelectedFile);
       m_accounts = m_gnucashFile.getAccounts();
@@ -244,8 +256,8 @@ public class ReadGnuCashDB {
   private AccountDetails updateTotSaldo (AccountDetails a_accdet) {
     AccountDetails l_Accdet = new AccountDetails(a_accdet);
     if (a_accdet.get_RootAccount() != null) {
-      Collection<GnucashAccount> accs = a_accdet.get_RootAccount().getChildren();
-      GnucashAccount account = a_accdet.get_RootAccount();
+      Collection<Account> accs = a_accdet.get_RootAccount().getChildren();
+      Account account = a_accdet.get_RootAccount();
     
       try {
         totSaldo = new FixedPointNumber("0.0");
@@ -263,14 +275,14 @@ public class ReadGnuCashDB {
     return l_Accdet;
   }
   
-  private Result getStockBalance (LocalDate a_Date, GnucashAccount account) {
-    FixedPointNumber fAmount = new FixedPointNumber("0.0");
-    FixedPointNumber fBalance = account.getBalance(a_Date);
+  private Result getStockBalance (LocalDate a_Date, Account account) {
+    Amount fAmount = new FixedPointNumber("0.0");
+    Amount fBalance = account.getBalance(a_Date);
 
     // Stock convert number shares to amount
     String atype = account.getType();
-    if (atype.equals(GnucashAccount.TYPE_STOCK) || atype.equals(GnucashAccount.TYPE_MUTUAL) ) {
-      FixedPointNumber cmdPrice = m_pricedb.getPrice(account.getCurrencyID(), a_Date);
+    if (atype.equals(Account.TYPE_STOCK) || atype.equals(GnucashAccount.TYPE_MUTUAL) ) {
+      Amount cmdPrice = m_pricedb.getPrice(account.getCurrencyID(), a_Date);
       fAmount = account.getBalance(a_Date);
       fBalance = fBalance.multiply(cmdPrice);
       lOGGER.log(Level.FINE, "Account currence ID: " + account.getCurrencyID());  

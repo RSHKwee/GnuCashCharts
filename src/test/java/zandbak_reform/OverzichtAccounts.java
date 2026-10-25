@@ -13,6 +13,9 @@ import org.gnucash.read.GnucashFile;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.GnucashPriceDBImpl;
 
+import com.druvu.acc.api.entity.Account;
+import com.druvu.acc.api.entity.Amount;
+
 import kwee.gnucashcharts.library.AccountDetails;
 import kwee.gnucashcharts.library.gnuCashDb.ReadGnuCashDB;
 
@@ -46,11 +49,11 @@ public class OverzichtAccounts {
         GnucashPriceDBImpl pdb = new GnucashPriceDBImpl(gcshFile);
 
         GnucashFile acc = pdb.getFile();
-        Collection<GnucashAccount> listAcc = acc.getAccounts();
+        Collection<Account> listAcc = acc.getAccounts();
         // Collection<GnucashAccount> listAcc = acc.getAccountsByParentID("Activa");
         listAcc.forEach(Acc -> {
 
-          FixedPointNumber Bal = Acc.getBalance(toDay);
+          Amount Bal = Acc..getBalance(toDay);
           String Bal2 = Acc.getBalanceFormatted();
           String acname = Acc.getName();
           String qualAccName = Acc.getQualifiedName();

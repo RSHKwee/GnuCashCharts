@@ -2,7 +2,6 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>kwee</groupId>
   <artifactId>gnucashcharts</artifactId>
   <version>${revision}</version>
   <name>GnuCashCharts</name>
@@ -22,11 +21,19 @@
 	  <artifactId>library</artifactId>
 	  <version>${revision}</version>
 	</dependency> 
+	
+    <dependency>
+      <groupId>com.druvu</groupId>
+      <artifactId>druvu-acc-gnucash-xml</artifactId>
+      <version>2.2.1</version>
+    </dependency>	
+	<!--
     <dependency>
       <groupId>org.gnucash</groupId>
       <artifactId>gnucash-api</artifactId>
       <version>${gnucash-api.version}</version>
     </dependency>
+    -->
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi</artifactId>
