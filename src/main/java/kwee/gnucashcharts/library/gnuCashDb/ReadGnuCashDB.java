@@ -2,6 +2,7 @@ package kwee.gnucashcharts.library.gnuCashDb;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import java.util.ArrayList;
@@ -9,7 +10,6 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.GnucashPriceDBImpl;
@@ -25,7 +25,7 @@ public class ReadGnuCashDB {
   private GnucashPriceDBImpl m_pricedb;
   private File m_FileName;
 
-  public record Result(FixedPointNumber amount, FixedPointNumber balance) {
+  public record Result(BigDecimal amount, BigDecimal balance) {
   }
 
   /**
@@ -140,12 +140,12 @@ public class ReadGnuCashDB {
    * @param account
    * @return AccountDetails
    */
-  FixedPointNumber totSaldo = new FixedPointNumber("0.0");
+  BigDecimal totSaldo = new BigDecimal("0.0");
 
   private AccountDetails Account2AccountDetails (LocalDate a_Date, GnucashAccount account) {
     String l_notes = "";
-    FixedPointNumber fBalance = account.getBalance(a_Date);
-    FixedPointNumber fAmount = new FixedPointNumber("0.0");
+    BigDecimal fBalance = account.getBalance(a_Date);
+    BigDecimal fAmount = new BigDecimal("0.0");
     
     if (account.getUserDefinedAttribute("notes") != null) {
       l_notes = account.getUserDefinedAttribute("notes");
@@ -171,19 +171,19 @@ public class ReadGnuCashDB {
     String accsString = accs.toString();
     
     try {
-      totSaldo = new FixedPointNumber("0.0");
+      totSaldo = new BigDecimal("0.0");
       accs.forEach(acc->{
         Result r2 = getStockBalance(a_Date, acc);
-        FixedPointNumber fBalance2 = r2.balance;
+        BigDecimal fBalance2 = r2.balance;
         totSaldo.add(fBalance2);
       });
-      if (totSaldo.equals(new FixedPointNumber("0.0"))) {
+      if (totSaldo.equals(new BigDecimal("0.0"))) {
         totSaldo = fBalance;
       }
     } catch (Exception e){
       // Do nothing
       lOGGER.log(Level.FINE, e.getMessage());
-      if (totSaldo.equals(new FixedPointNumber("0.0"))) {
+      if (totSaldo.equals(new BigDecimal("0.0"))) {
         totSaldo = fBalance;
       }
     }
@@ -232,7 +232,7 @@ public class ReadGnuCashDB {
     a_accdets.forEach(accdet -> {
       AccountDetails l_accdet = new AccountDetails(accdet);
       l_accdet = updateTotSaldo(accdet);
-      if (l_accdet.get_Saldo().equals(new FixedPointNumber("0.0"))) {
+      if (l_accdet.get_Saldo().equals(new BigDecimal("0.0"))) {
         l_accdet.set_Saldo(l_accdet.get_TotSaldo());
       }
       l_AccDets.add(l_accdet);
@@ -248,11 +248,11 @@ public class ReadGnuCashDB {
       GnucashAccount account = a_accdet.get_RootAccount();
     
       try {
-        totSaldo = new FixedPointNumber("0.0");
+        totSaldo = new BigDecimal("0.0");
         accs.forEach(acc->{
           totSaldo.add(acc.getBalance());
         });
-        if (totSaldo.equals(new FixedPointNumber("0.0"))) {
+        if (totSaldo.equals(new BigDecimal("0.0"))) {
           totSaldo = account.getBalance();
         }
       } catch (Exception e){
@@ -264,13 +264,13 @@ public class ReadGnuCashDB {
   }
   
   private Result getStockBalance (LocalDate a_Date, GnucashAccount account) {
-    FixedPointNumber fAmount = new FixedPointNumber("0.0");
-    FixedPointNumber fBalance = account.getBalance(a_Date);
+    BigDecimal fAmount = new BigDecimal("0.0");
+    BigDecimal fBalance = account.getBalance(a_Date);
 
     // Stock convert number shares to amount
     String atype = account.getType();
     if (atype.equals(GnucashAccount.TYPE_STOCK) || atype.equals(GnucashAccount.TYPE_MUTUAL) ) {
-      FixedPointNumber cmdPrice = m_pricedb.getPrice(account.getCurrencyID(), a_Date);
+      BigDecimal cmdPrice = m_pricedb.getPrice(account.getCurrencyID(), a_Date);
       fAmount = account.getBalance(a_Date);
       fBalance = fBalance.multiply(cmdPrice);
       lOGGER.log(Level.FINE, "Account currence ID: " + account.getCurrencyID());  

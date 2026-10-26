@@ -4,8 +4,6 @@ import java.io.File;
 import java.time.LocalDate;
 import java.util.*;
 
-import org.gnucash.numbers.FixedPointNumber;
-
 import kwee.gnucashcharts.library.AccountDetails;
 import kwee.gnucashcharts.library.gnuCashDb.ReadGnuCashDB;
 

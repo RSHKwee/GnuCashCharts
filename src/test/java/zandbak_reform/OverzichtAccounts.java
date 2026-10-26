@@ -1,13 +1,13 @@
 package zandbak_reform;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.gnucash.generated.Price;
-import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.impl.GnucashFileImpl;
@@ -50,7 +50,7 @@ public class OverzichtAccounts {
         // Collection<GnucashAccount> listAcc = acc.getAccountsByParentID("Activa");
         listAcc.forEach(Acc -> {
 
-          FixedPointNumber Bal = Acc.getBalance(toDay);
+          BigDecimal Bal = Acc.getBalance(toDay);
           String Bal2 = Acc.getBalanceFormatted();
           String acname = Acc.getName();
           String qualAccName = Acc.getQualifiedName();
@@ -67,7 +67,7 @@ public class OverzichtAccounts {
             System.out.println("Fonds " + cmd);
             char euroChar = '\u20AC';
             lst_prices.forEach(prc -> {
-              FixedPointNumber p = new FixedPointNumber(prc.getPriceValue());
+              BigDecimal p = new BigDecimal(prc.getPriceValue());
               System.out.println(
                   prc.getPriceTime().getTsDate() + "| " + euroChar + " " + p.toString().replace('.', ',') + "|");
             });

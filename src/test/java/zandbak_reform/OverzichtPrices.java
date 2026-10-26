@@ -1,10 +1,10 @@
 package zandbak_reform;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.gnucash.generated.Price;
-import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.GnucashPriceDBImpl;
 
@@ -28,7 +28,7 @@ public class OverzichtPrices {
         System.out.println("Fonds " + cmd);
         char euroChar = '\u20AC';
         lst_prices.forEach(prc -> {
-          FixedPointNumber p = new FixedPointNumber(prc.getPriceValue());
+          BigDecimal p = new BigDecimal(prc.getPriceValue());
           System.out
               .println(prc.getPriceTime().getTsDate() + "| " + euroChar + " " + p.toString().replace('.', ',') + "|");
         });

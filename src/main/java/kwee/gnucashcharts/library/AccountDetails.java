@@ -1,9 +1,10 @@
 package kwee.gnucashcharts.library;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import org.gnucash.numbers.FixedPointNumber;
+import org.gnucash.numbers.BigDecimalWrapper;
 import org.gnucash.read.GnucashAccount;
 
 public class AccountDetails {
@@ -12,10 +13,10 @@ public class AccountDetails {
   private LocalDate m_LocalDate;
   private String m_AccountNr;
   private String m_AccountName;
-  private FixedPointNumber m_Amount;
-  private FixedPointNumber m_Saldo;
+  private BigDecimal m_Amount;
+  private BigDecimal m_Saldo;
   private String m_Remark;
-  private FixedPointNumber m_TotSaldo;
+  private BigDecimal m_TotSaldo;
 
   // Private constructor voor de Builder
   private AccountDetails(Builder builder) {
@@ -39,10 +40,10 @@ public class AccountDetails {
     this.m_LocalDate = null;
     this.m_AccountNr = "";
     this.m_AccountName = "";
-    this.m_Amount = new FixedPointNumber("0.0");
-    this.m_Saldo = new FixedPointNumber("0.0");
+    this.m_Amount = new BigDecimal("0.0");
+    this.m_Saldo = new BigDecimal("0.0");
     this.m_Remark = "";
-    this.m_TotSaldo = new FixedPointNumber("0.0");
+    this.m_TotSaldo = new BigDecimal("0.0");
   }
 
   public AccountDetails(AccountDetails accdet) {
@@ -76,11 +77,11 @@ public class AccountDetails {
     return m_AccountName;
   }
 
-  public FixedPointNumber get_Amount() {
+  public BigDecimal get_Amount() {
     return m_Amount;
   }
 
-  public FixedPointNumber get_Saldo() {
+  public BigDecimal get_Saldo() {
     return m_Saldo;
   }
 
@@ -88,7 +89,7 @@ public class AccountDetails {
     return m_Remark;
   }
 
-  public FixedPointNumber get_TotSaldo() {
+  public BigDecimal get_TotSaldo() {
     return m_TotSaldo;
   }
 
@@ -122,15 +123,15 @@ public class AccountDetails {
     this.m_AccountName = m_AccountName;
   }
 
-  public void set_Amount(FixedPointNumber m_Amount) {
+  public void set_Amount(BigDecimal m_Amount) {
     this.m_Amount = m_Amount;
   }
 
-  public void set_Saldo(FixedPointNumber m_Saldo) {
+  public void set_Saldo(BigDecimal m_Saldo) {
     this.m_Saldo = m_Saldo;
   }
 
-  public void set_TotSaldo(FixedPointNumber m_totSaldo) {
+  public void set_TotSaldo(BigDecimal m_totSaldo) {
     this.m_TotSaldo = m_totSaldo;
   }
 
@@ -167,10 +168,10 @@ public class AccountDetails {
     private LocalDate localDate;
     private String accountNr = "";
     private String accountName = "";
-    private FixedPointNumber amount = new FixedPointNumber("0.0");
-    private FixedPointNumber saldo = new FixedPointNumber("0.0");
+    private BigDecimal amount = new BigDecimal("0.0");
+    private BigDecimal saldo = new BigDecimal("0.0");
     private String remark = "";
-    private FixedPointNumber totSaldo = new FixedPointNumber("0.0");
+    private BigDecimal totSaldo = new BigDecimal("0.0");
 
     public Builder() {
       // Default constructor
@@ -201,12 +202,12 @@ public class AccountDetails {
       return this;
     }
 
-    public Builder amount(FixedPointNumber amount) {
+    public Builder amount(BigDecimal amount) {
       this.amount = amount;
       return this;
     }
 
-    public Builder saldo(FixedPointNumber saldo) {
+    public Builder saldo(BigDecimal saldo) {
       this.saldo = saldo;
       return this;
     }
@@ -216,7 +217,7 @@ public class AccountDetails {
       return this;
     }
 
-    public Builder totSaldo(FixedPointNumber totSaldo) {
+    public Builder totSaldo(BigDecimal totSaldo) {
       this.totSaldo = totSaldo;
       return this;
     }
