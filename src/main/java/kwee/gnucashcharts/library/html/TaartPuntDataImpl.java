@@ -83,4 +83,10 @@ public class TaartPuntDataImpl implements TaartPuntData {
     m_Tags.put(a_Tag, a_Slice);
   }
 
+  @Override
+  public ArrayList<String> print() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 }

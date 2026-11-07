@@ -3,7 +3,7 @@ package kwee.gnucashcharts.gui;
 /**
  * 
  */
-import java.awt.Desktop;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -48,6 +48,7 @@ import kwee.gnucashcharts.main.UserSetting;
 import kwee.library.ApplicationMessages;
 import kwee.library.ChmOpener;
 import kwee.library.JarInfo;
+import kwee.library.TxtBestand;
 import kwee.library.FX.AboutWindow;
 import kwee.library.FX.JavaFXLogHandler;
 import kwee.gnucashcharts.library.MessageConstants;
@@ -231,6 +232,7 @@ public class MainMenu extends Application {
     PieChartWithLegend piwindow = new PieChartWithLegend();
     buttonPiechart.setOnAction(_ -> {
       m_pieData = m_pieSelect.getData(m_Date);
+      TxtBestand.DumpBestand("PieData.csv", m_pieData.print());
       piwindow.openPieChartWindow(m_pieData, m_tag, m_SubjColors, m_Date);
     });
 

@@ -99,4 +99,26 @@ public class TaartPuntDataImpl implements TaartPuntData {
     ArrayList<String> la_subjects = new ArrayList<String>(l_subjects);    
     return la_subjects;
   }
+  
+  ArrayList<String> lOutStr = new ArrayList<String>();
+  
+  @Override
+  public ArrayList<String> print() {
+    String l_delim = ";";
+    Set<String> l_tags = getTags();
+    lOutStr.clear();;
+
+    l_tags.forEach(tag -> {
+      Map<String, Double> l_Slices = m_Tags.get(tag);
+      Set<String> l_subjects = l_Slices.keySet();
+      l_subjects.forEach(l_subject -> {
+        Double l_amnt = l_Slices.get(l_subject);
+        String str = tag + l_delim + l_subject + l_delim +  FormatAmount.formatAmount(l_amnt);
+        lOutStr.add(str);
+
+      });
+    });
+    return lOutStr;
+  }
+
 }

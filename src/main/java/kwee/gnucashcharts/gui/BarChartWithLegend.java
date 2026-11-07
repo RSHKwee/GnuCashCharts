@@ -30,6 +30,7 @@ import kwee.gnucashcharts.library.gnuCashDb.SamengesteldeStaafData;
 
 import kwee.logger.MyLogger;
 import kwee.library.ApplicationMessages;
+import kwee.library.TxtBestand;
 
 public class BarChartWithLegend {
   private static final Logger lOGGER = MyLogger.getLogger();
@@ -59,6 +60,9 @@ public class BarChartWithLegend {
     SamengesteldeStaafData a_barData = m_barchart.getData(a_NrBars, a_Date, a_Diff);
     m_BarChartDiagram = new StackedBarChartScene(a_barData, tag);
     m_barchartable = new BarChartToTableScene(m_BarChartDiagram.getBarChart(), m_BarChartDiagram.getCombinedTotals());
+
+    // TODO
+    TxtBestand.DumpBestand("BarData.csv", a_barData.print());
 
     // Layout
     title = bundle.getMessage(MessageConstants.C_BarchartTable, tag, m_barchartable.get_StartPeriod(),
