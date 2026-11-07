@@ -18,6 +18,16 @@ public class FormatAmount {
     return formattedNumber;
   }
 
+  public static String formatAmountNoSymbol(double amt) {
+    Locale locale = ApplicationMessages.getInstance().getLocale();
+    NumberFormat nf = NumberFormat.getNumberInstance(locale);
+    nf.setMinimumFractionDigits(2);
+    nf.setMaximumFractionDigits(2);
+
+    String result = nf.format(amt); // Resultaat bevat geen valutateken
+    return result;
+  }
+
   public static double convertToDouble(String input) {
     lOGGER.log(Level.FINE, "input: " + input);
     input = input.trim();
