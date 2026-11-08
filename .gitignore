@@ -26,3 +26,5 @@ replay_pid*
 BuildTools/
 Library.iss
 /bin/
+BarData.csv
+PieData.csv
