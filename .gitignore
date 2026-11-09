@@ -27,3 +27,6 @@ BuildTools/
 Library.iss
 BarData.csv
 PieData.csv
+bin/
+PieDatarrr.csv
+PieDataTmp.csv

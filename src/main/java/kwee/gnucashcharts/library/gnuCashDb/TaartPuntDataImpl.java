@@ -101,6 +101,7 @@ public class TaartPuntDataImpl implements TaartPuntData {
   }
   
   ArrayList<String> lOutStr = new ArrayList<String>();
+  
   @Override
   public ArrayList<String> print() {
     String l_delim = ";";
@@ -112,8 +113,9 @@ public class TaartPuntDataImpl implements TaartPuntData {
       Set<String> l_subjects = l_Slices.keySet();
       l_subjects.forEach(l_subject -> {
         Double l_amnt = l_Slices.get(l_subject);
-        String str = tag + l_delim + l_subject + l_delim + FormatAmount.formatAmountNoSymbol(l_amnt);
+        String str = tag + l_delim + l_subject + l_delim +  FormatAmount.formatAmountNoSymbol(l_amnt);
         lOutStr.add(str);
+
       });
     });
     return lOutStr;
